@@ -1,0 +1,64 @@
+ul(class="breadcrumb")
+    li
+        a(data-route="routes") Courses
+    li
+        a(data-route="routes.course[controllers.studyAid.currentCourse]",
+            data-bind="controllers.studyAid.currentCourse.name")
+    li(class="active",
+        data-bind="controllers.studyAid.currentFact.name")
+
+div
+    h1(data-bind="controllers.studyAid.currentFact.name | append '...'")
+
+hr
+
+ul(id="factTab", class="nav nav-tabs")
+    li(class="active")
+        a(href="#factRendered", data-toggle="tab") Rendered
+    li
+        a(href="#factSource", data-toggle="tab") Source
+div(id="factTabContent", class="tab-content")
+    div(class="tab-pane fade active in", id="factRendered")
+        img(id="factImg",
+            style="max-width: 100%; height: auto; margin-top: 10px")
+    div(class="tab-pane fade", id="factSource")
+        textarea(rows="8", style="width: 100%",
+            data-bind="controllers.studyAid.currentFact.statement",
+            data-event-blur="controllers.studyAid.updateFact")
+
+hr
+
+div(data-foreach-proof="controllers.studyAid.currentFact.proofs")
+    div(class="SA-panel")
+        div(class="SA-panel-heading",
+            data-toggle="collapse",
+            data-bind-data-target="'#proofContent' | append proof._id")
+            span(data-bind="proof.name")
+            span(data-hideif="proof.name") Proof
+        div(class="collapse",
+            data-bind-id="'proofContent' | append proof._id")
+            div(class="SA-panel-content")
+                div(style="position: relative")
+                    ul(class="nav nav-tabs")
+                        li(class="active")
+                            a(data-bind-href="'#proofContent' | append proof._id | append 'Rendered'",
+                                data-toggle="tab") Rendered
+                        li
+                            a(data-bind-href="'#proofContent' | append proof._id | append 'Source'",
+                                data-toggle="tab") Source
+                    div(class="tab-content")
+                        div(class="tab-pane fade active in",
+                            data-bind-id="'proofContent' | append proof._id | append 'Rendered'")
+                            img(data-bind-id="'proof' | append proof._id | append 'Img'",
+                                style="max-width: 100%; height: auto; margin-top: 10px")
+                        div(class="tab-pane fade",
+                            data-bind-id="'proofContent' | append proof._id | append 'Source'")
+                            textarea(rows="8", style="width: 100%",
+                                data-bind="proof.text",
+                                data-event-blur="controllers.studyAid.updateFact")
+
+                hr
+                div(style="position: relative; min-height: 33px")
+                    div(data-foreach-dependency="proof.dependencies")
+                        a(data-route="routes.course[controllers.studyAid.currentCourse].fact[dependency]",
+                            data-bind="dependency.name")
