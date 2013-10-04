@@ -1,0 +1,22 @@
+{
+  "name": "StudyAid",
+  "description": "",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "3.3.0",
+    "express-namespace": "0.1.1",
+    "jade": "0.34.1",
+    "batman": "0.14.1",
+    "coffee-script": "1.6.3",
+    "mongoose": "3.6.15",
+    "async": "0.2.9",
+    "latex": "0.0.1"
+  },
+  "scripts": {
+    "prestart": "coffee --compile . .",
+    "start": "node server.js",
+    "data-import": "data/import.sh",
+    "data-export": "data/export.sh"
+  }
+}
