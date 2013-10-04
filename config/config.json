@@ -1,0 +1,12 @@
+{
+    "basepath": "/StudyAid",
+    "port": 3000,
+    "database": {
+        "mongo": {
+            "server": "127.0.0.1",
+            "port": "27017",
+            "database": "StudyAid"
+        }
+    },
+    "renderPath": "/public/image/latex"
+}

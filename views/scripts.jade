@@ -1,0 +1,15 @@
+link(href="#{basepath}/css/bootstrap.css", rel="stylesheet")
+link(href="#{basepath}/css/font-awesome.css", rel="stylesheet")
+    
+link(href="#{basepath}/css/studyAid.css", rel="stylesheet")
+    
+script(src="#{basepath}/js/lib/jquery.js", type="text/javascript")
+script(src="#{basepath}/js/lib/bootstrap.js", type="text/javascript")
+script(src="#{basepath}/js/lib/batman.js", type="text/javascript")
+script(src="#{basepath}/js/lib/async.js", type="text/javascript")
+
+script.
+    Batman.config.pathPrefix = "#{basepath}"
+    Batman.config.viewPrefix = "#{basepath}/views"
+
+script(src="#{basepath}/js/namespace.js", type="text/javascript")
