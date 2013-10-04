@@ -48,6 +48,15 @@ app.namespace jadeParams.basepath, ->
     app.get '/', (req, res) ->
         res.render 'studyAid', jadeParams
 
+    # however it may have many views
+    console.log '  - pages'
+    filesystem.readdirSync(__dirname + '/views/pages').forEach (page) ->
+        if path.extname(page) == '.jade'
+            do (page) ->
+                console.log '    - pages/' + path.basename(page, '.jade')
+                app.get 'views/pages/' + path.basename(page, '.jade') + '.html', (req, res) ->
+                    res.render  'pages/' + path.basename(page, '.jade'), jadeParams
+
 ################
 # START SERVER #
 ################

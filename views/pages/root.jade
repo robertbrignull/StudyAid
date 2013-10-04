@@ -1,0 +1,14 @@
+h1 Courses...
+
+hr
+
+div(data-foreach-course="controllers.studyAid.courseList")
+    div(class="SA-panel")
+        div(class="SA-panel-heading",
+            data-toggle="collapse",
+            data-bind-data-target="'#content' | append course._id")
+            span(data-source="course.name")
+            i(class="icon-arrow-right icon-large pull-right",
+                data-route="routes.course[course]")
+        div(class="collapse", data-bind-id="'content' | append course._id")
+            div(class="SA-panel-content")
