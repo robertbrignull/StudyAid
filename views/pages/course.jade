@@ -1,0 +1,24 @@
+ul(class="breadcrumb")
+    li
+        a(data-route="routes") Courses
+    li(class="active",
+        data-bind="controllers.studyAid.currentCourse.name")
+
+div
+    h1(data-bind="controllers.studyAid.currentCourse.name | append '...'")
+
+hr
+
+div(data-foreach-fact="controllers.studyAid.factList")
+    div(class="SA-panel")
+        div(class="SA-panel-heading",
+            data-toggle="collapse",
+            data-bind-data-target="'#factContent' | append fact._id")
+            span(data-bind="fact.name")
+            i(class="icon-arrow-right icon-large pull-right",
+                data-route="routes.course[currentCourse].fact[fact]")
+        div(class="collapse",
+            data-bind-id="'factContent' | append fact._id")
+            div(class="SA-panel-content")
+                img(data-bind-id="'fact' | append fact._id | append 'Img'",
+                    style="max-width: 100%; height: auto; margin-top: 10px")

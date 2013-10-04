@@ -14,3 +14,8 @@ class StudyAid.App.CourseModel extends StudyAid.BaseModel
     @storageKey: 'coursemodel'
 
     @encode '_id', 'name'
+
+class StudyAid.App.FactMinimalModel extends StudyAid.BaseModel
+    @storageKey: 'factminimalmodel'
+
+    @encode '_id', 'name'
