@@ -1,3 +1,6 @@
+include ../mixins/formModal
+include ../mixins/deleteModal
+
 ul(class="breadcrumb")
     li
         a(data-route="routes") Courses
@@ -5,6 +8,19 @@ ul(class="breadcrumb")
         data-bind="controllers.studyAid.currentCourse.name")
 
 div
+    a(data-toggle="modal",
+        href="#deleteCourseModal",
+        class="btn btn-danger pull-right",
+        style="margin-left: 10px") Delete
+    mixin deleteModal("'deleteCourseModal'", 'deleteCourse', 'Delete course...', 'Are you sure you want to permanently delete this course and all related facts and proofs?')
+
+    a(data-toggle="modal",
+        href="#editCourseModal",
+        class="btn btn-success pull-right",
+        style="margin-left: 10px",
+        data-event-click="resetCourseResponse") Edit
+    mixin formModal("'editCourseModal'", 'courseResponse', 'course', 'saveCourse', 'Edit course details...', 'Dismiss', 'Save')
+
     h1(data-bind="controllers.studyAid.currentCourse.name | append '...'")
 
 hr
@@ -30,6 +46,4 @@ div(style="text-align: center")
         href="#addFactModal",
         class="btn btn-success",
         data-click-event="resetFactResponse") Add fact
-
-include ../mixins/formModal
 mixin formModal("'addFactModal'", 'factResponse', 'fact', 'saveFact', 'Add a new fact...', 'Dismiss', 'Add')
