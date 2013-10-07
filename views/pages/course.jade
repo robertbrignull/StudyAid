@@ -22,3 +22,14 @@ div(data-foreach-fact="controllers.studyAid.factList")
             div(class="SA-panel-content")
                 img(data-bind-id="'fact' | append fact._id | append 'Img'",
                     style="max-width: 100%; height: auto; margin-top: 10px")
+
+hr
+
+div(style="text-align: center")
+    a(data-toggle="modal",
+        href="#addFactModal",
+        class="btn btn-success",
+        data-click-event="resetFactResponse") Add fact
+
+include ../mixins/formModal
+mixin formModal("'addFactModal'", 'factResponse', 'fact', 'saveFact', 'Add a new fact...', 'Dismiss', 'Add')
