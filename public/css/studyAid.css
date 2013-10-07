@@ -40,3 +40,26 @@ hr {
 .SA-panel-content {
     padding: 16px 16px;
 }
+
+
+
+.SA-control-table {
+    width: 500px;
+    margin: auto;
+}
+
+.SA-control-group td {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.SA-control-label {
+    padding-top: 6px;
+    padding-right: 20px;
+    width: 30%;
+    text-align: right;
+}
+
+.SA-control {
+    width: 70%;
+}

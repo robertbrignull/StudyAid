@@ -12,3 +12,14 @@ div(data-foreach-course="controllers.studyAid.courseList")
                 data-route="routes.course[course]")
         div(class="collapse", data-bind-id="'content' | append course._id")
             div(class="SA-panel-content")
+
+hr
+
+div(style="text-align: center")
+    a(data-toggle="modal",
+        href="#addCourseModal",
+        class="btn btn-success",
+        data-click-event="resetCourseResponse") Add course
+
+include ../mixins/formModal
+mixin formModal("'addCourseModal'", 'courseResponse', 'course', 'saveCourse', 'Add a new course...', 'Dismiss', 'Add')
