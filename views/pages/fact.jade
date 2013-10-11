@@ -88,7 +88,19 @@ div(data-foreach-proof="controllers.studyAid.currentFact.proofs")
 
                 hr
                 div(style="position: relative; min-height: 33px")
+                    a(data-toggle="modal",
+                        data-bind-href="'#addDependency' | append proof._id | append 'Modal'",
+                        class="btn btn-success pull-right",
+                        data-event-click="resetDependencyResponse") Add dependency
+                    mixin formModal("'addDependency' | append proof._id | append 'Modal'", 'dependencyResponse', 'dependency', 'saveDependency', 'Add a new dependency...', 'Dismiss', 'Add')
+
                     div(data-foreach-dependency="proof.dependencies")
+                        a(data-toggle="modal",
+                            data-bind-href="'#deleteDependency' | append dependency._id | append 'Modal'",
+                            class="btn close pull-left",
+                            style="margin-top: -10px; height: 17px") x
+                        mixin deleteModal("'deleteDependency' | append dependency._id | append 'Modal'", 'deleteDependency', 'Delete dependency...', 'Are you sure you want to permanently delete this dependency?')
+                        
                         a(data-route="routes.course[controllers.studyAid.currentCourse].fact[dependency]",
                             data-bind="dependency.name")
 

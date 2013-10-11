@@ -61,9 +61,11 @@ class StudyAid.App.StudyAidController extends Batman.Controller
                     _id: 1
                     name: ''
                     text: 'Suppose that \\(f\\) is holomorphic on and inside a simple closed curve \\(\\gamma\\) except at isolated singularities \\(a_1,...a_m\\) inside \\(\\gamma\\). Then\n\\[\\int_\\gamma f(z)dz = 2\\pi i\\sum_{k=1}^mres(f;a_k)\\]'
-                    dependencies: new StudyAid.App.FactMinimalModel
-                        _id: 1
-                        name: 'Distance between points'
+                    dependencies: new Batman.Set(
+                        new StudyAid.App.FactMinimalModel
+                            _id: 1
+                            name: 'Distance between points'
+                    )
             )
 
         view = @render
