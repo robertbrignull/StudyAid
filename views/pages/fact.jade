@@ -1,3 +1,5 @@
+include ../mixins/formModal
+
 ul(class="breadcrumb")
     li
         a(data-route="routes") Courses
@@ -62,3 +64,12 @@ div(data-foreach-proof="controllers.studyAid.currentFact.proofs")
                     div(data-foreach-dependency="proof.dependencies")
                         a(data-route="routes.course[controllers.studyAid.currentCourse].fact[dependency]",
                             data-bind="dependency.name")
+
+hr
+
+div(style="text-align: center")
+    a(data-toggle="modal",
+        href="#addProofModal",
+        class="btn btn-success",
+        data-event-click="resetProofResponse") Add proof
+mixin formModal("'addProofModal'", 'proofResponse', 'proof', 'saveProof', 'Add a new proof...', 'Dismiss', 'Add')

@@ -16,6 +16,8 @@ mixin formModal(id, response, form, action, title, dismiss, confirm)
                                 include ../forms/course
                             else if form == 'fact'
                                 include ../forms/fact
+                            else if form == 'proof'
+                                include ../forms/proof
                             else
                                 div(class="alert alert-error fade in")
                                     button(type="button",
