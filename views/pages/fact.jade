@@ -55,6 +55,19 @@ div(data-foreach-proof="controllers.studyAid.currentFact.proofs")
             data-bind-id="'proofContent' | append proof._id")
             div(class="SA-panel-content")
                 div(style="position: relative")
+                    a(data-toggle="modal",
+                        href="#deleteProofModal",
+                        class="btn btn-danger pull-right",
+                        style="margin-left: 10px") Delete
+                    mixin deleteModal("'deleteProofModal'", 'deleteProof', 'Delete proof...', 'Are you sure you want to permanently delete this proof?')
+
+                    a(data-toggle="modal",
+                        href="#editProofModal",
+                        class="btn btn-success pull-right",
+                        style="margin-left: 10px",
+                        data-event-click="resetProofResponse") Edit
+                    mixin formModal("'editProofModal'", 'proofResponse', 'proof', 'saveProof', 'Edit proof details...', 'Dismiss', 'Save')
+
                     ul(class="nav nav-tabs")
                         li(class="active")
                             a(data-bind-href="'#proofContent' | append proof._id | append 'Rendered'",
