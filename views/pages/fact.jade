@@ -1,4 +1,5 @@
 include ../mixins/formModal
+include ../mixins/deleteModal
 
 ul(class="breadcrumb")
     li
@@ -10,6 +11,19 @@ ul(class="breadcrumb")
         data-bind="controllers.studyAid.currentFact.name")
 
 div
+    a(data-toggle="modal",
+        href="#deleteFactModal",
+        class="btn btn-danger pull-right",
+        style="margin-left: 10px") Delete
+    mixin deleteModal("'deleteFactModal'", 'deleteFact', 'Delete fact...', 'Are you sure you want to permanently delete this fact and all related proofs?')
+
+    a(data-toggle="modal",
+        href="#editFactModal",
+        class="btn btn-success pull-right",
+        style="margin-left: 10px",
+        data-event-click="resetFactResponse") Edit
+    mixin formModal("'editFactModal'", 'factResponse', 'fact', 'saveFact', 'Edit fact details...', 'Dismiss', 'Save')
+
     h1(data-bind="controllers.studyAid.currentFact.name | append '...'")
 
 hr
