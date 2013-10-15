@@ -7,6 +7,7 @@ filesystem = require 'fs'
 path = require 'path'
 
 config = require __dirname + '/config/config.json'
+rest = require __dirname + '/routes/rest-mongo'
 
 #########################
 # EXPRESS CONFIGURATION #
@@ -42,6 +43,15 @@ jadeParams =
 app.namespace jadeParams.basepath, ->
     # expose the rest interface
     console.log '  - REST'
+    
+    for method in rest.methods
+        do (method) ->
+            address = method.name
+            for param in method.params
+                address += '/:' + param
+
+            console.log '    - ' + method.type + ' ' + address
+            app[method.type] 'rest/' + address, method.method
 
     # we only have one controller
     console.log '  - controller'
