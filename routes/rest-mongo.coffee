@@ -4,7 +4,7 @@ path = require 'path'
 config = (require __dirname + '/../config/config.json').database.mongo
 
 mongo = require 'mongoskin'
-db = mongo.db(config.server + ':' + config.port + '/' + config.database)
+db = mongo.db(config.server + ':' + config.port + '/' + config.database, {safe: true})
 exports.db = db
 
 # Gather rest functions from files in the models directory
