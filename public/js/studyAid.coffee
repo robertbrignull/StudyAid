@@ -8,18 +8,22 @@ class StudyAid.App.StudyAidController extends Batman.Controller
     root: (args) =>
         @render false
 
-        @set 'courseList', new Batman.Set(
-            new StudyAid.App.CourseModel
-                _id: 1
-                name: 'Complex Analysis'
-            new StudyAid.App.CourseModel
-                _id: 2
-                name: 'Linear Algebra'
-        )
+        @set 'currentCourse', undefined
+        @set 'currentFact', undefined
 
-        view = @render
-            source: 'pages/root'
-            cache: false
+        @set 'courseList', new Batman.Set
+
+        StudyAid.App.CourseModel.load (err, courses) =>
+            if err?
+                console.log 'Error getting courses'
+                console.log err
+            else
+                Batman.Set.apply @get('courseList'), courses
+
+            view = @render
+                source: 'pages/root'
+                cache: false
+            view.on 'ready', =>
 
     course: (args) =>
         @render false
@@ -71,5 +75,21 @@ class StudyAid.App.StudyAidController extends Batman.Controller
         view = @render
             source: 'pages/fact'
             cache: false
+
+
+
+    resetCourseResponse: =>
+        @set 'courseResponse', new StudyAid.App.CourseModel
+            name: ''
+
+    saveCourse: =>
+        @get('courseResponse').save (err) =>
+            if err?
+                console.log 'Error saving course'
+                console.log err
+                return
+
+            if @get('courseList')?
+                @get('courseList').add @get('courseResponse')
 
 StudyAid.App.run()
