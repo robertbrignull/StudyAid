@@ -65,4 +65,4 @@ class StudyAid.App.ProofModel extends StudyAid.BaseModel
 class StudyAid.App.FactMinimalModel extends StudyAid.BaseModel
     @storageKey: 'factminimalmodel'
 
-    @encode '_id', 'name'
+    @encode '_id', 'name', 'type', 'color', 'course'

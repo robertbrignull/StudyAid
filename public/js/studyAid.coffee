@@ -23,27 +23,30 @@ class StudyAid.App.StudyAidController extends Batman.Controller
             view = @render
                 source: 'pages/root'
                 cache: false
-            view.on 'ready', =>
 
     course: (args) =>
         @render false
 
-        @set 'currentCourse', new StudyAid.App.CourseModel
-            _id: 1
-            name: 'Complex Analysis'
+        @set 'factList', new Batman.Set
 
-        @set 'factList', new Batman.Set(
-            new StudyAid.App.FactMinimalModel
-                _id: 1
-                name: 'Distance between points'
-            new StudyAid.App.FactMinimalModel
-                _id: 2
-                name: 'Triangle inequality'
-        )
+        StudyAid.App.CourseModel.find args.courseId, (err, course) =>
+            if err?
+                console.log 'Error getting course'
+                console.log err
 
-        view = @render
-            source: 'pages/course'
-            cache: false
+            @set 'currentCourse', course
+            @set 'currentFact', undefined
+
+            StudyAid.App.FactMinimalModel.load {course: args.courseId}, (err, facts) =>
+                if err?
+                    console.log 'Error getting facts'
+                    console.log err
+                else
+                    Batman.Set.apply @get('factList'), facts
+
+                view = @render
+                    source: 'pages/course'
+                    cache: false
 
     fact: (args) =>
         @render false
