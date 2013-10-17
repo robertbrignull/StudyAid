@@ -4,7 +4,7 @@ h1 Courses...
 
 hr
 
-div(data-foreach-course="controllers.studyAid.courseList")
+div(data-foreach-course="courseList")
     div(class="SA-panel")
         div(class="SA-panel-heading",
             data-toggle="collapse",
@@ -22,4 +22,4 @@ div(style="text-align: center")
         href="#addCourseModal",
         class="btn btn-success",
         data-event-click="resetCourseResponse") Add course
-mixin formModal("'addCourseModal'", 'courseResponse', 'course', 'saveCourse', 'Add a new course...', 'Dismiss', 'Add')
+mixin formModal("'addCourseModal'", 'courseResponse', 'course', 'saveCourse | withArguments courseResponse', 'Add a new course...', 'Dismiss', 'Add')

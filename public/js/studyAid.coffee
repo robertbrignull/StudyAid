@@ -81,18 +81,32 @@ class StudyAid.App.StudyAidController extends Batman.Controller
 
 
 
-    resetCourseResponse: =>
-        @set 'courseResponse', new StudyAid.App.CourseModel
-            name: ''
+    resetCourseResponse: (course) =>
+        if course.isStudyAidModel
+            @set 'courseResponse', course.clone()
+        else
+            @set 'courseResponse', new StudyAid.App.CourseModel
+                name: ''
 
-    saveCourse: =>
-        @get('courseResponse').save (err) =>
+    saveCourse: (course) =>
+        isNewCourse = not course.get('_id')?
+
+        course.save (err) =>
             if err?
                 console.log 'Error saving course'
                 console.log err
                 return
 
-            if @get('courseList')?
-                @get('courseList').add @get('courseResponse')
+            if isNewCourse
+                Batman.redirect '/course/' + course.get('_id')
+
+    deleteCourse: (course) =>
+        course.destroy (err) =>
+            if err?
+                console.log 'Error removing course'
+                console.log err
+                return
+
+            Batman.redirect '/'
 
 StudyAid.App.run()

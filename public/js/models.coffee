@@ -4,6 +4,8 @@ class StudyAid.BaseModel extends Batman.Model
     @urlPrefix: Batman.config.pathPrefix + '/rest'
     urlPrefix: Batman.config.pathPrefix + '/rest'
 
+    isStudyAidModel: true # to test if an object passed to a function was a model or not
+
     clone: () ->
         return (new @constructor).fromRawJSON(@toJSON())
 

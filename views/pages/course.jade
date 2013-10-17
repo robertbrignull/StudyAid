@@ -5,27 +5,27 @@ ul(class="breadcrumb")
     li
         a(data-route="routes") Courses
     li(class="active",
-        data-bind="controllers.studyAid.currentCourse.name")
+        data-bind="currentCourse.name")
 
 div
     a(data-toggle="modal",
         href="#deleteCourseModal",
         class="btn btn-danger pull-right",
         style="margin-left: 10px") Delete
-    mixin deleteModal("'deleteCourseModal'", 'deleteCourse', 'Delete course...', 'Are you sure you want to permanently delete this course and all related facts and proofs?')
+    mixin deleteModal("'deleteCourseModal'", 'deleteCourse | withArguments currentCourse', 'Delete course...', 'Are you sure you want to permanently delete this course and all related facts and proofs?')
 
     a(data-toggle="modal",
         href="#editCourseModal",
         class="btn btn-success pull-right",
         style="margin-left: 10px",
-        data-event-click="resetCourseResponse") Edit
-    mixin formModal("'editCourseModal'", 'courseResponse', 'course', 'saveCourse', 'Edit course details...', 'Dismiss', 'Save')
+        data-event-click="resetCourseResponse | withArguments currentCourse") Edit
+    mixin formModal("'editCourseModal'", 'courseResponse', 'course', 'saveCourse | withArguments courseResponse', 'Edit course details...', 'Dismiss', 'Save')
 
-    h1(data-bind="controllers.studyAid.currentCourse.name | append '...'")
+    h1(data-bind="currentCourse.name | append '...'")
 
 hr
 
-div(data-foreach-fact="controllers.studyAid.factList")
+div(data-foreach-fact="factList")
     div(class="SA-panel")
         div(class="SA-panel-heading",
             data-toggle="collapse",
@@ -46,4 +46,4 @@ div(style="text-align: center")
         href="#addFactModal",
         class="btn btn-success",
         data-event-click="resetFactResponse") Add fact
-mixin formModal("'addFactModal'", 'factResponse', 'fact', 'saveFact', 'Add a new fact...', 'Dismiss', 'Add')
+mixin formModal("'addFactModal'", 'factResponse', 'fact', 'saveFact | withArguments factResponse', 'Add a new fact...', 'Dismiss', 'Add')
