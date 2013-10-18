@@ -51,33 +51,23 @@ class StudyAid.App.StudyAidController extends Batman.Controller
     fact: (args) =>
         @render false
 
-        @set 'currentCourse', new StudyAid.App.CourseModel
-            _id: 1
-            name: 'Complex Analysis'
+        StudyAid.App.CourseModel.find args.courseId, (err, course) =>
+            if err?
+                console.log 'Error getting course'
+                console.log err
 
-        @set 'currentFact', new StudyAid.App.FactModel
-            _id: 1
-            name: 'Triangle inequality'
-            type: 'Proposition'
-            color: 'FF0000'
-            canHaveProof: true
-            course: 1
-            statement: 'Suppose that \\(f\\) is holomorphic on and inside a simple closed curve \\(\\gamma\\) except at isolated singularities \\(a_1,...a_m\\) inside \\(\\gamma\\). Then\n\\[\\int_\\gamma f(z)dz = 2\\pi i\\sum_{k=1}^mres(f;a_k)\\]'
-            proofs: new Batman.Set(
-                new StudyAid.App.ProofModel
-                    _id: 1
-                    name: ''
-                    text: 'Suppose that \\(f\\) is holomorphic on and inside a simple closed curve \\(\\gamma\\) except at isolated singularities \\(a_1,...a_m\\) inside \\(\\gamma\\). Then\n\\[\\int_\\gamma f(z)dz = 2\\pi i\\sum_{k=1}^mres(f;a_k)\\]'
-                    dependencies: new Batman.Set(
-                        new StudyAid.App.FactMinimalModel
-                            _id: 1
-                            name: 'Distance between points'
-                    )
-            )
+            @set 'currentCourse', course
 
-        view = @render
-            source: 'pages/fact'
-            cache: false
+            StudyAid.App.FactModel.find args.factId, (err, fact) =>
+                if err?
+                    console.log 'Error getting fact'
+                    console.log err
+
+                @set 'currentFact', fact
+
+                view = @render
+                    source: 'pages/fact'
+                    cache: false
 
 
 
@@ -108,5 +98,41 @@ class StudyAid.App.StudyAidController extends Batman.Controller
                 return
 
             Batman.redirect '/'
+
+
+
+    resetFactResponse: (fact) =>
+        if fact.isStudyAidModel
+            @set 'factResponse', fact.clone()
+        else
+            @set 'factResponse', new StudyAid.App.FactModel
+                name: ''
+                type: 'Theory'
+                color: 'FF0000'
+                canHaveProof: true
+                course: @get('currentCourse._id')
+                statement: ''
+                proofs: new Batman.Set
+
+    saveFact: (fact) =>
+        isNewFact = not fact.get('_id')?
+
+        fact.save (err) =>
+            if err?
+                console.log 'Error saving fact'
+                console.log err
+                return
+
+            if isNewFact
+                Batman.redirect '/course/' + fact.get('course') + '/fact/' + fact.get('_id')
+
+    deleteFact: (fact) =>
+        fact.destroy (err) =>
+            if err?
+                console.log 'Error removing fact'
+                console.log err
+                return
+
+            Batman.redirect '/course/' + fact.get('course')
 
 StudyAid.App.run()

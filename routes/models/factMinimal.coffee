@@ -18,7 +18,7 @@ exports.methods.push
     			res.send 500, {}
     			return
 
-    		mergeFactWithType facts, (err, facts) ->
+    		(mergeFactWithType facts) (err, facts) ->
     			if err?
     				console.log 'Error merging with factType'
     				console.log err

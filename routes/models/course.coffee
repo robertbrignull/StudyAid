@@ -1,5 +1,5 @@
 db = (require '../rest-mongo').db
-coursesCollection = db.collection('coursemodels')
+courseCollection = db.collection('coursemodels')
 
 exports.methods = []
 
@@ -8,7 +8,7 @@ exports.methods.push
     type: 'get'
     params: []
     method: (req, res) ->
-        coursesCollection.find().toArray (err, courses) ->
+        courseCollection.find().toArray (err, courses) ->
             if err?
                 console.log 'Error finding all courses'
                 console.log err
@@ -22,7 +22,7 @@ exports.methods.push
     type: 'get'
     params: ['_id']
     method: (req, res) ->
-        coursesCollection.findById req.params._id, (err, course) ->
+        courseCollection.findById req.params._id, (err, course) ->
             if err?
                 console.log 'Error finding course by id'
                 console.log err
@@ -42,7 +42,7 @@ exports.methods.push
         if not args.name?
             res.send 400, {}
 
-        coursesCollection.updateById req.params._id, {name: args.name}, {}, (err, n) ->
+        courseCollection.updateById req.params._id, {name: args.name}, {}, (err, n) ->
             if err?
                 console.log 'Error updating course'
                 console.log err
@@ -72,7 +72,7 @@ exports.methods.push
             name: args.name
 
         # save it to the database
-        coursesCollection.insert course, {}, (err, result) ->
+        courseCollection.insert course, {}, (err, result) ->
             if err?
                 console.log 'Error adding new course'
                 console.log err
@@ -86,7 +86,7 @@ exports.methods.push
     type: 'delete'
     params: ['_id']
     method: (req, res) ->
-        coursesCollection.removeById req.params._id, {}, (err, n) ->
+        courseCollection.removeById req.params._id, {}, (err, n) ->
             if err?
                 console.log 'Error deleting course'
                 console.log err

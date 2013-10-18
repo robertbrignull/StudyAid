@@ -17,7 +17,7 @@ merge = (facts, types, done) ->
 
 	done undefined, facts
 
-exports.mergeFactWithType = (facts, done) ->
+exports.mergeFactWithType = (facts) -> (done) ->
 	# Just get all fact types, there aren't many of them
 	factTypeCollection.find().toArray (err, typeArray) ->
 		if err?
@@ -34,3 +34,10 @@ exports.mergeFactWithType = (facts, done) ->
 		else
 			merge [facts], types, (err, facts) ->
 				done err, facts[0]
+
+exports.findFactType = (name, done) ->
+	factTypeCollection.find({name: name}).toArray (err, types) ->
+		if types? and types.length == 1
+			done err, types[0]
+		else
+			done err
