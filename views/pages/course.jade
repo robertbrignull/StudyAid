@@ -21,7 +21,7 @@ div
         data-event-click="resetCourseResponse | withArguments currentCourse") Edit
     mixin formModal("'editCourseModal'", 'courseResponse', 'course', 'saveCourse | withArguments courseResponse', 'Edit course details...', 'Dismiss', 'Save')
 
-    h1(data-bind="currentCourse.name | append '...'")
+    h1(data-bind="currentCourse.name")
 
 hr
 

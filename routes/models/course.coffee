@@ -79,7 +79,7 @@ exports.methods.push
                 res.send 500, {}
                 return
             
-            res.send 200, result[0]
+            res.send 200, {_id: result[0]._id}
 
 exports.methods.push
     name: 'coursemodel'

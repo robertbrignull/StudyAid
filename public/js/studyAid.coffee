@@ -81,7 +81,7 @@ class StudyAid.App.StudyAidController extends Batman.Controller
     saveCourse: (course) =>
         isNewCourse = not course.get('_id')?
 
-        course.save (err) =>
+        course.save (err, course) =>
             if err?
                 console.log 'Error saving course'
                 console.log err
@@ -117,7 +117,7 @@ class StudyAid.App.StudyAidController extends Batman.Controller
     saveFact: (fact) =>
         isNewFact = not fact.get('_id')?
 
-        fact.save (err) =>
+        fact.save (err, fact) =>
             if err?
                 console.log 'Error saving fact'
                 console.log err

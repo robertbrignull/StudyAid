@@ -134,7 +134,7 @@ exports.methods.push
                     return
 
                 res.send 200,
-                    _id: fact._id
+                    _id: req.params._id
                     color: type.color
                     canHaveProof: type.canHaveProof
 
@@ -149,15 +149,15 @@ exports.methods.push
                 return
 
             # push that to the database
-            factCollection.insert fact, {}, (err, n) ->
+            factCollection.insert fact, {}, (err, result) ->
                 if err?
                     console.log 'Error inserting fact'
                     console.log err
                     res.send 500, {}
                     return
-
+                
                 res.send 200,
-                    _id: fact._id
+                    _id: result[0]._id
                     color: type.color
                     canHaveProof: type.canHaveProof
 

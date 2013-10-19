@@ -5,26 +5,26 @@ ul(class="breadcrumb")
     li
         a(data-route="routes") Courses
     li
-        a(data-route="routes.course[controllers.studyAid.currentCourse]",
-            data-bind="controllers.studyAid.currentCourse.name")
+        a(data-route="routes.course[currentCourse]",
+            data-bind="currentCourse.name")
     li(class="active",
-        data-bind="controllers.studyAid.currentFact.name")
+        data-bind="currentFact.name")
 
 div
     a(data-toggle="modal",
         href="#deleteFactModal",
         class="btn btn-danger pull-right",
         style="margin-left: 10px") Delete
-    mixin deleteModal("'deleteFactModal'", 'deleteFact', 'Delete fact...', 'Are you sure you want to permanently delete this fact and all related proofs?')
+    mixin deleteModal("'deleteFactModal'", 'deleteFact | withArguments currentFact', 'Delete fact...', 'Are you sure you want to permanently delete this fact and all related proofs?')
 
     a(data-toggle="modal",
         href="#editFactModal",
         class="btn btn-success pull-right",
         style="margin-left: 10px",
-        data-event-click="resetFactResponse") Edit
-    mixin formModal("'editFactModal'", 'factResponse', 'fact', 'saveFact', 'Edit fact details...', 'Dismiss', 'Save')
+        data-event-click="resetFactResponse | withArguments currentFact") Edit
+    mixin formModal("'editFactModal'", 'factResponse', 'fact', 'saveFact | withArguments factResponse', 'Edit fact details...', 'Dismiss', 'Save')
 
-    h1(data-bind="controllers.studyAid.currentFact.name | append '...'")
+    h1(data-bind="currentFact.name")
 
 hr
 
@@ -39,12 +39,12 @@ div(id="factTabContent", class="tab-content")
             style="max-width: 100%; height: auto; margin-top: 10px")
     div(class="tab-pane fade", id="factSource")
         textarea(rows="8", style="width: 100%",
-            data-bind="controllers.studyAid.currentFact.statement",
-            data-event-blur="controllers.studyAid.updateFact")
+            data-bind="currentFact.statement",
+            data-event-blur="updateFact")
 
 hr
 
-div(data-foreach-proof="controllers.studyAid.currentFact.proofs")
+div(data-foreach-proof="currentFact.proofs")
     div(class="SA-panel")
         div(class="SA-panel-heading",
             data-toggle="collapse",
@@ -84,7 +84,7 @@ div(data-foreach-proof="controllers.studyAid.currentFact.proofs")
                             data-bind-id="'proofContent' | append proof._id | append 'Source'")
                             textarea(rows="8", style="width: 100%",
                                 data-bind="proof.text",
-                                data-event-blur="controllers.studyAid.updateFact")
+                                data-event-blur="updateFact")
 
                 hr
                 div(style="position: relative; min-height: 33px")
@@ -101,7 +101,7 @@ div(data-foreach-proof="controllers.studyAid.currentFact.proofs")
                             style="margin-top: -10px; height: 17px") x
                         mixin deleteModal("'deleteDependency' | append dependency._id | append 'Modal'", 'deleteDependency', 'Delete dependency...', 'Are you sure you want to permanently delete this dependency?')
                         
-                        a(data-route="routes.course[controllers.studyAid.currentCourse].fact[dependency]",
+                        a(data-route="routes.course[currentCourse].fact[dependency]",
                             data-bind="dependency.name")
 
 hr
