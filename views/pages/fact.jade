@@ -40,7 +40,7 @@ div(id="factTabContent", class="tab-content")
     div(class="tab-pane fade", id="factSource")
         textarea(rows="8", style="width: 100%",
             data-bind="currentFact.statement",
-            data-event-blur="updateFact")
+            data-event-blur="saveFact | withArguments currentFact")
 
 hr
 
@@ -56,17 +56,17 @@ div(data-foreach-proof="currentFact.proofs")
             div(class="SA-panel-content")
                 div(style="position: relative")
                     a(data-toggle="modal",
-                        href="#deleteProofModal",
+                        data-bind-href="'#deleteProofModal' | append proof._id",
                         class="btn btn-danger pull-right",
                         style="margin-left: 10px") Delete
-                    mixin deleteModal("'deleteProofModal'", 'deleteProof', 'Delete proof...', 'Are you sure you want to permanently delete this proof?')
+                    mixin deleteModal("'deleteProofModal' | append proof._id", 'deleteProof | withArguments proof, currentFact', 'Delete proof...', 'Are you sure you want to permanently delete this proof?')
 
                     a(data-toggle="modal",
-                        href="#editProofModal",
+                        data-bind-href="'#editProofModal' | append proof._id",
                         class="btn btn-success pull-right",
                         style="margin-left: 10px",
-                        data-event-click="resetProofResponse") Edit
-                    mixin formModal("'editProofModal'", 'proofResponse', 'proof', 'saveProof', 'Edit proof details...', 'Dismiss', 'Save')
+                        data-event-click="resetProofResponse | withArguments proof") Edit
+                    mixin formModal("'editProofModal' | append proof._id", 'proofResponse', 'proof', 'saveFact | withArguments currentFact', 'Edit proof details...', 'Dismiss', 'Save')
 
                     ul(class="nav nav-tabs")
                         li(class="active")
@@ -84,22 +84,22 @@ div(data-foreach-proof="currentFact.proofs")
                             data-bind-id="'proofContent' | append proof._id | append 'Source'")
                             textarea(rows="8", style="width: 100%",
                                 data-bind="proof.text",
-                                data-event-blur="updateFact")
+                                data-event-blur="saveFact | withArguments currentFact")
 
                 hr
                 div(style="position: relative; min-height: 33px")
                     a(data-toggle="modal",
-                        data-bind-href="'#addDependency' | append proof._id | append 'Modal'",
+                        data-bind-href="'#addDependencyModal' | append proof._id",
                         class="btn btn-success pull-right",
                         data-event-click="resetDependencyResponse") Add dependency
-                    mixin formModal("'addDependency' | append proof._id | append 'Modal'", 'dependencyResponse', 'dependency', 'saveDependency', 'Add a new dependency...', 'Dismiss', 'Add')
+                    mixin formModal("'addDependencyModal' | append proof._id", 'dependencyResponse', 'dependency', 'saveDependency | withArguments dependencyResponse, proof, currentFact', 'Add a new dependency...', 'Dismiss', 'Add')
 
                     div(data-foreach-dependency="proof.dependencies")
                         a(data-toggle="modal",
-                            data-bind-href="'#deleteDependency' | append dependency._id | append 'Modal'",
+                            data-bind-href="'#deleteDependencyModal' | append dependency._id",
                             class="btn close pull-left",
                             style="margin-top: -10px; height: 17px") x
-                        mixin deleteModal("'deleteDependency' | append dependency._id | append 'Modal'", 'deleteDependency', 'Delete dependency...', 'Are you sure you want to permanently delete this dependency?')
+                        mixin deleteModal("'deleteDependencyModal' | append dependency._id", 'deleteDependency | withArguments dependency, proof, currentFact', 'Delete dependency...', 'Are you sure you want to permanently delete this dependency?')
                         
                         a(data-route="routes.course[currentCourse].fact[dependency]",
                             data-bind="dependency.name")
@@ -111,4 +111,4 @@ div(style="text-align: center")
         href="#addProofModal",
         class="btn btn-success",
         data-event-click="resetProofResponse") Add proof
-mixin formModal("'addProofModal'", 'proofResponse', 'proof', 'saveProof', 'Add a new proof...', 'Dismiss', 'Add')
+mixin formModal("'addProofModal'", 'proofResponse', 'proof', 'createProof | withArguments proofResponse, currentFact', 'Add a new proof...', 'Dismiss', 'Add')

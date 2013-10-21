@@ -20,7 +20,7 @@ createFact = (args, done) ->
     fact.statement = args.statement
 
     fact.proofs = JSON.parse (args.proofs ? '[]')
-    for proof in JSON.parse args.proofs
+    for proof in fact.proofs
         proof.dependencies = (JSON.parse (proof.dependencies ? '[]')).map (d) -> ObjectID(d._id)
 
     # try to work out the type from the name
@@ -62,6 +62,10 @@ exports.methods.push
                 console.log 'Error finding fact by id'
                 console.log err
                 res.send 500, {}
+                return
+
+            if not fact?
+                res.send 200, ''
                 return
 
             tasks = [mergeFactWithType fact]

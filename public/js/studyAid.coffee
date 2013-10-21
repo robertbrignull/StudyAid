@@ -135,4 +135,27 @@ class StudyAid.App.StudyAidController extends Batman.Controller
 
             Batman.redirect '/course/' + fact.get('course')
 
+
+
+    resetProofResponse: (proof) =>
+        console.log 'resetting proof response'
+        if proof.isStudyAidModel
+            @set 'proofResponse', proof.clone()
+        else
+            @set 'proofResponse', new StudyAid.App.ProofModel
+                name: ''
+                text: ''
+                dependencies: new Batman.Set
+
+    createProof: (proof, fact) =>
+        console.log 'creating proof'
+        proof.set '_id', (new Date).getTime()
+        fact.get('proofs').add proof
+        @saveFact fact
+
+    deleteProof: (proof, fact) =>
+        console.log 'deleting proof'
+        fact.get('proofs').remove fact.get('proofs').find (p) -> p.get('_id') == proof.get('_id')
+        @saveFact fact
+
 StudyAid.App.run()
