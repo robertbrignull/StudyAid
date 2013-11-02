@@ -71,7 +71,7 @@ exports.methods.push
                 res.send 200, ''
                 return
 
-            tasks = [mergeFactWithType fact]
+            tasks = [mergeFactWithType fact, latex.render fact]
             if fact.proofs?
                 for proof in fact.proofs
                     tasks.push getDependencies proof
@@ -104,6 +104,7 @@ exports.methods.push
             tasks = []
             for fact in facts
                 tasks.push mergeFactWithType fact
+                tasks.push latex.render fact
                 if fact.proofs?
                     for proof in fact.proofs
                         tasks.push getDependencies proof
@@ -142,7 +143,7 @@ exports.methods.push
 
                 fact._id = req.params._id
 
-                latex.render fact, (err) ->
+                (latex.render fact) (err) ->
                     if err?
                         console.log 'Error rendering'
                         console.log  err
@@ -172,7 +173,7 @@ exports.methods.push
                     res.send 500, {}
                     return
 
-                latex.render result[0], (err) ->
+                (latex.render result[0]) (err) ->
                     if err?
                         console.log 'Error rendering'
                         console.log  err
@@ -189,11 +190,28 @@ exports.methods.push
     type: 'delete'
     params: ['_id']
     method: (req, res) ->
-        factCollection.removeById req.params._id, {}, (err, n) ->
+        # need to load the fact before deleting it
+        factCollection.findById req.params._id, (err, fact) ->
             if err?
-                console.log 'Error deleting fact'
+                console.log 'Error finding fact before deleting'
                 console.log err
                 res.send 500, {}
                 return
 
-            res.send 200, {}
+            # delete the actual record in the database
+            factCollection.removeById req.params._id, {}, (err, n) ->
+                if err?
+                    console.log 'Error deleting fact'
+                    console.log err
+                    res.send 500, {}
+                    return
+
+                # remove any rendered images
+                (latex.remove fact) (err) ->
+                    if err?
+                        console.log 'Error deleting images when deleting fact'
+                        console.log err
+                        res.send 500, {}
+                        return
+
+                    res.send 200, {}

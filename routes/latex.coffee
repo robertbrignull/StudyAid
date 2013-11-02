@@ -20,10 +20,8 @@ imageExists = (id) ->
 # that renders the text and stores it at the id of the object,
 # also stores on the object the hash of the latest render.
 renderImage = (obj, text) -> (callback) ->
-    if not text? or text == ''
-        removeImage obj._id
-        callback()
-        return
+    if not text?
+        text = ''
 
     shasum = crypto.createHash 'sha1'
     shasum.update text
@@ -71,8 +69,8 @@ renderImage = (obj, text) -> (callback) ->
                     callback 'pdftoppm exited with code ' + code
                     return
 
-                # filesystem.unlinkSync imageRoot + '.latex'
-                # filesystem.unlinkSync imageRoot + '.pdf'
+                filesystem.unlinkSync imageRoot + '.latex'
+                filesystem.unlinkSync imageRoot + '.pdf'
                 filesystem.unlinkSync imageRoot + '.aux'
                 filesystem.unlinkSync imageRoot + '.log'
 
@@ -83,30 +81,35 @@ renderImage = (obj, text) -> (callback) ->
 # Returns a function that deletes the currently
 # rendered image for the given id
 removeImage = (id) -> (callback) ->
-    filesystem.unlink renderPath + '/' + id + '.png', callback
+    filesystem.unlink renderPath + '/' + id + '.png', (err) ->
+    callback()
 
 # Renders a fact and all of its proofs
-exports.render = (fact, done) ->
+exports.render = (fact) -> (done) ->
     tasks = []
 
     tasks.push(renderImage fact, fact.statement)
 
-    for proof in fact.proofs
-        tasks.push(renderImage proof, proof.text)
+    if fact.proofs?
+        for proof in fact.proofs
+            tasks.push(renderImage proof, proof.text)
 
     async.parallel tasks, (err) ->
         _id = fact._id
         delete fact._id
         factCollection.updateById _id, fact, {}, (err) ->
+            fact._id = _id
             done err
 
 # Removes the images for a fact and all of its proofs
-exports.remove = (fact, done) ->
+exports.remove = (fact) -> (done) ->
     tasks = []
 
     tasks.push removeImage fact._id
 
-    for proof in fact.proofs
-        tasks.push removeImage proof._id
+    if fact.proofs?
+        for proof in fact.proofs
+            tasks.push removeImage proof._id
 
-    async.parallel tasks, done
+    async.parallel tasks, (err) ->
+        done err
