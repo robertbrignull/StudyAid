@@ -1,3 +1,4 @@
 *.js
 !/public/js/lib
 /node_modules
+/public/image/latex

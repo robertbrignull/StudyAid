@@ -126,6 +126,15 @@ class StudyAid.App.StudyAidController extends Batman.Controller
             if isNewFact
                 Batman.redirect '/course/' + fact.get('course') + '/fact/' + fact.get('_id')
 
+            else
+                updateSrc = (obj, name) ->
+                    $('#' + name).attr 'src', Batman.config.pathPrefix + '/image/latex/' + obj.get('_id') + '.png'
+
+                updateSrc @get('currentFact'), 'factImg'
+
+                @get('currentFact.proofs').forEach (proof) ->
+                    updateSrc proof, 'proof' + proof.get('_id') + 'Img'
+
     deleteFact: (fact) =>
         fact.destroy (err) =>
             if err?

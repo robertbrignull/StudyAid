@@ -5,6 +5,8 @@ factCollection = db.collection('factmodels')
 {mergeFactWithType, findFactType} = require './factType'
 async = require 'async'
 
+latex = require '../latex'
+
 exports.methods = []
 
 createFact = (args, done) ->
@@ -137,10 +139,19 @@ exports.methods.push
                     res.send 400, {}
                     return
 
-                res.send 200,
-                    _id: req.params._id
-                    color: type.color
-                    canHaveProof: type.canHaveProof
+                fact._id = req.params._id
+
+                latex.render fact, (err) ->
+                    if err?
+                        console.log 'Error rendering'
+                        console.log  err
+                        res.send 500, {}
+                        return
+                
+                    res.send 200,
+                        _id: req.params._id
+                        color: type.color
+                        canHaveProof: type.canHaveProof
 
 exports.methods.push
     name: 'factmodel' 
@@ -159,11 +170,18 @@ exports.methods.push
                     console.log err
                     res.send 500, {}
                     return
+
+                latex.render result[0], (err) ->
+                    if err?
+                        console.log 'Error rendering'
+                        console.log  err
+                        res.send 500, {}
+                        return
                 
-                res.send 200,
-                    _id: result[0]._id
-                    color: type.color
-                    canHaveProof: type.canHaveProof
+                    res.send 200,
+                        _id: result[0]._id
+                        color: type.color
+                        canHaveProof: type.canHaveProof
 
 exports.methods.push
     name: 'factmodel'
