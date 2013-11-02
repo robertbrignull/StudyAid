@@ -135,6 +135,9 @@ class StudyAid.App.StudyAidController extends Batman.Controller
                 @get('currentFact.proofs').forEach (proof) ->
                     updateSrc proof, 'proof' + proof.get('_id') + 'Img'
 
+                # reload as the rendered field might have changed
+                StudyAid.App.FactModel.find fact.get('_id')
+
     deleteFact: (fact) =>
         fact.destroy (err) =>
             if err?

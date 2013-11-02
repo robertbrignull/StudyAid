@@ -95,7 +95,10 @@ exports.render = (fact, done) ->
         tasks.push(renderImage proof, proof.text)
 
     async.parallel tasks, (err) ->
-        done err
+        _id = fact._id
+        delete fact._id
+        factCollection.updateById _id, fact, {}, (err) ->
+            done err
 
 # Removes the images for a fact and all of its proofs
 exports.remove = (fact, done) ->
