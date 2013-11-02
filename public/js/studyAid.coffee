@@ -138,7 +138,6 @@ class StudyAid.App.StudyAidController extends Batman.Controller
 
 
     resetProofResponse: (proof) =>
-        console.log 'resetting proof response'
         if proof.isStudyAidModel
             @set 'proofResponse', proof.clone()
         else
@@ -148,14 +147,55 @@ class StudyAid.App.StudyAidController extends Batman.Controller
                 dependencies: new Batman.Set
 
     createProof: (proof, fact) =>
-        console.log 'creating proof'
         proof.set '_id', (new Date).getTime()
         fact.get('proofs').add proof
         @saveFact fact
 
     deleteProof: (proof, fact) =>
-        console.log 'deleting proof'
-        fact.get('proofs').remove fact.get('proofs').find (p) -> p.get('_id') == proof.get('_id')
+        fact.get('proofs').remove proof
+        @saveFact fact
+
+
+
+    resetDependencyResponse: =>
+        @set 'dependencyResponse', new StudyAid.App.FactMinimalModel
+        @set 'dependencyList', new Batman.Set
+
+    loadDependencies: =>
+        if @loadDependencyTimeout?
+            clearTimeout @loadDependencyTimeout
+
+        @loadDependencyTimeout = setTimeout =>
+            @set 'dependencyList', new Batman.Set
+
+            if @get('dependencyResponse.name') != ''
+                StudyAid.App.FactMinimalModel.load {course: @get('currentCourse._id'), namePartial: @get('dependencyResponse.name')}, (err, facts) =>
+                    if err?
+                        console.log 'Error loading possible facts for dependency'
+                        console.log err
+                        return
+
+                    Batman.Set.apply @get('dependencyList'), facts
+
+                    # let the DOM update before trying to set the dropdown list value
+                    if facts.length > 0
+                        setTimeout =>
+                            @set 'dependencyResponse._id', facts[0].get('_id')
+                        , 0
+        , 300
+
+    createDependency: (dep, proof, fact) =>
+        dependency = @get('dependencyList').find((d) -> d.get('_id') == dep.get('_id'))
+        
+        isSameFact = fact.get('_id') == dependency.get('_id')
+        isAlreadyDependency = proof.get('dependencies').find((d) -> d.get('_id') == dependency.get('_id'))?
+        
+        if dependency? and not isSameFact and not isAlreadyDependency
+            proof.get('dependencies').add dependency
+            @saveFact fact
+
+    deleteDependency: (dependency, proof, fact) =>
+        proof.get('dependencies').remove dependency
         @saveFact fact
 
 StudyAid.App.run()

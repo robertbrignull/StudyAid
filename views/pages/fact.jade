@@ -92,7 +92,7 @@ div(data-foreach-proof="currentFact.proofs")
                         data-bind-href="'#addDependencyModal' | append proof._id",
                         class="btn btn-success pull-right",
                         data-event-click="resetDependencyResponse") Add dependency
-                    mixin formModal("'addDependencyModal' | append proof._id", 'dependencyResponse', 'dependency', 'saveDependency | withArguments dependencyResponse, proof, currentFact', 'Add a new dependency...', 'Dismiss', 'Add')
+                    mixin formModal("'addDependencyModal' | append proof._id", 'dependencyResponse', 'dependency', 'createDependency | withArguments dependencyResponse, proof, currentFact', 'Add a new dependency...', 'Dismiss', 'Add')
 
                     div(data-foreach-dependency="proof.dependencies")
                         a(data-toggle="modal",
