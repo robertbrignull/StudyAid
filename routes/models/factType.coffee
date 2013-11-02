@@ -33,7 +33,10 @@ exports.mergeFactWithType = (facts) -> (done) ->
 			merge facts, types, done
 		else
 			merge [facts], types, (err, facts) ->
-				done err, facts[0]
+				if err?
+					done err
+				else
+					done err, facts[0]
 
 exports.findFactType = (name, done) ->
 	factTypeCollection.find({name: name}).toArray (err, types) ->

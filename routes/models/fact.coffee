@@ -71,7 +71,8 @@ exports.methods.push
                 res.send 200, ''
                 return
 
-            tasks = [mergeFactWithType fact, latex.render fact]
+            tasks = []
+            tasks.push mergeFactWithType fact
             if fact.proofs?
                 for proof in fact.proofs
                     tasks.push getDependencies proof
@@ -104,7 +105,6 @@ exports.methods.push
             tasks = []
             for fact in facts
                 tasks.push mergeFactWithType fact
-                tasks.push latex.render fact
                 if fact.proofs?
                     for proof in fact.proofs
                         tasks.push getDependencies proof

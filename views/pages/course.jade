@@ -37,6 +37,7 @@ div(data-foreach-fact="factList")
             data-bind-id="'factContent' | append fact._id")
             div(class="SA-panel-content")
                 img(data-bind-id="'fact' | append fact._id | append 'Img'",
+                    data-bind-src="'#{basepath}/image/latex/' | append fact._id | append '.png'",
                     style="max-width: 100%; height: auto; margin-top: 10px")
 
 hr

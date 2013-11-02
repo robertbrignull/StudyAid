@@ -130,9 +130,9 @@ class StudyAid.App.StudyAidController extends Batman.Controller
                 updateSrc = (obj, name) ->
                     $('#' + name).attr 'src', Batman.config.pathPrefix + '/image/latex/' + obj.get('_id') + '.png'
 
-                updateSrc @get('currentFact'), 'factImg'
+                updateSrc fact, 'factImg'
 
-                @get('currentFact.proofs').forEach (proof) ->
+                fact.get('proofs').forEach (proof) ->
                     updateSrc proof, 'proof' + proof.get('_id') + 'Img'
 
                 # reload as the rendered field might have changed
