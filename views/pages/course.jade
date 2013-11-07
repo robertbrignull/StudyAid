@@ -8,17 +8,19 @@ ul(class="breadcrumb")
         data-bind="currentCourse.name")
 
 div
-    a(data-toggle="modal",
+    i(data-toggle="modal",
         href="#deleteCourseModal",
-        class="btn btn-danger pull-right",
-        style="margin-left: 10px") Delete
+        class="icon-trash icon-2x pull-right",
+        style="margin-left: 10px; margin-top: 10px",
+        title="Delete")
     mixin deleteModal("'deleteCourseModal'", 'deleteCourse | withArguments currentCourse', 'Delete course...', 'Are you sure you want to permanently delete this course and all related facts and proofs?')
 
-    a(data-toggle="modal",
+    i(data-toggle="modal",
         href="#editCourseModal",
-        class="btn btn-success pull-right",
-        style="margin-left: 10px",
-        data-event-click="resetCourseResponse | withArguments currentCourse") Edit
+        class="icon-edit icon-2x pull-right",
+        style="margin-left: 10px; margin-top: 10px",
+        data-event-click="resetCourseResponse | withArguments currentCourse",
+        title="Edit")
     mixin formModal("'editCourseModal'", 'courseResponse', 'course', 'saveCourse | withArguments courseResponse', 'Edit course details...', 'Dismiss', 'Save')
 
     h1(data-bind="currentCourse.name")
@@ -40,11 +42,10 @@ div(data-foreach-fact="factList")
                     data-bind-src="'#{basepath}/image/latex/' | append fact._id | append '.png'",
                     style="max-width: 100%; height: auto; margin-top: 10px")
 
-hr
-
 div(style="text-align: center")
-    a(data-toggle="modal",
+    i(data-toggle="modal",
         href="#addFactModal",
-        class="btn btn-success",
-        data-event-click="resetFactResponse") Add fact
+        class="icon-plus icon-2x",
+        data-event-click="resetFactResponse",
+        title="Add fact")
 mixin formModal("'addFactModal'", 'factResponse', 'fact', 'saveFact | withArguments factResponse', 'Add a new fact...', 'Dismiss', 'Add')

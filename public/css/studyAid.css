@@ -63,3 +63,10 @@ hr {
 .SA-control {
     width: 70%;
 }
+
+
+
+.SA-icon-link, .SA-icon-link:hover {
+    color: inherit;
+    text-decoration: inherit;
+}

@@ -15,11 +15,10 @@ div(data-foreach-course="courseList")
         div(class="collapse", data-bind-id="'content' | append course._id")
             div(class="SA-panel-content")
 
-hr
-
 div(style="text-align: center")
-    a(data-toggle="modal",
+    i(data-toggle="modal",
         href="#addCourseModal",
-        class="btn btn-success",
-        data-event-click="resetCourseResponse") Add course
+        class="icon-plus icon-2x",
+        data-event-click="resetCourseResponse",
+        title="Add course")
 mixin formModal("'addCourseModal'", 'courseResponse', 'course', 'saveCourse | withArguments courseResponse', 'Add a new course...', 'Dismiss', 'Add')
