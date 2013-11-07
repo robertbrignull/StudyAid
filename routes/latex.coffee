@@ -34,7 +34,7 @@ renderImage = (obj, text) -> (callback) ->
     imageRoot = renderPath + '/' + obj._id
 
     text =
-        '\\documentclass[a4paper]{minimal}' +
+        '\\documentclass[a4paper]{article}' +
         '\\usepackage{geometry}' +
         '\\usepackage[active,tightpage]{preview}' +
         '\\begin{document}' +
