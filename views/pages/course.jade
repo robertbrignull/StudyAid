@@ -8,20 +8,28 @@ ul(class="breadcrumb")
         data-bind="currentCourse.name")
 
 div
-    i(data-toggle="modal",
+    a(data-toggle="modal",
         href="#deleteCourseModal",
-        class="icon-trash icon-2x pull-right",
+        class="SA-icon-link icon-trash icon-2x pull-right",
         style="margin-left: 10px; margin-top: 10px",
         title="Delete")
     mixin deleteModal("'deleteCourseModal'", 'deleteCourse | withArguments currentCourse', 'Delete course...', 'Are you sure you want to permanently delete this course and all related facts and proofs?')
 
-    i(data-toggle="modal",
+    a(data-toggle="modal",
         href="#editCourseModal",
-        class="icon-edit icon-2x pull-right",
+        class="SA-icon-link icon-edit icon-2x pull-right",
         style="margin-left: 10px; margin-top: 10px",
         data-event-click="resetCourseResponse | withArguments currentCourse",
         title="Edit")
     mixin formModal("'editCourseModal'", 'courseResponse', 'course', 'saveCourse | withArguments courseResponse', 'Edit course details...', 'Dismiss', 'Save')
+
+    a(data-toggle="modal",
+        href="#addFactModal",
+        class="SA-icon-link icon-plus icon-2x pull-right",
+        style="margin-left: 10px; margin-top: 10px",
+        data-event-click="resetFactResponse",
+        title="Add fact")
+    mixin formModal("'addFactModal'", 'factResponse', 'fact', 'saveFact | withArguments factResponse', 'Add a new fact...', 'Dismiss', 'Add')
 
     h1(data-bind="currentCourse.name")
 
@@ -41,11 +49,3 @@ div(data-foreach-fact="factList")
                 img(data-bind-id="'fact' | append fact._id | append 'Img'",
                     data-bind-src="'#{basepath}/image/latex/' | append fact._id | append '.png'",
                     style="max-width: 100%; height: auto; margin-top: 10px")
-
-div(style="text-align: center")
-    i(data-toggle="modal",
-        href="#addFactModal",
-        class="icon-plus icon-2x",
-        data-event-click="resetFactResponse",
-        title="Add fact")
-mixin formModal("'addFactModal'", 'factResponse', 'fact', 'saveFact | withArguments factResponse', 'Add a new fact...', 'Dismiss', 'Add')

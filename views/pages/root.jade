@@ -1,6 +1,15 @@
 include ../mixins/formModal
 
-h1 Courses
+div
+    a(data-toggle="modal",
+        href="#addCourseModal",
+        class="SA-icon-link icon-plus icon-2x pull-right",
+        style="margin-left: 10px; margin-top: 10px",
+        data-event-click="resetCourseResponse",
+        title="Add course")
+    mixin formModal("'addCourseModal'", 'courseResponse', 'course', 'saveCourse | withArguments courseResponse', 'Add a new course...', 'Dismiss', 'Add')
+
+    h1 Courses
 
 hr
 
@@ -13,12 +22,3 @@ div(data-foreach-course="courseList")
             i(class="icon-arrow-right icon-large pull-right",
                 data-route="routes.course[course]")
         div(class="collapse", data-bind-id="'content' | append course._id")
-            div(class="SA-panel-content")
-
-div(style="text-align: center")
-    i(data-toggle="modal",
-        href="#addCourseModal",
-        class="icon-plus icon-2x",
-        data-event-click="resetCourseResponse",
-        title="Add course")
-mixin formModal("'addCourseModal'", 'courseResponse', 'course', 'saveCourse | withArguments courseResponse', 'Add a new course...', 'Dismiss', 'Add')

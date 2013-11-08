@@ -11,20 +11,28 @@ ul(class="breadcrumb")
         data-bind="currentFact.name")
 
 div
-    i(data-toggle="modal",
+    a(data-toggle="modal",
         href="#deleteFactModal",
-        class="icon-trash icon-2x pull-right",
+        class="SA-icon-link icon-trash icon-2x pull-right",
         style="margin-left: 10px; margin-top: 10px",
         title="Delete")
     mixin deleteModal("'deleteFactModal'", 'deleteFact | withArguments currentFact', 'Delete fact...', 'Are you sure you want to permanently delete this fact and all related proofs?')
 
-    i(data-toggle="modal",
+    a(data-toggle="modal",
         href="#editFactModal",
-        class="icon-edit icon-2x pull-right",
+        class="SA-icon-link icon-edit icon-2x pull-right",
         style="margin-left: 10px; margin-top: 10px",
         data-event-click="resetFactResponse | withArguments currentFact",
         title="Edit")
     mixin formModal("'editFactModal'", 'factResponse', 'fact', 'saveFact | withArguments factResponse', 'Edit fact details...', 'Dismiss', 'Save')
+
+    a(data-toggle="modal",
+        href="#addProofModal",
+        class="SA-icon-link icon-plus icon-2x pull-right",
+        style="margin-left: 10px; margin-top: 10px",
+        data-event-click="resetProofResponse",
+        title="Add proof")
+    mixin formModal("'addProofModal'", 'proofResponse', 'proof', 'createProof | withArguments proofResponse, currentFact', 'Add a new proof...', 'Dismiss', 'Add')
 
     h1(data-bind="currentFact.name")
 
@@ -73,7 +81,15 @@ div(data-showif="currentFact.canHaveProof")
                             data-event-click="resetProofResponse | withArguments proof",
                             title="Edit")
                         mixin formModal("'editProofModal' | append proof._id", 'proofResponse', 'proof', 'saveFact | withArguments currentFact', 'Edit proof details...', 'Dismiss', 'Save')
-
+                        
+                        a(data-toggle="modal",
+                            data-bind-href="'#addDependencyModal' | append proof._id",
+                            class="SA-icon-link icon-plus icon-2x pull-right",
+                            style="margin-left: 10px",
+                            data-event-click="resetDependencyResponse",
+                            title="Add dependency")
+                        mixin formModal("'addDependencyModal' | append proof._id", 'dependencyResponse', 'dependency', 'createDependency | withArguments dependencyResponse, proof, currentFact', 'Add a new dependency...', 'Dismiss', 'Add')
+                        
                         ul(class="nav nav-tabs")
                             li(class="active")
                                 a(data-bind-href="'#proofContent' | append proof._id | append 'Rendered'",
@@ -93,15 +109,8 @@ div(data-showif="currentFact.canHaveProof")
                                     data-bind="proof.text",
                                     data-event-blur="saveFact | withArguments currentFact")
 
-                    hr
-                    div(style="position: relative; min-height: 33px")
-                        a(data-toggle="modal",
-                            data-bind-href="'#addDependencyModal' | append proof._id",
-                            class="SA-icon-link icon-plus icon-2x pull-right",
-                            data-event-click="resetDependencyResponse",
-                            title="Add dependency")
-                        mixin formModal("'addDependencyModal' | append proof._id", 'dependencyResponse', 'dependency', 'createDependency | withArguments dependencyResponse, proof, currentFact', 'Add a new dependency...', 'Dismiss', 'Add')
-
+                    div(data-hideif="proof.dependencies.length | equals 0")
+                        hr
                         div(data-foreach-dependency="proof.dependencies")
                             a(data-toggle="modal",
                                 data-bind-href="'#deleteDependencyModal' | append dependency._id",
@@ -112,11 +121,3 @@ div(data-showif="currentFact.canHaveProof")
                             
                             a(data-route="routes.course[currentCourse].fact[dependency]",
                                 data-bind="dependency.name")
-
-    div(style="text-align: center")
-        i(data-toggle="modal",
-            href="#addProofModal",
-            class="icon-plus icon-2x",
-            data-event-click="resetProofResponse",
-            title="Add proof")
-    mixin formModal("'addProofModal'", 'proofResponse', 'proof', 'createProof | withArguments proofResponse, currentFact', 'Add a new proof...', 'Dismiss', 'Add')
