@@ -20,7 +20,7 @@ class StudyAid.App.CourseModel extends StudyAid.BaseModel
 class StudyAid.App.FactModel extends StudyAid.BaseModel
     @storageKey: 'factmodel'
 
-    @encode '_id', 'name', 'type', 'color', 'canHaveProof', 'course', 'statement', 'rendered'
+    @encode '_id', 'name', 'type', 'color', 'canHaveProof', 'course', 'statement'
 
     @encode 'proofs',
         encode: (oldProofs) ->
@@ -44,7 +44,7 @@ class StudyAid.App.FactModel extends StudyAid.BaseModel
 class StudyAid.App.ProofModel extends StudyAid.BaseModel
     @storageKey: 'proofmodel'
 
-    @encode '_id', 'name', 'text', 'rendered'
+    @encode '_id', 'name', 'text'
 
     @encode 'dependencies',
         encode: (oldDependencies) ->

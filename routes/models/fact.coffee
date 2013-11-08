@@ -20,7 +20,6 @@ createFact = (args, done) ->
     fact.name = args.name
     fact.course = ObjectID(args.course)
     fact.statement = args.statement
-    fact.rendered = args.rendered
 
     fact.proofs = JSON.parse (args.proofs ? '[]')
     for proof in fact.proofs

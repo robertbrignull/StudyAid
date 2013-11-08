@@ -27,10 +27,6 @@ renderImage = (obj, text) -> (callback) ->
     shasum.update text
     hash = shasum.digest 'hex'
 
-    if hash == obj.rendered and imageExists obj._id
-        callback()
-        return
-
     imageRoot = renderPath + '/' + obj._id
 
     text =
@@ -74,8 +70,6 @@ renderImage = (obj, text) -> (callback) ->
                 filesystem.unlinkSync imageRoot + '.aux'
                 filesystem.unlinkSync imageRoot + '.log'
 
-                obj.rendered = hash
-
                 callback()
 
 # Returns a function that deletes the currently
@@ -95,8 +89,7 @@ exports.render = (fact) -> (done) ->
             tasks.push(renderImage proof, proof.text)
 
     async.parallel tasks, (err) ->
-        factCollection.updateById fact._id, {$set: {rendered: fact.rendered}}, (err) ->
-            done err
+        done err
 
 # Removes the images for a fact and all of its proofs
 exports.remove = (fact) -> (done) ->
