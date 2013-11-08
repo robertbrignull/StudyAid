@@ -43,6 +43,7 @@ class StudyAid.App.StudyAidController extends Batman.Controller
                     console.log err
                 else
                     Batman.Set.apply @get('factList'), facts
+                    @set 'factList', @get('factList').sortedBy('index')
 
                 view = @render
                     source: 'pages/course'
@@ -144,7 +145,32 @@ class StudyAid.App.StudyAidController extends Batman.Controller
 
             Batman.redirect '/course/' + fact.get('course')
 
+    moveFact: (fact, dir) =>
+        if @get('inMoveMode')
+            @set 'inMoveMode', false
 
+            if @get('factToMove')? and (dir == 'above' or dir == 'below')
+                index = parseInt fact.get('index')
+                if dir == 'below'
+                    index += 1
+
+                moveCommand = new StudyAid.App.MoveCommandModel
+                    fact: @get('factToMove._id')
+                    index: index
+
+                moveCommand.save (err) =>
+                    @get('factList').forEach (f) =>
+                        i = parseInt(f.get('index'))
+                        if i >= index
+                            f.set 'index', i + 1
+                    @set 'factToMove.index', index
+                    @set 'factToMove', undefined
+
+                    @set 'factList', @get('factList').sortedBy('index')
+
+        else
+            @set 'factToMove', fact
+            @set 'inMoveMode', true
 
     resetProofResponse: (proof) =>
         if proof.isStudyAidModel

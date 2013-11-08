@@ -22,7 +22,7 @@ exports.methods.push
                     $regex: '.*' + req.query.namePartial + '.*'
                     $options: 'i'
 
-            factCollection.find(query, {_id: 1, name: 1}).toArray (err, facts) ->
+            factCollection.find(query, {_id: 1, name: 1, index: 1}).toArray (err, facts) ->
                 if err?
                     console.log 'Error getting minimal facts for dependencies'
                     console.log err
@@ -32,7 +32,7 @@ exports.methods.push
                 res.send 200, facts
 
         else
-            factCollection.find({course: ObjectID(req.query.course)}, {_id: 1, name: 1, type: 1, course: 1}).toArray (err, facts) ->
+            factCollection.find({course: ObjectID(req.query.course)}, {_id: 1, name: 1, type: 1, course: 1, index: 1}).toArray (err, facts) ->
                 if err?
                     console.log 'Error getting minimal facts'
                     console.log err

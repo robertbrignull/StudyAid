@@ -41,8 +41,28 @@ div(data-foreach-fact="factList")
             data-toggle="collapse",
             data-bind-data-target="'#factContent' | append fact._id")
             span(data-bind="fact.name")
-            i(class="icon-arrow-right icon-large pull-right",
+
+            a(class="SA-icon-link icon-arrow-right icon-large pull-right",
+                style="margin-left: 20px",
+                onclick="event.cancelBubble = true",
                 data-route="routes.course[currentCourse].fact[fact]")
+
+            a(class="SA-icon-link icon-move pull-right",
+                style="margin-left: 20px; margin-top: 4px",
+                onclick="event.cancelBubble = true",
+                data-event-click="moveFact | withArguments fact")
+
+            a(data-showif="inMoveMode",
+                class="SA-icon-link icon-arrow-up icon-large pull-right",
+                style="margin-left: 10px",
+                onclick="event.cancelBubble = true",
+                data-event-click="moveFact | withArguments fact, 'above'")
+            a(data-showif="inMoveMode",
+                class="SA-icon-link icon-arrow-down icon-large pull-right",
+                style="margin-left: 10px",
+                onclick="event.cancelBubble = true",
+                data-event-click="moveFact | withArguments fact, 'below'")
+
         div(class="collapse",
             data-bind-id="'factContent' | append fact._id")
             div(class="SA-panel-content")

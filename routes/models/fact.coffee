@@ -20,6 +20,7 @@ createFact = (args, done) ->
     fact.name = args.name
     fact.course = ObjectID(args.course)
     fact.statement = args.statement
+    fact.index = args.index
 
     fact.proofs = JSON.parse (args.proofs ? '[]')
     for proof in fact.proofs
@@ -164,25 +165,35 @@ exports.methods.push
                 res.send err, {}
                 return
 
-            # push that to the database
-            factCollection.insert fact, {}, (err, result) ->
+            # work out the highest index so far
+            factCollection.find({}, {index: 1}).sort({index: -1}).limit(-1).toArray (err, highest) ->
                 if err?
-                    console.log 'Error inserting fact'
+                    console.log 'Error finding largest index'
                     console.log err
                     res.send 500, {}
                     return
 
-                (latex.render result[0]) (err) ->
+                fact.index = highest[0].index + 1
+
+                # push that to the database
+                factCollection.insert fact, {}, (err, result) ->
                     if err?
-                        console.log 'Error rendering'
-                        console.log  err
+                        console.log 'Error inserting fact'
+                        console.log err
                         res.send 500, {}
                         return
-                
-                    res.send 200,
-                        _id: result[0]._id
-                        color: type.color
-                        canHaveProof: type.canHaveProof
+
+                    (latex.render result[0]) (err) ->
+                        if err?
+                            console.log 'Error rendering'
+                            console.log  err
+                            res.send 500, {}
+                            return
+                    
+                        res.send 200,
+                            _id: result[0]._id
+                            color: type.color
+                            canHaveProof: type.canHaveProof
 
 exports.methods.push
     name: 'factmodel'
