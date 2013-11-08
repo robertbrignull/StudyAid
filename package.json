@@ -17,6 +17,8 @@
     "prestart": "coffee --compile . .",
     "start": "node server.js",
     "data-import": "data/import.sh",
-    "data-export": "data/export.sh"
+    "data-export": "data/export.sh",
+    "backup": "backup/backup.sh",
+    "restore": "backup/restore.sh"
   }
 }

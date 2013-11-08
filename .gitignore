@@ -2,3 +2,7 @@
 !/public/js/lib
 /node_modules
 /public/image/latex
+
+/backup/coursemodels.json
+/backup/factmodels.json
+/backup/facttypemodels.json
