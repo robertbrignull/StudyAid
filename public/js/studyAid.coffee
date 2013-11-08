@@ -28,6 +28,7 @@ class StudyAid.App.StudyAidController extends Batman.Controller
         @render false
 
         @set 'factList', new Batman.Set
+        @set 'inMoveMode', false
 
         StudyAid.App.CourseModel.find args.courseId, (err, course) =>
             if err?

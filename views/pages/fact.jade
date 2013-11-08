@@ -26,7 +26,8 @@ div
         title="Edit")
     mixin formModal("'editFactModal'", 'factResponse', 'fact', 'saveFact | withArguments factResponse', 'Edit fact details...', 'Dismiss', 'Save')
 
-    a(data-toggle="modal",
+    a(data-showif="currentFact.canHaveProof",
+        data-toggle="modal",
         href="#addProofModal",
         class="SA-icon-link icon-plus icon-2x pull-right",
         style="margin-left: 10px; margin-top: 10px",
@@ -54,7 +55,7 @@ div(id="factTabContent", class="tab-content")
             data-event-blur="saveFact | withArguments currentFact")
 
 div(data-showif="currentFact.canHaveProof")
-    hr
+    hr(data-hideif="currentFact.proofs.length | equals 0")
 
     div(data-foreach-proof="currentFact.proofs")
         div(class="SA-panel")
