@@ -33,8 +33,10 @@ renderImage = (obj, text) -> (callback) ->
         '\\documentclass[a4paper]{article}' +
         '\\usepackage{geometry}' +
         '\\usepackage[active,tightpage]{preview}' +
-        '\\usepackage{amsfonts}' +
         '\\usepackage{dsfont}' +
+        '\\usepackage{amsfonts}' +
+        '\\usepackage{amsmath}' +
+        '\\usepackage{amssymb}' +
         '\\begin{document}' +
         '\\begin{preview}' +
         text +
