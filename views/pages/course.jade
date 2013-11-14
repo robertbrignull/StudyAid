@@ -36,10 +36,12 @@ div
 hr
 
 div(data-foreach-fact="factList")
-    div(class="SA-panel")
+    div(class="SA-panel",
+        data-bind-style="'border-color: #' | append fact.color")
         div(class="SA-panel-heading",
             data-toggle="collapse",
-            data-bind-data-target="'#factContent' | append fact._id")
+            data-bind-data-target="'#factContent' | append fact._id",
+            data-bind-style="'background-color: #' | append fact.color")
             span(data-bind="fact.name")
 
             a(class="SA-icon-link icon-arrow-right icon-large pull-right",
