@@ -129,13 +129,17 @@ class StudyAid.App.StudyAidController extends Batman.Controller
                 Batman.redirect '/course/' + fact.get('course') + '/fact/' + fact.get('_id')
 
             else
-                updateSrc = (obj, name) ->
-                    $('#' + name).attr 'src', Batman.config.pathPrefix + '/image/latex/' + obj.get('_id') + '.png'
+                if fact.get('renderError')
+                    $('#renderErrorModal').modal 'show'
 
-                updateSrc fact, 'factImg'
+                else
+                    updateSrc = (obj, name) ->
+                        $('#' + name).attr 'src', Batman.config.pathPrefix + '/image/latex/' + obj.get('_id') + '.png'
 
-                fact.get('proofs').forEach (proof) ->
-                    updateSrc proof, 'proof' + proof.get('_id') + 'Img'
+                    updateSrc fact, 'factImg'
+
+                    fact.get('proofs').forEach (proof) ->
+                        updateSrc proof, 'proof' + proof.get('_id') + 'Img'
 
     deleteFact: (fact) =>
         fact.destroy (err) =>

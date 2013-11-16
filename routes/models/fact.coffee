@@ -137,21 +137,16 @@ exports.methods.push
                     return
 
                 if n != 1
-                    console.log 'Tried to update nonexistance fact'
+                    console.log 'Tried to update non-existant fact'
                     res.send 400, {}
                     return
 
                 fact._id = req.params._id
 
                 (latex.render fact) (err) ->
-                    if err?
-                        console.log 'Error rendering'
-                        console.log  err
-                        res.send 500, {}
-                        return
-                
                     res.send 200,
                         _id: req.params._id
+                        renderError: err?
                         color: type.color
                         canHaveProof: type.canHaveProof
 
@@ -184,14 +179,9 @@ exports.methods.push
                         return
 
                     (latex.render result[0]) (err) ->
-                        if err?
-                            console.log 'Error rendering'
-                            console.log  err
-                            res.send 500, {}
-                            return
-                    
                         res.send 200,
                             _id: result[0]._id
+                            renderError: err?
                             color: type.color
                             canHaveProof: type.canHaveProof
 

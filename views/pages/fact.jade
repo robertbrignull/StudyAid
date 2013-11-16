@@ -122,3 +122,21 @@ div(data-showif="currentFact.canHaveProof")
                             
                             a(data-route="routes.course[currentCourse].fact[dependency]",
                                 data-bind="dependency.name")
+
+div(class="modal fade",
+    id="renderErrorModal")
+    div(class="modal-dialog")
+        div(class="modal-content")
+            div(class="modal-header")
+                button(type="button",
+                    class="close",
+                    data-dismiss="modal")
+                h4(class="modal-title",
+                    style="text-align: center") Latex rendering error!
+            div(class="modal-body")
+                p An error occured while rendering the latex for this fact, please correct any errors and try again.
+            div(class="modal-footer")
+                button(type="button",
+                    class="btn btn-default",
+                    id="renderErrorModalDismiss",
+                    data-dismiss="modal") Dismiss
