@@ -1,0 +1,45 @@
+div.main {
+	background-color: #FFFFFF;
+}
+
+div.margins {
+	width: 80%;
+	margin: auto;
+	padding: 40px;
+	background-color: #D0D0D0;
+	border: 2px solid #606060;
+	border-radius: 40px;
+}
+
+div.roundedRect {
+	padding: 20px;
+	background-color: #FFFFFF;
+	border: 2px solid #606060;
+	border-radius: 20px;
+}
+
+table.paddedTable {
+	border-collapse: separate;
+	border-spacing: 20px;
+}
+
+td.paddedCell {
+	background-color: #FFFFCC;
+	margin-bottom: 20px;
+	padding: 20px;
+	border: 2px solid #606060;
+	border-radius: 20px;
+}
+
+button {
+	font-size: small;
+	background-color: #8080D0;
+	border: 2px solid #606060;
+	border-radius: 5px;
+	padding: 5px;
+	margin-left: 10px;
+}
+
+button:hover {
+	background-color: #C06060;
+}

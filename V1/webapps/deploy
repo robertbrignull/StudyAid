@@ -1,0 +1,6 @@
+su
+
+rm -r /usr/share/tomcat7/webapps/StudyAid
+cp -r ../webapps /usr/share/tomcat7/webapps/StudyAid 
+
+exit
