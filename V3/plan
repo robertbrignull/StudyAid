@@ -30,9 +30,10 @@ Iteration 3
 - Delete a section
 - Move a fact between sections
 
-Iteration 4
+Extras
 - Interface improvements, multiple window / monitor support?
 - Continuous rendering of LaTeX
+- Intelligent caching, only renders when text has changed
 - Quick fact picker / sections outline
 - Generated list of definitions referenced
 - Test generation, it gives you a fact and asks for a definition and/or proof
