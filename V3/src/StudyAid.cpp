@@ -12,7 +12,7 @@
 StudyAid::StudyAid(QWidget *parent)
     : QWidget(parent)
 {
-    if (!setupDatabase()) {
+    if (!connectToDatabase()) {
         QCoreApplication::exit();
         exit(1);
     }

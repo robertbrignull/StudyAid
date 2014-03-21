@@ -1,7 +1,12 @@
 #pragma once
 
-/* Checks that MySQL is installed, then checks if the StudyAid database exists,
- * if not then initializes database.
- * Returns true if the database is setup correctly, else returns false.
+#include <mysql++.h>
+
+/* Checks that MySQL is installed and the StudyAid database exists.
+ * Returns true if connected successfully, else returns false.
  */
-bool setupDatabase();
+bool connectToDatabase();
+
+/* Returns a connection to the database.
+ */
+mysqlpp::Connection getConn();

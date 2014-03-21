@@ -42,29 +42,33 @@ Extras
 
 ======= Database layout =======
 
-- Course
+- course
   - name (text)
   - ordering (int)
   - root fact (ref to fact)
 
-- Fact
-  - type (enum)
+- fact
+  - type (enum, ref to FactType)
   - parent fact (ref to fact)
   - name (text)
   - statement (text)
   - ordering (int)
 
-- Proof
+- fact_type
+  - fact_type (text)
+  - fact_type_can_have_proof (boolean)
+
+- proof
   - fact (ref to fact)
   - name (text)
   - body (text)
   - ordering (int)
 
-- FactDependency
+- fact_dependency
   - dependency (ref to fact)
   - depender (ref to fact)
 
-- ProofDependency
+- proof_dependency
   - dependency (ref to fact)
   - depender (ref to proof)
 
