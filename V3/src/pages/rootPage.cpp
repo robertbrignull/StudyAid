@@ -7,6 +7,8 @@
 #include <QPushButton>
 
 #include "widgets/expandingWidget.h"
+#include "widgets/courseTitleWidget.h"
+#include "widgets/courseStatsWidget.h"
 
 #include "pages/rootPage.h"
 
@@ -45,9 +47,16 @@ RootPage::RootPage(QWidget *parent)
 
 
 
-    layout->addWidget(new ExpandingWidget(new QLabel("Head"), new QLabel("Body")));
-    layout->addWidget(new ExpandingWidget(new QLabel("Head"), new QLabel("Body")));
-    layout->addWidget(new ExpandingWidget(new QLabel("Head"), new QLabel("Body")));
+    QHBoxLayout *factsHBoxLayout = new QHBoxLayout();
+    QVBoxLayout *factsVBoxLayout = new QVBoxLayout();
+    
+    factsVBoxLayout->addWidget(new ExpandingWidget(new CourseTitleWidget(), new CourseStatsWidget()));
+    factsVBoxLayout->addWidget(new ExpandingWidget(new CourseTitleWidget(), new CourseStatsWidget()));
+
+    factsHBoxLayout->addStretch(1);
+    factsHBoxLayout->addLayout(factsVBoxLayout);
+    factsHBoxLayout->addStretch(1);
+    layout->addLayout(factsHBoxLayout);
 
 
 

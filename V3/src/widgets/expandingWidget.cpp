@@ -8,6 +8,10 @@
 ExpandingWidget::ExpandingWidget(QWidget *head, QWidget *body, QWidget *parent)
     : QWidget(parent)
 {
+    this->layout = nullptr;
+    this->head = this->body = nullptr;
+    this->expanded = false;
+
     createLayout(head, body, false);
 }
 
@@ -35,6 +39,7 @@ void ExpandingWidget::createLayout(QWidget *head, QWidget *body, bool expanded)
 {
     if (layout != nullptr) {
         // Remove all items but don't delete them
+        std::cout << "About to delete items from layout" << std::endl;
         while (layout->takeAt(0)) { }
 
         delete layout;
