@@ -5,9 +5,9 @@ Iteration 1
 - Edit a course's name
 - Delete a course
 - Add a new fact
-- Edit a course's name, type
-- Edit a course's statement
-- Delete a course
+- Edit a fact's name, type
+- Edit a fact's statement
+- Delete a fact
 - Add a new proof
 - Edit a proof's name
 - Edit a proof's body
