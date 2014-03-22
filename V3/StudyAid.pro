@@ -7,8 +7,8 @@ QMAKE_CXXFLAGS += -std=c++11
 
 LIBS += -lmysqlpp -lmysqlclient
 
-HEADERS += src/*.h src/pages/*.h src/database/*.h
-SOURCES += src/*.cpp src/pages/*.cpp src/database/*.cpp
+HEADERS += src/*.h src/pages/*.h src/database/*.h src/widgets/*.h
+SOURCES += src/*.cpp src/pages/*.cpp src/database/*.cpp src/widgets/*.cpp
 
 DESTDIR = .
 OBJECTS_DIR = obj
