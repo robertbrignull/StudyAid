@@ -6,17 +6,17 @@
 
 #include "widgets/layout/expandingWidget.h"
 
-ExpandingWidget::ExpandingWidget(QWidget *head, QWidget *body, QWidget *parent)
+ExpandingWidget::ExpandingWidget(QColor headColor, QWidget *head, QWidget *body, QWidget *parent)
     : QWidget(parent)
 {
     this->layout = nullptr;
     this->head = this->body = nullptr;
     this->expanded = false;
 
-    headColor = QColor(66, 139, 202);
+    this->headColor = headColor;
     bodyColor = Qt::white;
     borderColor = Qt::black;
-    radius = 16;
+    radius = 12;
 
     createLayout(head, body, false);
 }

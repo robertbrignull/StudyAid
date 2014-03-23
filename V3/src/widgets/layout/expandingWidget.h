@@ -10,7 +10,7 @@ class ExpandingWidget : public QWidget
     Q_OBJECT
 
 public:
-    ExpandingWidget(QWidget *head, QWidget *body, QWidget *parent = 0);
+    ExpandingWidget(QColor headColor, QWidget *head, QWidget *body, QWidget *parent = 0);
 
     QWidget *getHead();
     QWidget *getBody();

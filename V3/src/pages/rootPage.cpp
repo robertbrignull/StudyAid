@@ -12,6 +12,7 @@
 #include "widgets/courseStatsWidget.h"
 #include "widgets/layout/expandingWidget.h"
 #include "widgets/layout/resizableStackedWidget.h"
+#include "widgets/layout/horizontalSeperator.h"
 
 #include "pages/rootPage.h"
 
@@ -20,22 +21,33 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
 {
     this->pageStack = pageStack;
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
+
+
+    QHBoxLayout *outerLayout = new QHBoxLayout(this);
+
+    QWidget *innerWidget = new QWidget();
+    QVBoxLayout *innerLayout = new QVBoxLayout(innerWidget);
+
+    outerLayout->addStretch(1);
+    outerLayout->addWidget(innerWidget, 1);
+    outerLayout->addStretch(1);
 
 
 
     QLabel *titleLabel = new QLabel("Study Aid");
     QFont titleFont = titleLabel->font();
-    titleFont.setPointSize(72);
+    titleFont.setPointSize(64);
     titleFont.setBold(true);
-    titleFont.setUnderline(true);
+    titleFont.setFamily("Helvetica");
     titleLabel->setFont(titleFont);
+    titleLabel->setAlignment(Qt::AlignCenter);
+    innerLayout->addWidget(titleLabel);
 
-    QHBoxLayout *titleLayout = new QHBoxLayout();
-    titleLayout->addStretch(1);
-    titleLayout->addWidget(titleLabel);
-    titleLayout->addStretch(1);
-    layout->addLayout(titleLayout);
+
+
+    innerLayout->addSpacing(20);
+    innerLayout->addWidget(new HorizontalSeperator(QColor(66, 139, 202)));
+    innerLayout->addSpacing(20);
 
 
 
@@ -57,26 +69,16 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
     buttonLayout->addStretch(1);
     buttonLayout->addWidget(newCourseStack);
     buttonLayout->addStretch(1);
-    layout->addLayout(buttonLayout);
+    innerLayout->addLayout(buttonLayout);
 
 
 
-
-
-    QHBoxLayout *factsHBoxLayout = new QHBoxLayout();
-    QVBoxLayout *factsVBoxLayout = new QVBoxLayout();
-    
-    factsVBoxLayout->addWidget(new ExpandingWidget(new CourseTitleWidget(), new CourseStatsWidget()));
-    factsVBoxLayout->addWidget(new ExpandingWidget(new CourseTitleWidget(), new CourseStatsWidget()));
-
-    factsHBoxLayout->addStretch(1);
-    factsHBoxLayout->addLayout(factsVBoxLayout);
-    factsHBoxLayout->addStretch(1);
-    layout->addLayout(factsHBoxLayout);
+    innerLayout->addWidget(new ExpandingWidget(QColor(66, 139, 202), new CourseTitleWidget(), new CourseStatsWidget()));
+    innerLayout->addWidget(new ExpandingWidget(QColor(66, 139, 202), new CourseTitleWidget(), new CourseStatsWidget()));
 
 
 
-    layout->addStretch(1);
+    innerLayout->addStretch(1);
 
 
 

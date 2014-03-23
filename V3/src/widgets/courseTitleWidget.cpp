@@ -4,6 +4,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QFont>
+#include <QPalette>
 
 #include "widgets/courseTitleWidget.h"
 
@@ -19,11 +20,13 @@ CourseTitleWidget::CourseTitleWidget(QWidget *parent)
     font.setPointSize(24);
     label->setFont(font);
 
+    QPalette pal = label->palette();
+    pal.setColor(QPalette::WindowText, Qt::white);
+    pal.setColor(QPalette::Text, Qt::white);
+    label->setPalette(pal);
+
     layout->addWidget(label);
     layout->addStretch(1);
     layout->addWidget(new QPushButton("X"));
     layout->addWidget(new QPushButton("->"));
-
-    setMinimumWidth(600);
-    setMaximumWidth(1000);
 }

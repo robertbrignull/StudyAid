@@ -15,6 +15,4 @@ CourseStatsWidget::CourseStatsWidget(QWidget *parent)
     label->setWordWrap(true);
 
     layout->addWidget(label);
-
-    setMaximumWidth(1000);
 }
