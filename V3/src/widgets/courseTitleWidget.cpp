@@ -3,6 +3,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
+#include <QFont>
 
 #include "widgets/courseTitleWidget.h"
 
@@ -11,13 +12,18 @@ CourseTitleWidget::CourseTitleWidget(QWidget *parent)
 {
     QHBoxLayout *layout = new QHBoxLayout(this);
 
-    QLabel *label = new QLabel("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam egestas fringilla mattis. Suspendisse feugiat sit amet lectus ac ultricies. Integer feugiat enim sit amet nisi tincidunt, quis blandit purus adipiscing. Sed scelerisque viverra metus quis pharetra. In scelerisque scelerisque laoreet. Integer sed commodo dolor. Proin laoreet sit amet purus a pellentesque.");
+    QLabel *label = new QLabel("Linear Algebra");
     label->setWordWrap(true);
+
+    QFont font = label->font();
+    font.setPointSize(24);
+    label->setFont(font);
 
     layout->addWidget(label);
     layout->addStretch(1);
     layout->addWidget(new QPushButton("X"));
     layout->addWidget(new QPushButton("->"));
 
+    setMinimumWidth(600);
     setMaximumWidth(1000);
 }

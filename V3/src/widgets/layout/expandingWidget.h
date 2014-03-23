@@ -19,6 +19,7 @@ public:
     void setBody(QWidget *body);
 
     void mousePressEvent(QMouseEvent *event);
+    void paintEvent(QPaintEvent *);
 
 private:
     void createLayout(QWidget *head, QWidget *body, bool expanded);
@@ -29,4 +30,7 @@ private:
     QVBoxLayout *layout;
     QWidget *head, *body;
     bool expanded;
+
+    int radius;
+    QColor headColor, bodyColor, borderColor;
 };

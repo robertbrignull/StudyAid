@@ -2,6 +2,7 @@
 
 #include <QVBoxLayout>
 #include <QMouseEvent>
+#include <QPainter>
 
 #include "widgets/layout/expandingWidget.h"
 
@@ -11,6 +12,11 @@ ExpandingWidget::ExpandingWidget(QWidget *head, QWidget *body, QWidget *parent)
     this->layout = nullptr;
     this->head = this->body = nullptr;
     this->expanded = false;
+
+    headColor = QColor(66, 139, 202);
+    bodyColor = Qt::white;
+    borderColor = Qt::black;
+    radius = 16;
 
     createLayout(head, body, false);
 }
@@ -59,6 +65,7 @@ void ExpandingWidget::createLayout(QWidget *head, QWidget *body, bool expanded)
     this->expanded = expanded;
 
     layout = new QVBoxLayout(this);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     layout->addWidget(head);
 
@@ -84,4 +91,20 @@ void ExpandingWidget::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton) {
         setExpanded(!expanded);
     }
+}
+
+void ExpandingWidget::paintEvent(QPaintEvent *)
+{
+    QPainter painter(this);
+
+    QSize headSize = head->size();
+    QSize totalSize = size();
+
+    painter.setPen(QPen(QBrush(borderColor), 1));
+    painter.setBrush(QBrush(bodyColor));
+    painter.drawRoundedRect(1, headSize.height()-radius*2, totalSize.width()-2, totalSize.height()-headSize.height()+radius*2-2, radius, radius);
+
+    painter.setPen(QPen(QBrush(borderColor), 1));
+    painter.setBrush(QBrush(headColor));
+    painter.drawRoundedRect(1, 1, totalSize.width()-2, headSize.height()-2, radius, radius);
 }
