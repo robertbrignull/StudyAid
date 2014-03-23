@@ -2,10 +2,11 @@
 
 #include <QApplication>
 #include <QWidget>
-#include <QStackedLayout>
+#include <QHBoxLayout>
 
 #include "database/setup.h"
 #include "pages/rootPage.h"
+#include "widgets/layout/resizableStackedWidget.h"
 
 #include "StudyAid.h"
 
@@ -19,9 +20,12 @@ StudyAid::StudyAid(QWidget *parent)
 
 
 
-    QStackedLayout *layout = new QStackedLayout(this);
+    QHBoxLayout *layout = new QHBoxLayout(this);
 
-    layout->addWidget(new RootPage());
+    ResizableStackedWidget *stack = new ResizableStackedWidget();
+    layout->addWidget(stack);
+
+    stack->addWidget(new RootPage(stack));
 
     showMaximized();
 }

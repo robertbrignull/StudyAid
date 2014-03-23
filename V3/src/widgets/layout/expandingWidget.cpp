@@ -3,7 +3,7 @@
 #include <QVBoxLayout>
 #include <QMouseEvent>
 
-#include "widgets/expandingWidget.h"
+#include "widgets/layout/expandingWidget.h"
 
 ExpandingWidget::ExpandingWidget(QWidget *head, QWidget *body, QWidget *parent)
     : QWidget(parent)

@@ -3,14 +3,16 @@
 #include <QWidget>
 
 class QPushButton;
+class ResizableStackedWidget;
 
 class RootPage : public QWidget
 {
     Q_OBJECT
 
 public:
-    RootPage(QWidget *parent = 0);
+    RootPage(ResizableStackedWidget *pageStack, QWidget *parent = 0);
 
 private:
-    QPushButton *newCourseButton;
+    ResizableStackedWidget *newCourseStack;
+    ResizableStackedWidget *pageStack;
 };

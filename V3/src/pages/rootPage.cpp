@@ -5,16 +5,21 @@
 #include <QLabel>
 #include <QFont>
 #include <QPushButton>
+#include <QStackedWidget>
 
-#include "widgets/expandingWidget.h"
+#include "pages/courseAddPage.h"
 #include "widgets/courseTitleWidget.h"
 #include "widgets/courseStatsWidget.h"
+#include "widgets/layout/expandingWidget.h"
+#include "widgets/layout/resizableStackedWidget.h"
 
 #include "pages/rootPage.h"
 
-RootPage::RootPage(QWidget *parent)
+RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
     : QWidget(parent)
 {
+    this->pageStack = pageStack;
+
     QVBoxLayout *layout = new QVBoxLayout(this);
 
 
@@ -34,16 +39,27 @@ RootPage::RootPage(QWidget *parent)
 
 
 
-    newCourseButton = new QPushButton("Add a new course");
+    QPushButton *newCourseButton = new QPushButton("Add a new course");
     QFont buttonFont = newCourseButton->font();
     buttonFont.setPointSize(24);
     newCourseButton->setFont(buttonFont);
+    newCourseButton->setMaximumHeight(40);
+
+    newCourseStack = new ResizableStackedWidget();
+    connect(newCourseStack, SIGNAL(currentChanged(int)), newCourseStack, SLOT(onCurrentChanged(int)));
+
+    CourseAddPage *courseAddPage = new CourseAddPage();
+    
+    newCourseStack->addWidget(newCourseButton);
+    newCourseStack->addWidget(courseAddPage);
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     buttonLayout->addStretch(1);
-    buttonLayout->addWidget(newCourseButton);
+    buttonLayout->addWidget(newCourseStack);
     buttonLayout->addStretch(1);
     layout->addLayout(buttonLayout);
+
+
 
 
 
@@ -61,4 +77,18 @@ RootPage::RootPage(QWidget *parent)
 
 
     layout->addStretch(1);
+
+
+
+    connect(newCourseButton, &QPushButton::clicked, [=](){
+        newCourseStack->setCurrentIndex(1);
+    });
+
+    connect(courseAddPage, &CourseAddPage::courseAdded, [=](int id){
+        newCourseStack->setCurrentIndex(0);
+    });
+
+    connect(courseAddPage, &CourseAddPage::cancelled, [=](){
+        newCourseStack->setCurrentIndex(0);
+    });
 }
