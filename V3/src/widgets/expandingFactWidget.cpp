@@ -1,9 +1,11 @@
 #include <iostream>
+#include <algorithm>
 
 #include <QVBoxLayout>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QLabel>
+#include <QVariantAnimation>
 
 #include "widgets/imageButton.h"
 
@@ -24,6 +26,7 @@ ExpandingFactWidget::ExpandingFactWidget(int id, QString title, QWidget *parent)
     image = QPixmap("images/latex/test.png");
     scaledImage = image.scaledToWidth(size().width() - border*2, Qt::SmoothTransformation);
     expanded = false;
+    currentHeight = 0;
 
 
 
@@ -55,22 +58,26 @@ ExpandingFactWidget::ExpandingFactWidget(int id, QString title, QWidget *parent)
 
 
 
-    setFixedHeight(headWidget->sizeHint().height());
+    setFixedHeight(headWidget->sizeHint().height() + currentHeight);
 }
 
 void ExpandingFactWidget::setExpanded(bool expanded)
 {
-    if (expanded && !this->expanded) {
-        this->expanded = true;
+    if (expanded != this->expanded) {
+        this->expanded = expanded;
 
-        setFixedHeight(headWidget->sizeHint().height() + scaledImage.height() + border*2);
-        repaint();
-    }
-    else if (!expanded && this->expanded) {
-        this->expanded = false;
+        QVariantAnimation *animation = new QVariantAnimation(this);
+        animation->setStartValue(currentHeight);
+        animation->setEndValue((expanded) ? scaledImage.height() + border*2 : 0);
+        animation->setDuration(200);
 
-        setFixedHeight(headWidget->sizeHint().height());
-        repaint();
+        connect(animation, &QVariantAnimation::valueChanged, [=](QVariant value){
+            currentHeight = value.toInt();
+            setFixedHeight(headWidget->sizeHint().height() + currentHeight);
+            repaint();
+        });
+
+        animation->start();
     }
 }
 
@@ -102,5 +109,9 @@ void ExpandingFactWidget::paintEvent(QPaintEvent *)
         scaledImage = image.scaledToWidth(totalSize.width() - border*2, Qt::SmoothTransformation);
     }
 
-    painter.drawPixmap(QRect(border, headSize.height() + border, totalSize.width() - border*2, totalSize.height() - headSize.height() - border*2), scaledImage, scaledImage.rect());
+    if (currentHeight > border) {
+        QRect destRect = QRect(border, headSize.height() + border, totalSize.width() - border*2, std::min(currentHeight - border, scaledImage.height()));
+        QRect srcRect = QRect(0, 0, scaledImage.width(), std::min(currentHeight - border, scaledImage.height()));
+        painter.drawPixmap(destRect, scaledImage, srcRect);
+    }
 }

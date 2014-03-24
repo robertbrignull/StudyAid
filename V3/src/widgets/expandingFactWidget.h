@@ -26,6 +26,7 @@ private:
     QString title;
     QPixmap image, scaledImage;
     bool expanded;
+    int currentHeight;
 
     QWidget *headWidget;
 
