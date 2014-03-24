@@ -100,6 +100,8 @@ void ExpandingWidget::paintEvent(QPaintEvent *)
     QSize headSize = head->size();
     QSize totalSize = size();
 
+    painter.setRenderHint(QPainter::Antialiasing, true);
+
     painter.setPen(QPen(QBrush(borderColor), 1));
     painter.setBrush(QBrush(bodyColor));
     painter.drawRoundedRect(1, headSize.height()-radius*2, totalSize.width()-2, totalSize.height()-headSize.height()+radius*2-2, radius, radius);

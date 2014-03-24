@@ -4,6 +4,8 @@
 
 class QPushButton;
 class ResizableStackedWidget;
+class CourseAddPage;
+class QDialog;
 
 class RootPage : public QWidget
 {
@@ -13,6 +15,7 @@ public:
     RootPage(ResizableStackedWidget *pageStack, QWidget *parent = 0);
 
 private:
-    ResizableStackedWidget *newCourseStack;
     ResizableStackedWidget *pageStack;
+    
+    QDialog *courseAddDialog;
 };

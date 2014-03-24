@@ -6,6 +6,8 @@
 #include <QFont>
 #include <QPushButton>
 #include <QStackedWidget>
+#include <QDialog>
+#include <QScrollArea>
 
 #include "pages/courseAddPage.h"
 #include "widgets/courseTitleWidget.h"
@@ -23,10 +25,20 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
 
 
 
+    CourseAddPage *courseAddPage = new CourseAddPage();
+    courseAddDialog = new QDialog(this);
+    courseAddDialog->setModal(true);
+
+    QHBoxLayout *courseAddLayout = new QHBoxLayout(courseAddDialog);
+    courseAddLayout->addWidget(courseAddPage);
+
+
+
     QHBoxLayout *outerLayout = new QHBoxLayout(this);
 
     QWidget *innerWidget = new QWidget();
     QVBoxLayout *innerLayout = new QVBoxLayout(innerWidget);
+    innerWidget->setFixedWidth(700);
 
     outerLayout->addStretch(1);
     outerLayout->addWidget(innerWidget, 1);
@@ -46,7 +58,7 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
 
 
     innerLayout->addSpacing(20);
-    innerLayout->addWidget(new HorizontalSeperator(QColor(66, 139, 202)));
+    innerLayout->addWidget(new HorizontalSeperator(QColor(66, 139, 202), 3));
     innerLayout->addSpacing(20);
 
 
@@ -55,42 +67,48 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
     QFont buttonFont = newCourseButton->font();
     buttonFont.setPointSize(24);
     newCourseButton->setFont(buttonFont);
-    newCourseButton->setMaximumHeight(40);
+    newCourseButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
-    newCourseStack = new ResizableStackedWidget();
-    connect(newCourseStack, SIGNAL(currentChanged(int)), newCourseStack, SLOT(onCurrentChanged(int)));
+    QHBoxLayout *newCourseLayout = new QHBoxLayout();
+    newCourseLayout->addStretch(1);
+    newCourseLayout->addWidget(newCourseButton);
+    newCourseLayout->addStretch(1);
 
-    CourseAddPage *courseAddPage = new CourseAddPage();
+    innerLayout->addLayout(newCourseLayout);
+
+
+
+    innerLayout->addSpacing(10);
+
+
+
+    QScrollArea *scrollArea = new QScrollArea();
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+
+    QWidget *scrollWidget = new QWidget();
+    QVBoxLayout *scrollLayout = new QVBoxLayout(scrollWidget);
     
-    newCourseStack->addWidget(newCourseButton);
-    newCourseStack->addWidget(courseAddPage);
+    scrollArea->setWidget(scrollWidget);
+    innerLayout->addWidget(scrollArea);
 
-    QHBoxLayout *buttonLayout = new QHBoxLayout();
-    buttonLayout->addStretch(1);
-    buttonLayout->addWidget(newCourseStack);
-    buttonLayout->addStretch(1);
-    innerLayout->addLayout(buttonLayout);
+    scrollLayout->addWidget(new ExpandingWidget(QColor(66, 139, 202), new CourseTitleWidget(), new CourseStatsWidget()));
+    scrollLayout->addWidget(new ExpandingWidget(QColor(66, 139, 202), new CourseTitleWidget(), new CourseStatsWidget()));
+    scrollLayout->addWidget(new ExpandingWidget(QColor(66, 139, 202), new CourseTitleWidget(), new CourseStatsWidget()));
 
-
-
-    innerLayout->addWidget(new ExpandingWidget(QColor(66, 139, 202), new CourseTitleWidget(), new CourseStatsWidget()));
-    innerLayout->addWidget(new ExpandingWidget(QColor(66, 139, 202), new CourseTitleWidget(), new CourseStatsWidget()));
-
-
-
-    innerLayout->addStretch(1);
+    scrollLayout->addStretch(1);
 
 
 
     connect(newCourseButton, &QPushButton::clicked, [=](){
-        newCourseStack->setCurrentIndex(1);
+        courseAddDialog->show();
     });
 
     connect(courseAddPage, &CourseAddPage::courseAdded, [=](int id){
-        newCourseStack->setCurrentIndex(0);
+        courseAddDialog->close();
     });
 
     connect(courseAddPage, &CourseAddPage::cancelled, [=](){
-        newCourseStack->setCurrentIndex(0);
+        courseAddDialog->close();
     });
 }

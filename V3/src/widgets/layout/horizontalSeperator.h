@@ -8,12 +8,12 @@ class HorizontalSeperator : public QWidget
     Q_OBJECT
 
 public:
-    HorizontalSeperator(QColor color, QWidget *parent = 0)
+    HorizontalSeperator(QColor color, int width, QWidget *parent = 0)
         : QWidget(parent)
     {
         this->color = color;
 
-        this->setFixedHeight(3);
+        this->setFixedHeight(width);
     }
 
     void paintEvent(QPaintEvent *)

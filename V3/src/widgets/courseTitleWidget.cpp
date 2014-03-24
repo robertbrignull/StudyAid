@@ -27,6 +27,5 @@ CourseTitleWidget::CourseTitleWidget(QWidget *parent)
 
     layout->addWidget(label);
     layout->addStretch(1);
-    layout->addWidget(new QPushButton("X"));
     layout->addWidget(new QPushButton("->"));
 }
