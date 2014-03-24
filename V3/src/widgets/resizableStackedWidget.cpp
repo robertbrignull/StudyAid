@@ -3,7 +3,7 @@
 #include <QStackedWidget>
 #include <QLayout>
 
-#include "widgets/layout/resizableStackedWidget.h"
+#include "widgets/resizableStackedWidget.h"
 
 void ResizableStackedWidget::addWidget(QWidget* pWidget)
 {

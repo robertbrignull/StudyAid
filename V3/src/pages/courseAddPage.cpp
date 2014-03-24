@@ -8,7 +8,7 @@
 #include <QPushButton>
 #include <QString>
 
-#include "widgets/layout/horizontalSeperator.h"
+#include "widgets/horizontalSeperator.h"
 
 #include "pages/courseAddPage.h"
 

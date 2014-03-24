@@ -7,7 +7,7 @@
 
 #include "database/setup.h"
 #include "pages/rootPage.h"
-#include "widgets/layout/resizableStackedWidget.h"
+#include "widgets/resizableStackedWidget.h"
 
 #include "StudyAid.h"
 

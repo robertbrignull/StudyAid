@@ -10,11 +10,9 @@
 #include <QScrollArea>
 
 #include "pages/courseAddPage.h"
-#include "widgets/courseTitleWidget.h"
-#include "widgets/courseStatsWidget.h"
-#include "widgets/layout/expandingWidget.h"
-#include "widgets/layout/resizableStackedWidget.h"
-#include "widgets/layout/horizontalSeperator.h"
+#include "widgets/expandingFactWidget.h"
+#include "widgets/resizableStackedWidget.h"
+#include "widgets/horizontalSeperator.h"
 #include "widgets/imageButton.h"
 
 #include "pages/rootPage.h"
@@ -95,9 +93,9 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
     scrollArea->setWidget(scrollWidget);
     innerLayout->addWidget(scrollArea);
 
-    scrollLayout->addWidget(new ExpandingWidget(QColor(66, 139, 202), new CourseTitleWidget(), new CourseStatsWidget()));
-    scrollLayout->addWidget(new ExpandingWidget(QColor(66, 139, 202), new CourseTitleWidget(), new CourseStatsWidget()));
-    scrollLayout->addWidget(new ExpandingWidget(QColor(66, 139, 202), new CourseTitleWidget(), new CourseStatsWidget()));
+    scrollLayout->addWidget(new ExpandingFactWidget(0, "Linear Algebra"));
+    scrollLayout->addWidget(new ExpandingFactWidget(0, "Linear Algebra"));
+    scrollLayout->addWidget(new ExpandingFactWidget(0, "Linear Algebra"));
 
     scrollLayout->addStretch(1);
 
