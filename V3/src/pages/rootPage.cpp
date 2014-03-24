@@ -15,6 +15,7 @@
 #include "widgets/layout/expandingWidget.h"
 #include "widgets/layout/resizableStackedWidget.h"
 #include "widgets/layout/horizontalSeperator.h"
+#include "widgets/imageButton.h"
 
 #include "pages/rootPage.h"
 
@@ -63,22 +64,24 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
 
 
 
-    QPushButton *newCourseButton = new QPushButton("Add a new course");
-    QFont buttonFont = newCourseButton->font();
-    buttonFont.setPointSize(24);
-    newCourseButton->setFont(buttonFont);
-    newCourseButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    QLabel *coursesLabel = new QLabel("Courses...");
+    QFont coursesFont = coursesLabel->font();
+    coursesFont.setPointSize(38);
+    coursesLabel->setFont(coursesFont);
 
-    QHBoxLayout *newCourseLayout = new QHBoxLayout();
-    newCourseLayout->addStretch(1);
-    newCourseLayout->addWidget(newCourseButton);
-    newCourseLayout->addStretch(1);
+    ImageButton *newCourseButton = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(32, 32));
+    QVBoxLayout *newCourseVLayout = new QVBoxLayout();
+    newCourseVLayout->addSpacing(16);
+    newCourseVLayout->addWidget(newCourseButton);
 
-    innerLayout->addLayout(newCourseLayout);
+    QHBoxLayout *newCourseHLayout = new QHBoxLayout();
+    newCourseHLayout->addSpacing(10);
+    newCourseHLayout->addWidget(coursesLabel);
+    newCourseHLayout->addStretch(1);
+    newCourseHLayout->addLayout(newCourseVLayout);
+    newCourseHLayout->addSpacing(22);
 
-
-
-    innerLayout->addSpacing(10);
+    innerLayout->addLayout(newCourseHLayout);
 
 
 

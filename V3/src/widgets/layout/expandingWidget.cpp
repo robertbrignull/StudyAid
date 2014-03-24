@@ -15,8 +15,8 @@ ExpandingWidget::ExpandingWidget(QColor headColor, QWidget *head, QWidget *body,
 
     this->headColor = headColor;
     bodyColor = Qt::white;
-    borderColor = Qt::black;
-    radius = 12;
+    borderColor = headColor;
+    radius = 4;
 
     createLayout(head, body, false);
 }
