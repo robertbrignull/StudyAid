@@ -9,8 +9,8 @@ LIBS += -lmysqlpp -lmysqlclient
 
 RESOURCES = resources.qrc
 
-HEADERS += src/*.h src/pages/*.h src/database/*.h src/widgets/*.h
-SOURCES += src/*.cpp src/pages/*.cpp src/database/*.cpp src/widgets/*.cpp
+HEADERS += src/*.h src/pages/*.h src/database/*.h src/widgets/*.h src/forms/*.h
+SOURCES += src/*.cpp src/pages/*.cpp src/database/*.cpp src/widgets/*.cpp src/forms/*.cpp
 
 DESTDIR = .
 OBJECTS_DIR = obj

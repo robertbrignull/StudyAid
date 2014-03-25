@@ -1,19 +1,22 @@
 #include <iostream>
 
+#include <map>
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QFont>
 #include <QPushButton>
 #include <QStackedWidget>
-#include <QDialog>
 #include <QScrollArea>
+#include <QString>
 
-#include "pages/courseAddPage.h"
 #include "widgets/courseTitleWidget.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/horizontalSeperator.h"
 #include "widgets/imageButton.h"
+#include "forms/formDialog.h"
+#include "forms/courseForm.h"
 
 #include "pages/rootPage.h"
 
@@ -24,12 +27,7 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
 
 
 
-    CourseAddPage *courseAddPage = new CourseAddPage();
-    courseAddDialog = new QDialog(this);
-    courseAddDialog->setModal(true);
-
-    QHBoxLayout *courseAddLayout = new QHBoxLayout(courseAddDialog);
-    courseAddLayout->addWidget(courseAddPage);
+    courseAddDialog = new FormDialog(this, new CourseForm(), QString("Add a new course..."), QString("Add"));
 
 
 
@@ -113,12 +111,12 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
         courseAddDialog->show();
     });
 
-    connect(courseAddPage, &CourseAddPage::courseAdded, [=](int id){
+    connect(courseAddDialog, &FormDialog::completed, [=](std::map<QString, QString> data){
         courseAddDialog->close();
         pageStack->setCurrentIndex(1);
     });
 
-    connect(courseAddPage, &CourseAddPage::cancelled, [=](){
+    connect(courseAddDialog, &FormDialog::cancelled, [=](){
         courseAddDialog->close();
     });
 }

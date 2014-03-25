@@ -5,7 +5,7 @@
 class QPushButton;
 class ResizableStackedWidget;
 class CourseAddPage;
-class QDialog;
+class FormDialog;
 
 class RootPage : public QWidget
 {
@@ -17,5 +17,5 @@ public:
 private:
     ResizableStackedWidget *pageStack;
     
-    QDialog *courseAddDialog;
+    FormDialog *courseAddDialog;
 };
