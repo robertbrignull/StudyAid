@@ -17,6 +17,9 @@ public:
     void mousePressEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *);
 
+signals:
+    void viewButtonClicked();
+
 private:
     void setExpanded(bool expanded);
 

@@ -13,6 +13,9 @@ public:
 
     void paintEvent(QPaintEvent *);
 
+signals:
+    void viewButtonClicked();
+
 private:
     int id;
     QString name;

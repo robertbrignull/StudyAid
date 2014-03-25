@@ -29,7 +29,7 @@ StudyAid::StudyAid(QWidget *parent)
 
     layout->addWidget(stack);
 
-    // stack->addWidget(new RootPage(stack));
+    stack->addWidget(new RootPage(stack));
     stack->addWidget(new CoursePage(stack));
 
     showMaximized();

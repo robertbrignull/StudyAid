@@ -93,9 +93,17 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
     scrollArea->setWidget(scrollWidget);
     innerLayout->addWidget(scrollArea);
 
-    scrollLayout->addWidget(new CourseTitleWidget(0, "Part A: Linear Algebra"));
-    scrollLayout->addWidget(new CourseTitleWidget(0, "Part A: Complex Analysis"));
-    scrollLayout->addWidget(new CourseTitleWidget(0, "Part B: Set Theory"));
+    CourseTitleWidget *courseTitleWidget1 = new CourseTitleWidget(0, "Part A: Linear Algebra");
+    connect(courseTitleWidget1, &CourseTitleWidget::viewButtonClicked, [=](){ pageStack->setCurrentIndex(1); });
+    scrollLayout->addWidget(courseTitleWidget1);
+
+    CourseTitleWidget *courseTitleWidget2 = new CourseTitleWidget(0, "Part A: Complex Analysis");
+    connect(courseTitleWidget2, &CourseTitleWidget::viewButtonClicked, [=](){ pageStack->setCurrentIndex(1); });
+    scrollLayout->addWidget(courseTitleWidget2);
+
+    CourseTitleWidget *courseTitleWidget3 = new CourseTitleWidget(0, "Part B: Set Theory");
+    connect(courseTitleWidget3, &CourseTitleWidget::viewButtonClicked, [=](){ pageStack->setCurrentIndex(1); });
+    scrollLayout->addWidget(courseTitleWidget3);
 
     scrollLayout->addStretch(1);
 
@@ -107,6 +115,7 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
 
     connect(courseAddPage, &CourseAddPage::courseAdded, [=](int id){
         courseAddDialog->close();
+        pageStack->setCurrentIndex(1);
     });
 
     connect(courseAddPage, &CourseAddPage::cancelled, [=](){

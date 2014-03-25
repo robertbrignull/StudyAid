@@ -61,6 +61,12 @@ ExpandingFactWidget::ExpandingFactWidget(int id, QString title, QWidget *parent)
 
 
     setFixedHeight(headWidgetHeight + currentHeight);
+
+
+
+    connect(viewButton, &ImageButton::clicked, [=](){
+        emit viewButtonClicked();
+    });
 }
 
 void ExpandingFactWidget::setExpanded(bool expanded)

@@ -39,8 +39,13 @@ CourseTitleWidget::CourseTitleWidget(int id, QString name, QWidget *parent)
     ImageButton *viewButton = new ImageButton(QPixmap(":/images/arrow_right_white.png"), QSize(24, 24));
 
     layout->addWidget(label);
-    // layout->addStretch(1);
     layout->addWidget(viewButton);
+
+
+
+    connect(viewButton, &ImageButton::clicked, [=](){
+        emit viewButtonClicked();
+    });
 }
 
 void CourseTitleWidget::paintEvent(QPaintEvent *)
