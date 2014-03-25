@@ -14,6 +14,7 @@ class ExpandingFactWidget : public QWidget
 public:
     ExpandingFactWidget(int id, QString title, QWidget *parent = 0);
 
+    void resizeEvent(QResizeEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *);
 
