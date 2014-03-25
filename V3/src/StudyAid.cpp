@@ -7,6 +7,7 @@
 
 #include "database/setup.h"
 #include "pages/rootPage.h"
+#include "pages/coursePage.h"
 #include "widgets/resizableStackedWidget.h"
 
 #include "StudyAid.h"
@@ -28,7 +29,8 @@ StudyAid::StudyAid(QWidget *parent)
 
     layout->addWidget(stack);
 
-    stack->addWidget(new RootPage(stack));
+    // stack->addWidget(new RootPage(stack));
+    stack->addWidget(new CoursePage(stack));
 
     showMaximized();
 }

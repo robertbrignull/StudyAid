@@ -56,12 +56,6 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
 
 
 
-    innerLayout->addSpacing(20);
-    innerLayout->addWidget(new HorizontalSeperator(QColor(66, 139, 202), 3));
-    innerLayout->addSpacing(20);
-
-
-
     QLabel *coursesLabel = new QLabel("Courses...");
     QFont coursesFont = coursesLabel->font();
     coursesFont.setPointSize(38);
@@ -80,6 +74,12 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
     newCourseHLayout->addSpacing(22);
 
     innerLayout->addLayout(newCourseHLayout);
+
+
+
+    innerLayout->addSpacing(20);
+    innerLayout->addWidget(new HorizontalSeperator(QColor(66, 139, 202), 1));
+    innerLayout->addSpacing(20);
 
 
 
