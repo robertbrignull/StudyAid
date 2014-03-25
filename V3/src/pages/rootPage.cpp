@@ -10,7 +10,7 @@
 #include <QScrollArea>
 
 #include "pages/courseAddPage.h"
-#include "widgets/expandingFactWidget.h"
+#include "widgets/courseTitleWidget.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/horizontalSeperator.h"
 #include "widgets/imageButton.h"
@@ -93,9 +93,9 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
     scrollArea->setWidget(scrollWidget);
     innerLayout->addWidget(scrollArea);
 
-    scrollLayout->addWidget(new ExpandingFactWidget(0, "Linear Algebra"));
-    scrollLayout->addWidget(new ExpandingFactWidget(0, "Linear Algebra"));
-    scrollLayout->addWidget(new ExpandingFactWidget(0, "Linear Algebra"));
+    scrollLayout->addWidget(new CourseTitleWidget(0, "Part A: Linear Algebra"));
+    scrollLayout->addWidget(new CourseTitleWidget(0, "Part A: Complex Analysis"));
+    scrollLayout->addWidget(new CourseTitleWidget(0, "Part B: Set Theory"));
 
     scrollLayout->addStretch(1);
 

@@ -4,7 +4,6 @@
 #include <QString>
 #include <QPixmap>
 
-class QVBoxLayout;
 class QMouseEvent;
 
 class ExpandingFactWidget : public QWidget
@@ -30,6 +29,7 @@ private:
     int currentHeight;
 
     QWidget *headWidget;
+    int headWidgetHeight;
 
     int radius, border;
     QColor headColor, bodyColor, borderColor;

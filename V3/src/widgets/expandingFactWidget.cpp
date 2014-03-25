@@ -1,7 +1,7 @@
 #include <iostream>
 #include <algorithm>
 
-#include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QLabel>
@@ -17,7 +17,7 @@ ExpandingFactWidget::ExpandingFactWidget(int id, QString title, QWidget *parent)
     this->id = id;
     this->title = title;
 
-    this->headColor = QColor(66, 139, 202);
+    headColor = QColor(66, 139, 202);
     bodyColor = Qt::white;
     borderColor = QColor(66, 139, 202);
     radius = 4;
@@ -54,11 +54,13 @@ ExpandingFactWidget::ExpandingFactWidget(int id, QString title, QWidget *parent)
 
     headWidget->setParent(this);
     headWidget->show();
-    headWidget->setGeometry(0, 0, size().width(), headWidget->sizeHint().height());
+
+    headWidgetHeight = headWidget->sizeHint().height();
+    headWidget->setGeometry(0, 0, size().width(), headWidgetHeight);
 
 
 
-    setFixedHeight(headWidget->sizeHint().height() + currentHeight);
+    setFixedHeight(headWidgetHeight + currentHeight);
 }
 
 void ExpandingFactWidget::setExpanded(bool expanded)
@@ -74,7 +76,7 @@ void ExpandingFactWidget::setExpanded(bool expanded)
 
         connect(animation, &QVariantAnimation::valueChanged, [=](QVariant value){
             currentHeight = value.toInt();
-            setFixedHeight(headWidget->sizeHint().height() + currentHeight);
+            setFixedHeight(headWidgetHeight + currentHeight);
             repaint();
         });
 
@@ -84,7 +86,7 @@ void ExpandingFactWidget::setExpanded(bool expanded)
 
 void ExpandingFactWidget::resizeEvent(QResizeEvent *event)
 {
-    headWidget->setGeometry(0, 0, event->size().width(), headWidget->sizeHint().height());
+    headWidget->setGeometry(0, 0, event->size().width(), headWidgetHeight);
 }
 
 void ExpandingFactWidget::mousePressEvent(QMouseEvent *event)
