@@ -150,7 +150,6 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
 
     splitter->setStretchFactor(0, 1);
     splitter->setStretchFactor(1, 3);
-    splitter->setCollapsible(1, false);
 
 
 

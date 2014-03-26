@@ -492,10 +492,12 @@ compiler_rcc_make_all: qrc_resources.cpp
 compiler_rcc_clean:
 	-$(DEL_FILE) qrc_resources.cpp
 qrc_resources.cpp: resources.qrc \
-		images/pencil_black.png \
+		images/triangle_left_black.png \
+		images/triangle_right_black.png \
 		images/plus_black.png \
-		images/trash_black.png \
-		images/arrow_right_white.png
+		images/arrow_right_white.png \
+		images/pencil_black.png \
+		images/trash_black.png
 	/usr/local/qt5/bin/rcc -name resources resources.qrc -o qrc_resources.cpp
 
 compiler_moc_header_make_all: moc/moc_StudyAid.cpp moc/moc_coursePage.cpp moc/moc_rootPage.cpp moc/moc_clickableQLabel.cpp moc/moc_courseTitleWidget.cpp moc/moc_courseWidget.cpp moc/moc_expandingFactWidget.cpp moc/moc_horizontalSeperator.cpp moc/moc_imageButton.cpp moc/moc_resizableStackedWidget.cpp moc/moc_sectionWidget.cpp moc/moc_splitter.cpp moc/moc_courseForm.cpp moc/moc_form.cpp moc/moc_deleteDialog.cpp moc/moc_formDialog.cpp
@@ -3830,16 +3832,30 @@ obj/splitter.o: src/widgets/splitter.cpp /usr/local/qt5/include/QtGui/QPainter \
 		/usr/local/qt5/include/QtCore/qfiledevice.h \
 		/usr/local/qt5/include/QtGui/qvector2d.h \
 		/usr/local/qt5/include/QtGui/qtouchdevice.h \
-		/usr/local/qt5/include/QtGui/QLinearGradient \
+		/usr/local/qt5/include/QtWidgets/QHBoxLayout \
+		/usr/local/qt5/include/QtWidgets/qboxlayout.h \
+		/usr/local/qt5/include/QtWidgets/qlayout.h \
+		/usr/local/qt5/include/QtWidgets/qlayoutitem.h \
+		/usr/local/qt5/include/QtWidgets/qsizepolicy.h \
+		/usr/local/qt5/include/QtCore/qmargins.h \
+		/usr/local/qt5/include/QtWidgets/qgridlayout.h \
+		/usr/local/qt5/include/QtWidgets/qwidget.h \
+		/usr/local/qt5/include/QtGui/qpalette.h \
+		/usr/local/qt5/include/QtGui/qcursor.h \
+		/usr/local/qt5/include/QtWidgets/QVBoxLayout \
+		src/widgets/imageButton.h \
+		/usr/local/qt5/include/QtWidgets/QPushButton \
+		/usr/local/qt5/include/QtWidgets/qpushbutton.h \
+		/usr/local/qt5/include/QtWidgets/qabstractbutton.h \
+		/usr/local/qt5/include/QtGui/qicon.h \
+		/usr/local/qt5/include/QtGui/QPixmap \
+		/usr/local/qt5/include/QtCore/QSize \
+		/usr/local/qt5/include/QtGui/QPen \
+		/usr/local/qt5/include/QtGui/QBrush \
 		src/widgets/splitter.h \
 		/usr/local/qt5/include/QtWidgets/QSplitter \
 		/usr/local/qt5/include/QtWidgets/qsplitter.h \
 		/usr/local/qt5/include/QtWidgets/qframe.h \
-		/usr/local/qt5/include/QtWidgets/qwidget.h \
-		/usr/local/qt5/include/QtCore/qmargins.h \
-		/usr/local/qt5/include/QtGui/qpalette.h \
-		/usr/local/qt5/include/QtWidgets/qsizepolicy.h \
-		/usr/local/qt5/include/QtGui/qcursor.h \
 		/usr/local/qt5/include/QtWidgets/QSplitterHandle
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/splitter.o src/widgets/splitter.cpp
 

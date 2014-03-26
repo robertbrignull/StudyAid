@@ -3,7 +3,9 @@
 #include <QSplitter>
 #include <QSplitterHandle>
 
+class QResizeEvent;
 class QPaintEvent;
+class ImageButton;
 
 class Splitter : public QSplitter
 {
@@ -23,5 +25,13 @@ class SplitterHandle : public QSplitterHandle
 public:
     SplitterHandle(Qt::Orientation orientation, QSplitter *splitter);
 
+    void resizeEvent(QResizeEvent *event);
     void paintEvent(QPaintEvent *);
+
+private:
+    void layoutButtons();
+
+
+
+    ImageButton *expandButton, *collapseButton;
 };

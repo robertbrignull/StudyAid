@@ -5,5 +5,7 @@
     <file>images/plus_black.png</file>
     <file>images/pencil_black.png</file>
     <file>images/trash_black.png</file>
+    <file>images/triangle_left_black.png</file>
+    <file>images/triangle_right_black.png</file>
 </qresource>
 </RCC>
