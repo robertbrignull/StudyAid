@@ -72,7 +72,7 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
 
 
     innerLayout->addSpacing(20);
-    innerLayout->addWidget(new HorizontalSeperator(QColor(66, 139, 202), 1));
+    innerLayout->addWidget(new HorizontalSeperator(QColor(66, 139, 202), 2));
     innerLayout->addSpacing(20);
 
 

@@ -7,7 +7,6 @@
 #include <QLabel>
 #include <QFont>
 #include <QPalette>
-#include <QSplitter>
 #include <QScrollArea>
 
 #include "widgets/resizableStackedWidget.h"
@@ -15,6 +14,7 @@
 #include "widgets/horizontalSeperator.h"
 #include "widgets/clickableQLabel.h"
 #include "widgets/courseWidget.h"
+#include "widgets/splitter.h"
 #include "dialogs/deleteDialog.h"
 #include "dialogs/formDialog.h"
 #include "forms/courseForm.h"
@@ -108,12 +108,12 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
 
 
     outerLayout->addSpacing(20);
-    outerLayout->addWidget(new HorizontalSeperator(QColor(66, 139, 202), 1));
+    outerLayout->addWidget(new HorizontalSeperator(QColor(66, 139, 202), 2));
     outerLayout->addSpacing(20);
 
 
 
-    QSplitter *splitter = new QSplitter(Qt::Horizontal);
+    Splitter *splitter = new Splitter(Qt::Horizontal);
     outerLayout->addWidget(splitter);
     splitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -150,6 +150,7 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
 
     splitter->setStretchFactor(0, 1);
     splitter->setStretchFactor(1, 3);
+    splitter->setCollapsible(1, false);
 
 
 
