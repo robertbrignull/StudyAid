@@ -130,6 +130,7 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
     });
 
     connect(courseEditDialog, &FormDialog::completed, [=](std::map<QString, QString> data){
+        std::cout << "Change course name to: " << data[QString("name")].toStdString() << std::endl;
         courseEditDialog->close();
     });
 
@@ -138,6 +139,7 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
     });
 
     connect(courseDeleteDialog, &DeleteDialog::accepted, [=](){
+        std::cout << "Deleted course" << std::endl;
         courseDeleteDialog->close();
         pageStack->setCurrentIndex(0);
     });

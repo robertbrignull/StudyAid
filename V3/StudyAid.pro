@@ -3,7 +3,7 @@ INCLUDEPATH += . src /usr/include/mysql /usr/include/mysql++
 CONFIG += qt
 QT += widgets
 
-QMAKE_CXXFLAGS += -std=c++11 -g
+QMAKE_CXXFLAGS += -std=c++11 -g -Wall -Wextra -Werror
 
 LIBS += -lmysqlpp -lmysqlclient
 

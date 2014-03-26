@@ -108,6 +108,7 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
     });
 
     connect(courseAddDialog, &FormDialog::completed, [=](std::map<QString, QString> data){
+        std::cout << "Added course: " << data[QString("name")].toStdString() << std::endl;
         courseAddDialog->close();
         pageStack->setCurrentIndex(1);
     });

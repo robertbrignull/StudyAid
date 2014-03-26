@@ -14,7 +14,7 @@ CC            = gcc
 CXX           = g++
 DEFINES       = -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -O2 -D_REENTRANT -Wall -W -fPIE $(DEFINES)
-CXXFLAGS      = -pipe -std=c++11 -g -O2 -D_REENTRANT -Wall -W -fPIE $(DEFINES)
+CXXFLAGS      = -pipe -std=c++11 -g -Wall -Wextra -Werror -O2 -D_REENTRANT -Wall -W -fPIE $(DEFINES)
 INCPATH       = -I/usr/local/qt5/mkspecs/linux-g++ -I. -I. -Isrc -I/usr/include/mysql -I/usr/include/mysql++ -I/usr/local/qt5/include -I/usr/local/qt5/include/QtWidgets -I/usr/local/qt5/include/QtGui -I/usr/local/qt5/include/QtCore -Imoc
 LINK          = g++
 LFLAGS        = -Wl,-O1 -Wl,-rpath,/usr/local/qt5/lib
@@ -480,10 +480,10 @@ compiler_rcc_make_all: qrc_resources.cpp
 compiler_rcc_clean:
 	-$(DEL_FILE) qrc_resources.cpp
 qrc_resources.cpp: resources.qrc \
-		images/pencil_black.png \
-		images/arrow_right_white.png \
 		images/trash_black.png \
-		images/plus_black.png
+		images/plus_black.png \
+		images/pencil_black.png \
+		images/arrow_right_white.png
 	/usr/local/qt5/bin/rcc -name resources resources.qrc -o qrc_resources.cpp
 
 compiler_moc_header_make_all: moc/moc_StudyAid.cpp moc/moc_coursePage.cpp moc/moc_rootPage.cpp moc/moc_clickableQLabel.cpp moc/moc_courseTitleWidget.cpp moc/moc_expandingFactWidget.cpp moc/moc_horizontalSeperator.cpp moc/moc_imageButton.cpp moc/moc_resizableStackedWidget.cpp moc/moc_courseForm.cpp moc/moc_form.cpp moc/moc_deleteDialog.cpp moc/moc_formDialog.cpp
