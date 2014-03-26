@@ -26,7 +26,7 @@ ExpandingFactWidget::ExpandingFactWidget(int id, QString title, QWidget *parent)
     image = QPixmap("images/latex/test.png");
     scaledImage = image.scaledToWidth(size().width() - border*2, Qt::SmoothTransformation);
     expanded = false;
-    currentHeight = 0;
+    currentHeight = 0.0;
 
 
 
@@ -60,7 +60,7 @@ ExpandingFactWidget::ExpandingFactWidget(int id, QString title, QWidget *parent)
 
 
 
-    setFixedHeight(headWidgetHeight + currentHeight);
+    setFixedHeight(headWidgetHeight + (scaledImage.height() + border*2) * currentHeight);
 
 
 
@@ -75,14 +75,14 @@ void ExpandingFactWidget::setExpanded(bool expanded)
         this->expanded = expanded;
 
         QVariantAnimation *animation = new QVariantAnimation(this);
-        animation->setStartValue(currentHeight);
-        animation->setEndValue((expanded) ? scaledImage.height() + border*2 : 0);
+        animation->setStartValue((expanded) ? 0.0 : 1.0);
+        animation->setEndValue((expanded) ? 1.0 : 0.0);
         animation->setDuration(250);
         animation->setEasingCurve(QEasingCurve::InOutCubic);
 
         connect(animation, &QVariantAnimation::valueChanged, [=](QVariant value){
-            currentHeight = value.toInt();
-            setFixedHeight(headWidgetHeight + currentHeight);
+            currentHeight = value.toFloat();
+            setFixedHeight(headWidgetHeight + (scaledImage.height() + border*2) * currentHeight);
             repaint();
         });
 
@@ -93,11 +93,12 @@ void ExpandingFactWidget::setExpanded(bool expanded)
 void ExpandingFactWidget::resizeEvent(QResizeEvent *event)
 {
     headWidget->setGeometry(0, 0, event->size().width(), headWidgetHeight);
+    setFixedHeight(headWidgetHeight + (scaledImage.height() + border*2) * currentHeight);
 }
 
 void ExpandingFactWidget::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == Qt::LeftButton && event->y() <= headWidgetHeight) {
         setExpanded(!expanded);
     }
 }
@@ -123,9 +124,19 @@ void ExpandingFactWidget::paintEvent(QPaintEvent *)
         scaledImage = image.scaledToWidth(totalSize.width() - border*2, Qt::SmoothTransformation);
     }
 
-    if (currentHeight > border + 3) {
-        QRect destRect = QRect(border, headSize.height() + border, totalSize.width() - border*2, std::min(currentHeight - border - 3, scaledImage.height()));
-        QRect srcRect = QRect(0, 0, scaledImage.width(), std::min(currentHeight - border - 3, scaledImage.height()));
+    if ((scaledImage.height() + border*2) * currentHeight > border + 3) {
+        QRect destRect = QRect(border,
+                               headSize.height() + border,
+                               totalSize.width() - border*2,
+                               std::min((scaledImage.height() + border*2) * currentHeight - border - 3,
+                                        (double) scaledImage.height()));
+
+        QRect srcRect = QRect(0,
+                              0,
+                              scaledImage.width(),
+                              std::min((scaledImage.height() + border*2) * currentHeight - border - 3,
+                                       (double) scaledImage.height()));
+
         painter.drawPixmap(destRect, scaledImage, srcRect);
     }
 }

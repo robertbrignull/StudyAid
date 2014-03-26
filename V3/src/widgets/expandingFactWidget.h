@@ -29,7 +29,7 @@ private:
     QString title;
     QPixmap image, scaledImage;
     bool expanded;
-    int currentHeight;
+    double currentHeight;
 
     QWidget *headWidget;
     int headWidgetHeight;
