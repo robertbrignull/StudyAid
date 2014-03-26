@@ -10,7 +10,4 @@ class CoursePage : public QWidget
 
 public:
     CoursePage(ResizableStackedWidget *pageStack, QWidget *parent = 0);
-
-private:
-    ResizableStackedWidget *pageStack;
 };

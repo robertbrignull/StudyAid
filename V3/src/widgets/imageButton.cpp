@@ -8,7 +8,7 @@
 ImageButton::ImageButton(QPixmap pixmap, QSize imageSize, QWidget *parent)
     : QPushButton(parent)
 {
-    this->pixmap = pixmap.scaled(imageSize);
+    this->pixmap = pixmap.scaled(imageSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     this->imageSize = imageSize;
 
     pressing = hovering = false;

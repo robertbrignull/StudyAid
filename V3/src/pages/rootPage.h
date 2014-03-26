@@ -2,10 +2,7 @@
 
 #include <QWidget>
 
-class QPushButton;
 class ResizableStackedWidget;
-class CourseAddPage;
-class FormDialog;
 
 class RootPage : public QWidget
 {
@@ -13,9 +10,4 @@ class RootPage : public QWidget
 
 public:
     RootPage(ResizableStackedWidget *pageStack, QWidget *parent = 0);
-
-private:
-    ResizableStackedWidget *pageStack;
-    
-    FormDialog *courseAddDialog;
 };

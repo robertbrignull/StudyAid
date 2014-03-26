@@ -1,4 +1,5 @@
 #include <iostream>
+#include <map>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -11,13 +12,22 @@
 #include "widgets/imageButton.h"
 #include "widgets/horizontalSeperator.h"
 #include "widgets/clickableQLabel.h"
+#include "dialogs/deleteDialog.h"
+#include "dialogs/formDialog.h"
+#include "forms/courseForm.h"
 
 #include "pages/coursePage.h"
 
 CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
     : QWidget(parent)
 {
-    this->pageStack = pageStack;
+    CourseForm *courseEditForm = new CourseForm();
+    FormDialog *courseEditDialog = new FormDialog(this, courseEditForm, QString("Edit the course..."), QString("Change"));
+
+    DeleteDialog *courseDeleteDialog = new DeleteDialog(this, "Are you sure you want to delete this course?");
+
+
+
 
     QVBoxLayout *outerLayout = new QVBoxLayout(this);
 
@@ -72,14 +82,21 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
     courseFont.setPointSize(38);
     courseLabel->setFont(courseFont);
 
-    ImageButton *newFactButton = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(32, 32));
-    QVBoxLayout *newFactVLayout = new QVBoxLayout();
-    newFactVLayout->addSpacing(16);
-    newFactVLayout->addWidget(newFactButton);
+    ImageButton *editCourseButton = new ImageButton(QPixmap(":/images/pencil_black.png"), QSize(32, 32));
+    QVBoxLayout *editCourseVLayout = new QVBoxLayout();
+    editCourseVLayout->addSpacing(16);
+    editCourseVLayout->addWidget(editCourseButton);
+
+    ImageButton *deleteCourseButton = new ImageButton(QPixmap(":/images/trash_black.png"), QSize(32, 32));
+    QVBoxLayout *deleteCourseVLayout = new QVBoxLayout();
+    deleteCourseVLayout->addSpacing(16);
+    deleteCourseVLayout->addWidget(deleteCourseButton);
 
     topLayout->addWidget(courseLabel);
     topLayout->addStretch(1);
-    topLayout->addLayout(newFactVLayout);
+    topLayout->addLayout(editCourseVLayout);
+    topLayout->addSpacing(10);
+    topLayout->addLayout(deleteCourseVLayout);
 
     topBorderLayout->addStretch(1);
     topBorderLayout->addWidget(topWidget);
@@ -99,5 +116,33 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
 
     connect(coursesLabel, &ClickableQLabel::clicked, [=](){
         pageStack->setCurrentIndex(0);
+    });
+
+    connect(editCourseButton, &ImageButton::clicked, [=](){
+        std::map<QString, QString> data;
+        data.insert(std::pair<QString, QString>(QString("name"), QString("Linear Algebra")));
+        courseEditForm->setData(data);
+        courseEditDialog->show();
+    });
+
+    connect(courseEditDialog, &FormDialog::cancelled, [=](){
+        courseEditDialog->close();
+    });
+
+    connect(courseEditDialog, &FormDialog::completed, [=](std::map<QString, QString> data){
+        courseEditDialog->close();
+    });
+
+    connect(deleteCourseButton, &ImageButton::clicked, [=](){
+        courseDeleteDialog->show();
+    });
+
+    connect(courseDeleteDialog, &DeleteDialog::accepted, [=](){
+        courseDeleteDialog->close();
+        pageStack->setCurrentIndex(0);
+    });
+
+    connect(courseDeleteDialog, &DeleteDialog::cancelled, [=](){
+        courseDeleteDialog->close();
     });
 }

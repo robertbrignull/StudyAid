@@ -7,7 +7,7 @@
 
 #include "widgets/horizontalSeperator.h"
 
-#include "forms/formDialog.h"
+#include "dialogs/formDialog.h"
 
 FormDialog::FormDialog(QWidget *parent, Form *form, QString topText, QString buttonText)
     : QDialog(parent)

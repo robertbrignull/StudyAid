@@ -15,7 +15,7 @@
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/horizontalSeperator.h"
 #include "widgets/imageButton.h"
-#include "forms/formDialog.h"
+#include "dialogs/formDialog.h"
 #include "forms/courseForm.h"
 
 #include "pages/rootPage.h"
@@ -23,11 +23,7 @@
 RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
     : QWidget(parent)
 {
-    this->pageStack = pageStack;
-
-
-
-    courseAddDialog = new FormDialog(this, new CourseForm(), QString("Add a new course..."), QString("Add"));
+    FormDialog *courseAddDialog = new FormDialog(this, new CourseForm(), QString("Add a new course..."), QString("Add"));
 
 
 
