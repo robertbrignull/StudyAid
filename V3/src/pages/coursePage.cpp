@@ -7,11 +7,14 @@
 #include <QLabel>
 #include <QFont>
 #include <QPalette>
+#include <QSplitter>
+#include <QScrollArea>
 
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/imageButton.h"
 #include "widgets/horizontalSeperator.h"
 #include "widgets/clickableQLabel.h"
+#include "widgets/courseWidget.h"
 #include "dialogs/deleteDialog.h"
 #include "dialogs/formDialog.h"
 #include "forms/courseForm.h"
@@ -110,7 +113,43 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
 
 
 
-    outerLayout->addStretch(1);
+    QSplitter *splitter = new QSplitter(Qt::Horizontal);
+    outerLayout->addWidget(splitter);
+    splitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+
+
+    QScrollArea *pickerScrollArea = new QScrollArea();
+    pickerScrollArea->setWidgetResizable(true);
+    pickerScrollArea->setFrameShape(QFrame::NoFrame);
+    splitter->addWidget(pickerScrollArea);
+
+    QWidget *pickerScrollWidget = new QWidget();
+    QVBoxLayout *pickerScrollLayout = new QVBoxLayout(pickerScrollWidget);
+    pickerScrollArea->setWidget(pickerScrollWidget);
+
+    pickerScrollLayout->addWidget(new QLabel("Section picker"));
+    pickerScrollLayout->addStretch(1);
+
+
+
+    QScrollArea *courseScrollArea = new QScrollArea();
+    courseScrollArea->setWidgetResizable(true);
+    courseScrollArea->setFrameShape(QFrame::NoFrame);
+    splitter->addWidget(courseScrollArea);
+
+    QWidget *courseScrollWidget = new QWidget();
+    QVBoxLayout *courseScrollLayout = new QVBoxLayout(courseScrollWidget);
+    courseScrollArea->setWidget(courseScrollWidget);
+
+    CourseWidget *courseWidget = new CourseWidget();
+    courseScrollLayout->addWidget(courseWidget);
+    courseScrollLayout->addStretch(1);
+
+
+
+    splitter->setStretchFactor(0, 1);
+    splitter->setStretchFactor(1, 3);
 
 
 
@@ -146,5 +185,9 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
 
     connect(courseDeleteDialog, &DeleteDialog::cancelled, [=](){
         courseDeleteDialog->close();
+    });
+
+    connect(courseWidget, &CourseWidget::viewButtonClicked, [=](int id){
+        std::cout << "Fact view button clicked: " << id << std::endl;
     });
 }
