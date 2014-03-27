@@ -25,8 +25,14 @@ QSplitterHandle *Splitter::createHandle()
 SplitterHandle::SplitterHandle(Qt::Orientation orientation, QSplitter *splitter)
     : QSplitterHandle(orientation, splitter)
 {
-    expandButton = new ImageButton(QPixmap(":/images/triangle_left_black.png"), QSize(handleSize-8, handleSize-8), this);
-    collapseButton = new ImageButton(QPixmap(":/images/triangle_right_black.png"), QSize(handleSize-8, handleSize-8), this);
+    if (orientation == Qt::Horizontal) {
+        expandButton = new ImageButton(QPixmap(":/images/triangle_left_black.png"), QSize(handleSize-8, handleSize-8), this);
+        collapseButton = new ImageButton(QPixmap(":/images/triangle_right_black.png"), QSize(handleSize-8, handleSize-8), this);
+    }
+    else {
+        expandButton = new ImageButton(QPixmap(":/images/triangle_up_black.png"), QSize(handleSize-8, handleSize-8), this);
+        collapseButton = new ImageButton(QPixmap(":/images/triangle_down_black.png"), QSize(handleSize-8, handleSize-8), this);
+    }
 
     layoutButtons();
 

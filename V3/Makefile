@@ -509,11 +509,13 @@ compiler_rcc_clean:
 	-$(DEL_FILE) qrc_resources.cpp
 qrc_resources.cpp: resources.qrc \
 		images/pencil_black.png \
+		images/triangle_down_black.png \
 		images/trash_black.png \
-		images/plus_black.png \
+		images/arrow_right_white.png \
 		images/triangle_left_black.png \
 		images/triangle_right_black.png \
-		images/arrow_right_white.png
+		images/plus_black.png \
+		images/triangle_up_black.png
 	/usr/local/qt5/bin/rcc -name resources resources.qrc -o qrc_resources.cpp
 
 compiler_moc_header_make_all: moc/moc_StudyAid.cpp moc/moc_coursePage.cpp moc/moc_factPage.cpp moc/moc_rootPage.cpp moc/moc_clickableQLabel.cpp moc/moc_courseTitleWidget.cpp moc/moc_courseWidget.cpp moc/moc_expandingFactWidget.cpp moc/moc_horizontalSeperator.cpp moc/moc_imageButton.cpp moc/moc_resizableImage.cpp moc/moc_resizableStackedWidget.cpp moc/moc_sectionPickerWidget.cpp moc/moc_sectionWidget.cpp moc/moc_splitter.cpp moc/moc_courseForm.cpp moc/moc_factForm.cpp moc/moc_form.cpp moc/moc_deleteDialog.cpp moc/moc_formDialog.cpp
@@ -4109,9 +4111,9 @@ obj/imageButton.o: src/widgets/imageButton.cpp /usr/local/qt5/include/QtGui/QPai
 		/usr/local/qt5/include/QtGui/QBrush
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/imageButton.o src/widgets/imageButton.cpp
 
-obj/resizableImage.o: src/widgets/resizableImage.cpp /usr/local/qt5/include/QtGui/QPainter \
-		/usr/local/qt5/include/QtGui/qpainter.h \
-		/usr/local/qt5/include/QtCore/qnamespace.h \
+obj/resizableImage.o: src/widgets/resizableImage.cpp /usr/local/qt5/include/QtGui/QResizeEvent \
+		/usr/local/qt5/include/QtGui/qevent.h \
+		/usr/local/qt5/include/QtGui/qwindowdefs.h \
 		/usr/local/qt5/include/QtCore/qglobal.h \
 		/usr/local/qt5/include/QtCore/qconfig.h \
 		/usr/local/qt5/include/QtCore/qfeatures.h \
@@ -4148,22 +4150,10 @@ obj/resizableImage.o: src/widgets/resizableImage.cpp /usr/local/qt5/include/QtGu
 		/usr/local/qt5/include/QtCore/qtypeinfo.h \
 		/usr/local/qt5/include/QtCore/qtypetraits.h \
 		/usr/local/qt5/include/QtCore/qsysinfo.h \
-		/usr/local/qt5/include/QtCore/qrect.h \
-		/usr/local/qt5/include/QtCore/qsize.h \
-		/usr/local/qt5/include/QtCore/qpoint.h \
-		/usr/local/qt5/include/QtCore/qscopedpointer.h \
-		/usr/local/qt5/include/QtGui/qpixmap.h \
-		/usr/local/qt5/include/QtGui/qpaintdevice.h \
-		/usr/local/qt5/include/QtGui/qwindowdefs.h \
 		/usr/local/qt5/include/QtCore/qobjectdefs.h \
+		/usr/local/qt5/include/QtCore/qnamespace.h \
 		/usr/local/qt5/include/QtCore/qobjectdefs_impl.h \
 		/usr/local/qt5/include/QtGui/qwindowdefs_win.h \
-		/usr/local/qt5/include/QtGui/qcolor.h \
-		/usr/local/qt5/include/QtGui/qrgb.h \
-		/usr/local/qt5/include/QtCore/qstringlist.h \
-		/usr/local/qt5/include/QtCore/qalgorithms.h \
-		/usr/local/qt5/include/QtCore/qdatastream.h \
-		/usr/local/qt5/include/QtCore/qiodevice.h \
 		/usr/local/qt5/include/QtCore/qobject.h \
 		/usr/local/qt5/include/QtCore/qstring.h \
 		/usr/local/qt5/include/QtCore/qchar.h \
@@ -4172,26 +4162,54 @@ obj/resizableImage.o: src/widgets/resizableImage.cpp /usr/local/qt5/include/QtGu
 		/usr/local/qt5/include/QtCore/qarraydata.h \
 		/usr/local/qt5/include/QtCore/qstringbuilder.h \
 		/usr/local/qt5/include/QtCore/qlist.h \
+		/usr/local/qt5/include/QtCore/qalgorithms.h \
 		/usr/local/qt5/include/QtCore/qiterator.h \
 		/usr/local/qt5/include/QtCore/qcoreevent.h \
+		/usr/local/qt5/include/QtCore/qscopedpointer.h \
 		/usr/local/qt5/include/QtCore/qmetatype.h \
 		/usr/local/qt5/include/QtCore/qvarlengtharray.h \
 		/usr/local/qt5/include/QtCore/qcontainerfwd.h \
 		/usr/local/qt5/include/QtCore/qisenum.h \
 		/usr/local/qt5/include/QtCore/qobject_impl.h \
+		/usr/local/qt5/include/QtGui/qregion.h \
+		/usr/local/qt5/include/QtCore/qrect.h \
+		/usr/local/qt5/include/QtCore/qsize.h \
+		/usr/local/qt5/include/QtCore/qpoint.h \
+		/usr/local/qt5/include/QtCore/qdatastream.h \
+		/usr/local/qt5/include/QtCore/qiodevice.h \
 		/usr/local/qt5/include/QtCore/qpair.h \
+		/usr/local/qt5/include/QtGui/qkeysequence.h \
+		/usr/local/qt5/include/QtCore/qvariant.h \
+		/usr/local/qt5/include/QtCore/qmap.h \
+		/usr/local/qt5/include/QtCore/qdebug.h \
+		/usr/local/qt5/include/QtCore/qhash.h \
+		/usr/local/qt5/include/QtCore/qtextstream.h \
+		/usr/local/qt5/include/QtCore/qlocale.h \
+		/usr/local/qt5/include/QtCore/qshareddata.h \
+		/usr/local/qt5/include/QtCore/qvector.h \
+		/usr/local/qt5/include/QtCore/qset.h \
+		/usr/local/qt5/include/QtCore/qcontiguouscache.h \
+		/usr/local/qt5/include/QtCore/qstringlist.h \
 		/usr/local/qt5/include/QtCore/qregexp.h \
 		/usr/local/qt5/include/QtCore/qstringmatcher.h \
+		/usr/local/qt5/include/QtCore/qurl.h \
+		/usr/local/qt5/include/QtCore/qurlquery.h \
+		/usr/local/qt5/include/QtCore/qfile.h \
+		/usr/local/qt5/include/QtCore/qfiledevice.h \
+		/usr/local/qt5/include/QtGui/qvector2d.h \
+		/usr/local/qt5/include/QtGui/qtouchdevice.h \
+		/usr/local/qt5/include/QtGui/QPainter \
+		/usr/local/qt5/include/QtGui/qpainter.h \
+		/usr/local/qt5/include/QtGui/qpixmap.h \
+		/usr/local/qt5/include/QtGui/qpaintdevice.h \
+		/usr/local/qt5/include/QtGui/qcolor.h \
+		/usr/local/qt5/include/QtGui/qrgb.h \
 		/usr/local/qt5/include/QtCore/qsharedpointer.h \
-		/usr/local/qt5/include/QtCore/qshareddata.h \
 		/usr/local/qt5/include/QtCore/qsharedpointer_impl.h \
-		/usr/local/qt5/include/QtCore/qhash.h \
 		/usr/local/qt5/include/QtGui/qimage.h \
 		/usr/local/qt5/include/QtGui/qtransform.h \
 		/usr/local/qt5/include/QtGui/qmatrix.h \
 		/usr/local/qt5/include/QtGui/qpolygon.h \
-		/usr/local/qt5/include/QtCore/qvector.h \
-		/usr/local/qt5/include/QtGui/qregion.h \
 		/usr/local/qt5/include/QtCore/qline.h \
 		/usr/local/qt5/include/QtGui/qpainterpath.h \
 		/usr/local/qt5/include/QtGui/qtextoption.h \
@@ -4207,21 +4225,6 @@ obj/resizableImage.o: src/widgets/resizableImage.cpp /usr/local/qt5/include/QtGu
 		/usr/local/qt5/include/QtGui/qpalette.h \
 		/usr/local/qt5/include/QtWidgets/qsizepolicy.h \
 		/usr/local/qt5/include/QtGui/qcursor.h \
-		/usr/local/qt5/include/QtGui/qkeysequence.h \
-		/usr/local/qt5/include/QtGui/qevent.h \
-		/usr/local/qt5/include/QtCore/qvariant.h \
-		/usr/local/qt5/include/QtCore/qmap.h \
-		/usr/local/qt5/include/QtCore/qdebug.h \
-		/usr/local/qt5/include/QtCore/qtextstream.h \
-		/usr/local/qt5/include/QtCore/qlocale.h \
-		/usr/local/qt5/include/QtCore/qset.h \
-		/usr/local/qt5/include/QtCore/qcontiguouscache.h \
-		/usr/local/qt5/include/QtCore/qurl.h \
-		/usr/local/qt5/include/QtCore/qurlquery.h \
-		/usr/local/qt5/include/QtCore/qfile.h \
-		/usr/local/qt5/include/QtCore/qfiledevice.h \
-		/usr/local/qt5/include/QtGui/qvector2d.h \
-		/usr/local/qt5/include/QtGui/qtouchdevice.h \
 		/usr/local/qt5/include/QtGui/QPixmap \
 		/usr/local/qt5/include/QtCore/QSize
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/resizableImage.o src/widgets/resizableImage.cpp
