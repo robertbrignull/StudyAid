@@ -19,6 +19,7 @@
 #include "dialogs/deleteDialog.h"
 #include "dialogs/formDialog.h"
 #include "forms/courseForm.h"
+#include "forms/factForm.h"
 
 #include "pages/coursePage.h"
 
@@ -29,6 +30,8 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
     FormDialog *courseEditDialog = new FormDialog(this, courseEditForm, QString("Edit the course..."), QString("Change"));
 
     DeleteDialog *courseDeleteDialog = new DeleteDialog(this, "Are you sure you want to delete this course?");
+
+    FormDialog *factAddDialog = new FormDialog(this, new FactForm(), QString("Add a new fact..."), QString("Add"));
 
 
 
@@ -129,7 +132,7 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
     QVBoxLayout *pickerScrollLayout = new QVBoxLayout(pickerScrollWidget);
     pickerScrollArea->setWidget(pickerScrollWidget);
 
-    SectionPickerWidget *sectionPicker = new SectionPickerWidget(0, "Linear Algebra");
+    SectionPickerWidget *sectionPicker = new SectionPickerWidget(0, "Linear Algebra", factAddDialog);
     pickerScrollLayout->addWidget(sectionPicker);
     pickerScrollLayout->addStretch(1);
 
@@ -151,7 +154,7 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
 
 
     splitter->setStretchFactor(0, 1);
-    splitter->setStretchFactor(1, 3);
+    splitter->setStretchFactor(1, 4);
 
 
 
@@ -191,5 +194,16 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
 
     connect(courseWidget, &CourseWidget::viewButtonClicked, [=](int id){
         std::cout << "Fact view button clicked: " << id << std::endl;
+    });
+
+
+
+    connect(factAddDialog, &FormDialog::completed, [=](std::map<QString, QString> data){
+        std::cout << "Fact added: " << data[QString("type")].toStdString() << ", " << data[QString("name")].toStdString() << std::endl;
+        factAddDialog->close();
+    });
+
+    connect(factAddDialog, &FormDialog::cancelled, [=](){
+        factAddDialog->close();
     });
 }

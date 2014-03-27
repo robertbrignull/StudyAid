@@ -1,19 +1,22 @@
 #include <iostream>
+#include <map>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QString>
 
-#include "clickableQLabel.h"
-#include "imageButton.h"
+#include "widgets/clickableQLabel.h"
+#include "widgets/imageButton.h"
+#include "dialogs/formDialog.h"
 
-#include "sectionPickerWidget.h"
+#include "widgets/sectionPickerWidget.h"
 
-SectionPickerWidget::SectionPickerWidget(int id, QString courseName, QWidget *parent)
+SectionPickerWidget::SectionPickerWidget(int id, QString courseName, FormDialog *factAddDialog, QWidget *parent)
     : QWidget(parent)
 {
     QHBoxLayout *courseLayout = new QHBoxLayout();
     ClickableQLabel *courseLabel = new ClickableQLabel(courseName);
-    ImageButton *courseImage = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(24, 24));
+    ImageButton *courseImage = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(16, 16));
 
     courseLayout->addWidget(courseLabel);
     courseLayout->addStretch(1);
@@ -23,7 +26,7 @@ SectionPickerWidget::SectionPickerWidget(int id, QString courseName, QWidget *pa
     
     QHBoxLayout *sec1Layout = new QHBoxLayout();
     ClickableQLabel *sec1Label = new ClickableQLabel("Section 1");
-    ImageButton *sec1Image = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(24, 24));
+    ImageButton *sec1Image = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(16, 16));
 
     sec1Layout->addWidget(sec1Label);
     sec1Layout->addStretch(1);
@@ -33,7 +36,7 @@ SectionPickerWidget::SectionPickerWidget(int id, QString courseName, QWidget *pa
 
     QHBoxLayout *sec2Layout = new QHBoxLayout();
     ClickableQLabel *sec2Label = new ClickableQLabel("Section 2");
-    ImageButton *sec2Image = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(24, 24));
+    ImageButton *sec2Image = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(16, 16));
 
     sec2Layout->addWidget(sec2Label);
     sec2Layout->addStretch(1);
@@ -63,14 +66,14 @@ SectionPickerWidget::SectionPickerWidget(int id, QString courseName, QWidget *pa
 
 
     connect(courseImage, &ImageButton::clicked, [=](){
-
+        factAddDialog->show();
     });
 
     connect(sec1Image, &ImageButton::clicked, [=](){
-
+        factAddDialog->show();
     });
 
     connect(sec2Image, &ImageButton::clicked, [=](){
-
+        factAddDialog->show();
     });
 }
