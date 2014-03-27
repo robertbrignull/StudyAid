@@ -22,6 +22,13 @@
 FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
     : QWidget(parent)
 {
+    FactForm *factEditForm = new FactForm();
+    FormDialog *factEditDialog = new FormDialog(this, factEditForm, QString("Edit the fact..."), QString("Change"));
+
+    DeleteDialog *factDeleteDialog = new DeleteDialog(this, "Are you sure you want to delete this fact?");
+
+
+
     QVBoxLayout *outerLayout = new QVBoxLayout(this);
 
 
@@ -78,26 +85,26 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
     QHBoxLayout *topLayout = new QHBoxLayout(topWidget);
     topLayout->setContentsMargins(0, 0, 0, 0);
 
-    QLabel *courseLabel = new QLabel("Linear Algebra");
-    QFont courseFont = courseLabel->font();
-    courseFont.setPointSize(38);
-    courseLabel->setFont(courseFont);
+    QLabel *factLabel = new QLabel("Linear Algebra");
+    QFont factFont = factLabel->font();
+    factFont.setPointSize(38);
+    factLabel->setFont(factFont);
 
-    ImageButton *editCourseButton = new ImageButton(QPixmap(":/images/pencil_black.png"), QSize(32, 32));
-    QVBoxLayout *editCourseVLayout = new QVBoxLayout();
-    editCourseVLayout->addSpacing(16);
-    editCourseVLayout->addWidget(editCourseButton);
+    ImageButton *editFactButton = new ImageButton(QPixmap(":/images/pencil_black.png"), QSize(32, 32));
+    QVBoxLayout *editFactVLayout = new QVBoxLayout();
+    editFactVLayout->addSpacing(16);
+    editFactVLayout->addWidget(editFactButton);
 
-    ImageButton *deleteCourseButton = new ImageButton(QPixmap(":/images/trash_black.png"), QSize(32, 32));
-    QVBoxLayout *deleteCourseVLayout = new QVBoxLayout();
-    deleteCourseVLayout->addSpacing(16);
-    deleteCourseVLayout->addWidget(deleteCourseButton);
+    ImageButton *deleteFactButton = new ImageButton(QPixmap(":/images/trash_black.png"), QSize(32, 32));
+    QVBoxLayout *deleteFactVLayout = new QVBoxLayout();
+    deleteFactVLayout->addSpacing(16);
+    deleteFactVLayout->addWidget(deleteFactButton);
 
-    topLayout->addWidget(courseLabel);
+    topLayout->addWidget(factLabel);
     topLayout->addStretch(1);
-    topLayout->addLayout(editCourseVLayout);
+    topLayout->addLayout(editFactVLayout);
     topLayout->addSpacing(10);
-    topLayout->addLayout(deleteCourseVLayout);
+    topLayout->addLayout(deleteFactVLayout);
 
     topBorderLayout->addStretch(1);
     topBorderLayout->addWidget(topWidget);
@@ -119,5 +126,38 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
 
     connect(factsLabel, &ClickableQLabel::clicked, [=](){
         pageStack->setCurrentIndex(1);
+    });
+
+
+
+    connect(editFactButton, &ImageButton::clicked, [=](){
+        std::map<QString, QString> data;
+        data.insert(std::pair<QString, QString>(QString("type"), QString("Definition")));
+        data.insert(std::pair<QString, QString>(QString("name"), QString("Vector space")));
+        factEditForm->setData(data);
+        factEditDialog->show();
+    });
+
+    connect(factEditDialog, &FormDialog::cancelled, [=](){
+        factEditDialog->close();
+    });
+
+    connect(factEditDialog, &FormDialog::completed, [=](std::map<QString, QString> data){
+        std::cout << "Change fact to: " << data[QString("type")].toStdString() << ", " << data[QString("name")].toStdString() << std::endl;
+        factEditDialog->close();
+    });
+
+    connect(deleteFactButton, &ImageButton::clicked, [=](){
+        factDeleteDialog->show();
+    });
+
+    connect(factDeleteDialog, &DeleteDialog::accepted, [=](){
+        std::cout << "Deleted fact" << std::endl;
+        factDeleteDialog->close();
+        pageStack->setCurrentIndex(1);
+    });
+
+    connect(factDeleteDialog, &DeleteDialog::cancelled, [=](){
+        factDeleteDialog->close();
     });
 }

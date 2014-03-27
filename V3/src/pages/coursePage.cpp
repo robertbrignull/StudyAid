@@ -35,7 +35,6 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
 
 
 
-
     QVBoxLayout *outerLayout = new QVBoxLayout(this);
 
 
