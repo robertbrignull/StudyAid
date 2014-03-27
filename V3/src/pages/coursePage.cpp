@@ -48,12 +48,12 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
     crumbLayout->setContentsMargins(0, 0, 0, 0);
 
     ClickableQLabel *coursesLabel = new ClickableQLabel("Courses");
-    QLabel *currentFactLabel = new QLabel(" / Linear Algebra");
+    QLabel *currentCourseLabel = new QLabel(" / Linear Algebra");
 
     QFont font = coursesLabel->font();
     font.setPointSize(14);
     coursesLabel->setFont(font);
-    currentFactLabel->setFont(font);
+    currentCourseLabel->setFont(font);
 
     QPalette palette = coursesLabel->palette();
 
@@ -63,10 +63,10 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
 
     palette.setColor(QPalette::WindowText, Qt::gray);
     palette.setColor(QPalette::Text, Qt::gray);
-    currentFactLabel->setPalette(palette);
+    currentCourseLabel->setPalette(palette);
 
     crumbLayout->addWidget(coursesLabel);
-    crumbLayout->addWidget(currentFactLabel);
+    crumbLayout->addWidget(currentCourseLabel);
     crumbLayout->addStretch(1);
 
     crumbBorderLayout->addStretch(1);
@@ -162,6 +162,8 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
         pageStack->setCurrentIndex(0);
     });
 
+
+
     connect(editCourseButton, &ImageButton::clicked, [=](){
         std::map<QString, QString> data;
         data.insert(std::pair<QString, QString>(QString("name"), QString("Linear Algebra")));
@@ -194,6 +196,7 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
 
     connect(courseWidget, &CourseWidget::viewButtonClicked, [=](int id){
         std::cout << "Fact view button clicked: " << id << std::endl;
+        pageStack->setCurrentIndex(2);
     });
 
 
@@ -201,6 +204,7 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
     connect(factAddDialog, &FormDialog::completed, [=](std::map<QString, QString> data){
         std::cout << "Fact added: " << data[QString("type")].toStdString() << ", " << data[QString("name")].toStdString() << std::endl;
         factAddDialog->close();
+        pageStack->setCurrentIndex(2);
     });
 
     connect(factAddDialog, &FormDialog::cancelled, [=](){
