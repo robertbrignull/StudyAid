@@ -5,6 +5,7 @@
 #include <QPixmap>
 
 class QMouseEvent;
+class ResizableImage;
 
 class ExpandingFactWidget : public QWidget
 {
@@ -27,9 +28,9 @@ private:
 
     int id;
     QString title;
-    QPixmap image, scaledImage;
     bool expanded;
     double currentHeight;
+    ResizableImage *image;
 
     QWidget *headWidget;
     int headWidgetHeight;

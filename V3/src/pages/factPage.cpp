@@ -7,12 +7,14 @@
 #include <QFont>
 #include <QPalette>
 #include <QScrollArea>
+#include <QTextEdit>
 
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/imageButton.h"
 #include "widgets/horizontalSeperator.h"
 #include "widgets/clickableQLabel.h"
 #include "widgets/splitter.h"
+#include "widgets/resizableImage.h"
 #include "dialogs/deleteDialog.h"
 #include "dialogs/formDialog.h"
 #include "forms/factForm.h"
@@ -112,11 +114,37 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
     outerLayout->addLayout(topBorderLayout);
 
 
+
     outerLayout->addSpacing(20);
     outerLayout->addWidget(new HorizontalSeperator(QColor(66, 139, 202), 2));
     outerLayout->addSpacing(20);
 
-    outerLayout->addStretch(1);
+    
+
+    Splitter *splitter = new Splitter(Qt::Vertical);
+    outerLayout->addWidget(splitter);
+    splitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+
+
+    QTextEdit *statementTextEdit = new QTextEdit();
+    splitter->addWidget(statementTextEdit);
+
+
+
+    ResizableImage *renderedStatement = new ResizableImage("images/latex/test.png");
+    QWidget *statementWidget = new QWidget();
+
+    palette = statementWidget->palette();
+    palette.setColor(QPalette::Background, Qt::white);
+    statementWidget->setPalette(palette);
+    statementWidget->setAutoFillBackground(true);
+
+    QHBoxLayout *statementLayout = new QHBoxLayout(statementWidget);
+    // statementLayout->addStretch(1);
+    statementLayout->addWidget(renderedStatement);
+    // statementLayout->addStretch(1);
+    splitter->addWidget(statementWidget);
 
 
 
