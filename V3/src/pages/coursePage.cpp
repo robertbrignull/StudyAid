@@ -14,6 +14,7 @@
 #include "widgets/horizontalSeperator.h"
 #include "widgets/clickableQLabel.h"
 #include "widgets/courseWidget.h"
+#include "widgets/sectionPickerWidget.h"
 #include "widgets/splitter.h"
 #include "dialogs/deleteDialog.h"
 #include "dialogs/formDialog.h"
@@ -128,7 +129,8 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
     QVBoxLayout *pickerScrollLayout = new QVBoxLayout(pickerScrollWidget);
     pickerScrollArea->setWidget(pickerScrollWidget);
 
-    pickerScrollLayout->addWidget(new QLabel("Section picker"));
+    SectionPickerWidget *sectionPicker = new SectionPickerWidget(0, "Linear Algebra");
+    pickerScrollLayout->addWidget(sectionPicker);
     pickerScrollLayout->addStretch(1);
 
 
