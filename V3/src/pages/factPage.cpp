@@ -171,10 +171,12 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
     QVBoxLayout *proofsVLayout = new QVBoxLayout(proofsWidget);
     QHBoxLayout *proofsHLayout;
 
+    ImageButton *viewProofButton = new ImageButton(QPixmap(":/images/arrow_right_black.png"), QSize(24, 24));
+
     proofsHLayout = new QHBoxLayout();
     proofsHLayout->addWidget(new QLabel("Proof"));
     proofsHLayout->addStretch(1);
-    proofsHLayout->addWidget(new ImageButton(QPixmap(":/images/arrow_right_black.png"), QSize(24, 24)));
+    proofsHLayout->addWidget(viewProofButton);
     proofsVLayout->addLayout(proofsHLayout);
 
     proofsHLayout = new QHBoxLayout();
@@ -210,6 +212,12 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
 
     connect(proofAddDialog, &FormDialog::cancelled, [=](){
         proofAddDialog->close();
+    });
+
+
+
+    connect(viewProofButton, &ImageButton::clicked, [=](){
+        pageStack->setCurrentIndex(3);
     });
 
 
