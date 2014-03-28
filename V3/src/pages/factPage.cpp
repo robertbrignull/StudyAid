@@ -18,6 +18,7 @@
 #include "dialogs/deleteDialog.h"
 #include "dialogs/formDialog.h"
 #include "forms/factForm.h"
+#include "forms/proofForm.h"
 
 #include "pages/factPage.h"
 
@@ -28,6 +29,8 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
     FormDialog *factEditDialog = new FormDialog(this, factEditForm, QString("Edit the fact..."), QString("Change"));
 
     DeleteDialog *factDeleteDialog = new DeleteDialog(this, "Are you sure you want to delete this fact?");
+
+    FormDialog *proofAddDialog = new FormDialog(this, new ProofForm(), QString("Add a new proof..."), QString("Add"));
 
 
 
@@ -92,6 +95,11 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
     factFont.setPointSize(38);
     factLabel->setFont(factFont);
 
+    ImageButton *addProofButton = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(32, 32));
+    QVBoxLayout *addProofVLayout = new QVBoxLayout();
+    addProofVLayout->addSpacing(16);
+    addProofVLayout->addWidget(addProofButton);
+
     ImageButton *editFactButton = new ImageButton(QPixmap(":/images/pencil_black.png"), QSize(32, 32));
     QVBoxLayout *editFactVLayout = new QVBoxLayout();
     editFactVLayout->addSpacing(16);
@@ -104,6 +112,8 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
 
     topLayout->addWidget(factLabel);
     topLayout->addStretch(1);
+    topLayout->addLayout(addProofVLayout);
+    topLayout->addSpacing(10);
     topLayout->addLayout(editFactVLayout);
     topLayout->addSpacing(10);
     topLayout->addLayout(deleteFactVLayout);
@@ -128,11 +138,14 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
 
 
     QTextEdit *statementTextEdit = new QTextEdit();
+    font = statementTextEdit->font();
+    font.setPointSize(12);
+    statementTextEdit->setFont(font);
+    statementTextEdit->setText("Let $X,Y,Z$ be sets with strict total orders\n\\begin{enumerate}\n\\item If $f:X\\to Y$ is an order-isomorphism, then so is its inverse\n\\item If $f:X\\to Y$, $g:Y\\to Z$ are order-isomorphisms, then so if $g\\circ f:X\\to Z$\n\\item If $X$ is well-ordered, then any subset $Z\\subseteq X$ is well-ordered by restriction\n\\end{enumerate}");
     splitter->addWidget(statementTextEdit);
 
 
 
-    ResizableImage *renderedStatement = new ResizableImage("images/latex/test.png");
     QWidget *statementWidget = new QWidget();
 
     palette = statementWidget->palette();
@@ -142,9 +155,36 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
 
     QHBoxLayout *statementLayout = new QHBoxLayout(statementWidget);
     statementLayout->addStretch(1);
-    statementLayout->addWidget(renderedStatement);
+    statementLayout->addWidget(new ResizableImage("images/latex/test.png"));
     statementLayout->addStretch(1);
     splitter->addWidget(statementWidget);
+
+
+
+    QWidget *proofsWidget = new QWidget();
+
+    palette = proofsWidget->palette();
+    palette.setColor(QPalette::Background, Qt::white);
+    proofsWidget->setPalette(palette);
+    proofsWidget->setAutoFillBackground(true);
+
+    QVBoxLayout *proofsVLayout = new QVBoxLayout(proofsWidget);
+    QHBoxLayout *proofsHLayout;
+
+    proofsHLayout = new QHBoxLayout();
+    proofsHLayout->addWidget(new QLabel("Proof"));
+    proofsHLayout->addStretch(1);
+    proofsHLayout->addWidget(new ImageButton(QPixmap(":/images/arrow_right_black.png"), QSize(24, 24)));
+    proofsVLayout->addLayout(proofsHLayout);
+
+    proofsHLayout = new QHBoxLayout();
+    proofsHLayout->addStretch(1);
+    proofsHLayout->addWidget(new ResizableImage("images/latex/test.png"));
+    proofsHLayout->addStretch(1);
+    proofsVLayout->addLayout(proofsHLayout);
+
+    proofsVLayout->addStretch(1);
+    splitter->addWidget(proofsWidget);
 
 
 
@@ -154,6 +194,22 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
 
     connect(factsLabel, &ClickableQLabel::clicked, [=](){
         pageStack->setCurrentIndex(1);
+    });
+
+
+
+    connect(addProofButton, &ImageButton::clicked, [=](){
+        proofAddDialog->show();
+    });
+
+    connect(proofAddDialog, &FormDialog::completed, [=](std::map<QString, QString> data){
+        std::cout << "Proof added: " << data[QString("name")].toStdString() << std::endl;
+        proofAddDialog->close();
+        pageStack->setCurrentIndex(3);
+    });
+
+    connect(proofAddDialog, &FormDialog::cancelled, [=](){
+        proofAddDialog->close();
     });
 
 
