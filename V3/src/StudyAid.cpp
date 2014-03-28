@@ -27,7 +27,6 @@ StudyAid::StudyAid(QWidget *parent)
     QHBoxLayout *layout = new QHBoxLayout(this);
 
     ResizableStackedWidget *stack = new ResizableStackedWidget();
-    connect(stack, SIGNAL(currentChanged(int)), stack, SLOT(onCurrentChanged(int)));
 
     layout->addWidget(stack);
 

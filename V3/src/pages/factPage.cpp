@@ -146,6 +146,10 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
 
 
 
+    QScrollArea *statementScrollArea = new QScrollArea();
+    statementScrollArea->setWidgetResizable(true);
+    statementScrollArea->setFrameShape(QFrame::NoFrame);
+
     QWidget *statementWidget = new QWidget();
 
     palette = statementWidget->palette();
@@ -153,13 +157,24 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
     statementWidget->setPalette(palette);
     statementWidget->setAutoFillBackground(true);
 
-    QHBoxLayout *statementLayout = new QHBoxLayout(statementWidget);
-    statementLayout->addStretch(1);
-    statementLayout->addWidget(new ResizableImage("images/latex/test.png"));
-    statementLayout->addStretch(1);
-    splitter->addWidget(statementWidget);
+    QHBoxLayout *statementHLayout = new QHBoxLayout();
+    statementHLayout->addStretch(1);
+    statementHLayout->addWidget(new ResizableImage("images/latex/test.png"));
+    statementHLayout->addStretch(1);
+
+    QVBoxLayout *statementVLayout = new QVBoxLayout();
+    statementVLayout->addLayout(statementHLayout);
+    statementVLayout->addStretch(1);
+
+    statementWidget->setLayout(statementVLayout);
+    statementScrollArea->setWidget(statementWidget);
+    splitter->addWidget(statementScrollArea);
 
 
+
+    QScrollArea *proofsScrollArea = new QScrollArea();
+    proofsScrollArea->setWidgetResizable(true);
+    proofsScrollArea->setFrameShape(QFrame::NoFrame);
 
     QWidget *proofsWidget = new QWidget();
 
@@ -168,7 +183,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
     proofsWidget->setPalette(palette);
     proofsWidget->setAutoFillBackground(true);
 
-    QVBoxLayout *proofsVLayout = new QVBoxLayout(proofsWidget);
+    QVBoxLayout *proofsVLayout = new QVBoxLayout();
     QHBoxLayout *proofsHLayout;
 
     ImageButton *viewProofButton = new ImageButton(QPixmap(":/images/arrow_right_black.png"), QSize(24, 24));
@@ -186,7 +201,10 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
     proofsVLayout->addLayout(proofsHLayout);
 
     proofsVLayout->addStretch(1);
-    splitter->addWidget(proofsWidget);
+
+    proofsWidget->setLayout(proofsVLayout);
+    proofsScrollArea->setWidget(proofsWidget);
+    splitter->addWidget(proofsScrollArea);
 
 
 

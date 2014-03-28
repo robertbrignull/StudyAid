@@ -9,6 +9,8 @@ void ResizableStackedWidget::addWidget(QWidget* pWidget)
 {
     pWidget->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     QStackedWidget::addWidget(pWidget);
+
+    connect(this, SIGNAL(currentChanged(int)), this, SLOT(onCurrentChanged(int)));
 }
 
 void ResizableStackedWidget::onCurrentChanged(int index)

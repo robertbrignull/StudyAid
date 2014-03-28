@@ -11,6 +11,8 @@ ResizableImage::ResizableImage(QString filename, QWidget *parent)
     this->filename = filename;
     image = QPixmap(filename);
     setWidth(image.size().width());
+
+    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 }
 
 void ResizableImage::reloadImage()
