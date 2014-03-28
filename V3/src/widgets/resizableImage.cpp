@@ -10,8 +10,7 @@ ResizableImage::ResizableImage(QString filename, QWidget *parent)
 {
     this->filename = filename;
     image = QPixmap(filename);
-    imageSize = image.size();
-    scaledImage = image.scaledToWidth(image.width(), Qt::SmoothTransformation);
+    setWidth(image.size().width());
 }
 
 void ResizableImage::reloadImage()
@@ -22,6 +21,8 @@ void ResizableImage::reloadImage()
 
 void ResizableImage::setWidth(int width)
 {
+    if (width > 1000) { width = 1000; }
+
     scaledImage = image.scaledToWidth(width, Qt::SmoothTransformation);
     imageSize = QSize(width, width * scaledImage.height() / scaledImage.width());
 }

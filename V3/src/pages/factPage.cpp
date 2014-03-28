@@ -141,9 +141,9 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
     statementWidget->setAutoFillBackground(true);
 
     QHBoxLayout *statementLayout = new QHBoxLayout(statementWidget);
-    // statementLayout->addStretch(1);
+    statementLayout->addStretch(1);
     statementLayout->addWidget(renderedStatement);
-    // statementLayout->addStretch(1);
+    statementLayout->addStretch(1);
     splitter->addWidget(statementWidget);
 
 

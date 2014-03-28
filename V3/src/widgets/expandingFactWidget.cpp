@@ -59,7 +59,7 @@ ExpandingFactWidget::ExpandingFactWidget(int id, QString title, QWidget *parent)
 
     image = new ResizableImage("images/latex/test.png", this);
     image->setWidth(size().width() - border*2);
-    image->setGeometry(border, headWidgetHeight + border, image->sizeHint().width(), image->sizeHint().height());
+    image->setGeometry((size().width() - image->sizeHint().width()) / 2, headWidgetHeight + border, image->sizeHint().width(), image->sizeHint().height());
 
 
 
@@ -98,7 +98,7 @@ void ExpandingFactWidget::resizeEvent(QResizeEvent *event)
     headWidget->setGeometry(0, 0, event->size().width(), headWidgetHeight);
 
     image->setWidth(size().width() - border*2);
-    image->setGeometry(border, headWidgetHeight + border, image->sizeHint().width(), image->sizeHint().height());
+    image->setGeometry((size().width() - image->sizeHint().width()) / 2, headWidgetHeight + border, image->sizeHint().width(), image->sizeHint().height());
 
     setFixedHeight(headWidgetHeight + (image->sizeHint().height() + border*2) * currentHeight);
 }
