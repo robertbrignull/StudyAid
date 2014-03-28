@@ -15,6 +15,7 @@
 #include "widgets/clickableQLabel.h"
 #include "widgets/splitter.h"
 #include "widgets/resizableImage.h"
+#include "widgets/dependenciesWidget.h"
 #include "dialogs/deleteDialog.h"
 #include "dialogs/formDialog.h"
 #include "forms/proofForm.h"
@@ -129,7 +130,54 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, QWidget *parent)
 
 
 
-    outerLayout->addStretch(1);
+    Splitter *splitter = new Splitter(Qt::Vertical);
+    outerLayout->addWidget(splitter);
+    splitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+
+
+    QTextEdit *bodyTextEdit = new QTextEdit();
+    font = bodyTextEdit->font();
+    font.setPointSize(12);
+    bodyTextEdit->setFont(font);
+    bodyTextEdit->setText("Let $X,Y,Z$ be sets with strict total orders\n\\begin{enumerate}\n\\item If $f:X\\to Y$ is an order-isomorphism, then so is its inverse\n\\item If $f:X\\to Y$, $g:Y\\to Z$ are order-isomorphisms, then so if $g\\circ f:X\\to Z$\n\\item If $X$ is well-ordered, then any subset $Z\\subseteq X$ is well-ordered by restriction\n\\end{enumerate}");
+    splitter->addWidget(bodyTextEdit);
+
+
+
+    QScrollArea *bodyScrollArea = new QScrollArea();
+    bodyScrollArea->setWidgetResizable(true);
+    bodyScrollArea->setFrameShape(QFrame::NoFrame);
+
+    QWidget *bodyWidget = new QWidget();
+
+    palette = bodyWidget->palette();
+    palette.setColor(QPalette::Background, Qt::white);
+    bodyWidget->setPalette(palette);
+    bodyWidget->setAutoFillBackground(true);
+
+    QHBoxLayout *bodyHLayout = new QHBoxLayout();
+    bodyHLayout->addStretch(1);
+    bodyHLayout->addWidget(new ResizableImage("images/latex/test.png"));
+    bodyHLayout->addStretch(1);
+
+    QVBoxLayout *bodyVLayout = new QVBoxLayout();
+    bodyVLayout->addLayout(bodyHLayout);
+    bodyVLayout->addStretch(1);
+
+    bodyWidget->setLayout(bodyVLayout);
+    bodyScrollArea->setWidget(bodyWidget);
+    splitter->addWidget(bodyScrollArea);
+
+
+
+    QScrollArea *depsScrollArea = new QScrollArea();
+    depsScrollArea->setWidgetResizable(true);
+    depsScrollArea->setFrameShape(QFrame::NoFrame);
+
+    DependenciesWidget *depsWidget = new DependenciesWidget();
+    depsScrollArea->setWidget(depsWidget);
+    splitter->addWidget(depsScrollArea);
 
     
 
@@ -175,5 +223,12 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, QWidget *parent)
 
     connect(proofDeleteDialog, &DeleteDialog::cancelled, [=](){
         proofDeleteDialog->close();
+    });
+
+
+
+    connect(depsWidget, &DependenciesWidget::viewButtonClicked, [=](int id){
+        std::cout << "Selecting fact: " << id << std::endl;
+        pageStack->setCurrentIndex(2);
     });
 }
