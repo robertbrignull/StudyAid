@@ -9,7 +9,6 @@
 #include <QPushButton>
 #include <QStackedWidget>
 #include <QScrollArea>
-#include <QString>
 
 #include "widgets/courseTitleWidget.h"
 #include "widgets/resizableStackedWidget.h"
@@ -23,7 +22,7 @@
 RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
     : QWidget(parent)
 {
-    FormDialog *courseAddDialog = new FormDialog(this, new CourseForm(), QString("Add a new course..."), QString("Add"));
+    FormDialog *courseAddDialog = new FormDialog(this, new CourseForm(), "Add a new course...", "Add");
 
 
 
@@ -87,15 +86,15 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
     scrollArea->setWidget(scrollWidget);
     innerLayout->addWidget(scrollArea);
 
-    CourseTitleWidget *courseTitleWidget1 = new CourseTitleWidget(0, "Part A: Linear Algebra");
+    CourseTitleWidget *courseTitleWidget1 = new CourseTitleWidget("Part A: Linear Algebra");
     connect(courseTitleWidget1, &CourseTitleWidget::viewButtonClicked, [=](){ pageStack->setCurrentIndex(1); });
     scrollLayout->addWidget(courseTitleWidget1);
 
-    CourseTitleWidget *courseTitleWidget2 = new CourseTitleWidget(0, "Part A: Complex Analysis");
+    CourseTitleWidget *courseTitleWidget2 = new CourseTitleWidget("Part A: Complex Analysis");
     connect(courseTitleWidget2, &CourseTitleWidget::viewButtonClicked, [=](){ pageStack->setCurrentIndex(1); });
     scrollLayout->addWidget(courseTitleWidget2);
 
-    CourseTitleWidget *courseTitleWidget3 = new CourseTitleWidget(0, "Part B: Set Theory");
+    CourseTitleWidget *courseTitleWidget3 = new CourseTitleWidget("Part B: Set Theory");
     connect(courseTitleWidget3, &CourseTitleWidget::viewButtonClicked, [=](){ pageStack->setCurrentIndex(1); });
     scrollLayout->addWidget(courseTitleWidget3);
 
@@ -107,8 +106,8 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
         courseAddDialog->show();
     });
 
-    connect(courseAddDialog, &FormDialog::completed, [=](std::map<QString, QString> data){
-        std::cout << "Added course: " << data[QString("name")].toStdString() << std::endl;
+    connect(courseAddDialog, &FormDialog::completed, [=](std::map<std::string, std::string> data){
+        std::cout << "Added course: " << data.at("name") << std::endl;
         courseAddDialog->close();
         pageStack->setCurrentIndex(1);
     });

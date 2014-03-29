@@ -8,15 +8,15 @@
 
 #include "widgets/sectionWidget.h"
 
-SectionWidget::SectionWidget(int id, QString title, QWidget *parent)
+SectionWidget::SectionWidget(int id, std::string title, QWidget *parent)
     : QWidget(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
 
-    layout->addWidget(new QLabel(title));
+    layout->addWidget(new QLabel(QString::fromStdString(title)));
 
-    ExpandingFactWidget *fact1 = new ExpandingFactWidget(id, "Dependent fact 1");
-    ExpandingFactWidget *fact2 = new ExpandingFactWidget(id+1, "Dependent fact 2");
+    ExpandingFactWidget *fact1 = new ExpandingFactWidget("Dependent fact 1");
+    ExpandingFactWidget *fact2 = new ExpandingFactWidget("Dependent fact 2");
 
     layout->addWidget(fact1);
     layout->addWidget(fact2);

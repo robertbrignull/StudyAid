@@ -1,14 +1,15 @@
 #pragma once
 
+#include <iostream>
+
 #include <QWidget>
-#include <QString>
 
 class SectionWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    SectionWidget(int id, QString title, QWidget *parent = 0);
+    SectionWidget(int id, std::string title, QWidget *parent = 0);
 
     void paintEvent(QPaintEvent *);
 

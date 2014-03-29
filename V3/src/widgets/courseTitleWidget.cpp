@@ -9,12 +9,9 @@
 
 #include "widgets/courseTitleWidget.h"
 
-CourseTitleWidget::CourseTitleWidget(int id, QString name, QWidget *parent)
+CourseTitleWidget::CourseTitleWidget(std::string name, QWidget *parent)
     : QWidget(parent)
 {
-    this->id = id;
-    this->name = name;
-
     headColor = QColor(66, 139, 202);
     borderColor = QColor(66, 139, 202);
     radius = 4;
@@ -24,7 +21,7 @@ CourseTitleWidget::CourseTitleWidget(int id, QString name, QWidget *parent)
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(16, 8, 16, 8);
 
-    QLabel *label = new QLabel(name);
+    QLabel *label = new QLabel(QString::fromStdString(name));
     label->setWordWrap(true);
 
     QFont font = label->font();

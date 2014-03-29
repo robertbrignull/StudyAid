@@ -17,16 +17,16 @@ ProofForm::ProofForm(QWidget *parent)
     layout->addStretch(1);
 }
 
-void ProofForm::setData(std::map<QString, QString> data)
+void ProofForm::setData(std::map<std::string, std::string> data)
 {
-    nameInput->setText(data[QString("name")]);
+    nameInput->setText(QString::fromStdString(data.at("name")));
 }
 
-std::map<QString, QString> ProofForm::getData()
+std::map<std::string, std::string> ProofForm::getData()
 {
-    std::map<QString, QString> data;
+    std::map<std::string, std::string> data;
 
-    data.insert(std::pair<QString, QString>(QString("name"), nameInput->text()));
+    data.insert(std::pair<std::string, std::string>("name", nameInput->text().toStdString()));
 
     return data;
 }

@@ -13,7 +13,7 @@ CourseWidget::CourseWidget(QWidget *parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
 
-    ExpandingFactWidget *fact = new ExpandingFactWidget(0, "Independent fact");
+    ExpandingFactWidget *fact = new ExpandingFactWidget("Independent fact");
     SectionWidget *section1 = new SectionWidget(1, "Section 1");
     SectionWidget *section2 = new SectionWidget(3, "Section 2");
 

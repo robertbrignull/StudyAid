@@ -22,14 +22,14 @@ FactForm::FactForm(QWidget *parent)
     QHBoxLayout *typeRightLayout = new QHBoxLayout();
 
     typeInput = new QComboBox();
-    typeInput->addItem(QString("Axiom"));
-    typeInput->addItem(QString("Definition"));
-    typeInput->addItem(QString("Proposition"));
-    typeInput->addItem(QString("Lemma"));
-    typeInput->addItem(QString("Theorem"));
-    typeInput->addItem(QString("Corollary"));
-    typeInput->addItem(QString("Example"));
-    typeInput->addItem(QString("Remark"));
+    typeInput->addItem("Axiom");
+    typeInput->addItem("Definition");
+    typeInput->addItem("Proposition");
+    typeInput->addItem("Lemma");
+    typeInput->addItem("Theorem");
+    typeInput->addItem("Corollary");
+    typeInput->addItem("Example");
+    typeInput->addItem("Remark");
 
     typeLeftLayout->addStretch(1);
     typeLeftLayout->addWidget(new QLabel("Type: "));
@@ -55,20 +55,20 @@ FactForm::FactForm(QWidget *parent)
     gridLayout->addLayout(nameRightLayout, 1, 1);
 }
 
-void FactForm::setData(std::map<QString, QString> data)
+void FactForm::setData(std::map<std::string, std::string> data)
 {
-    int i = typeInput->findText(data[QString("type")]);
+    int i = typeInput->findText(QString::fromStdString(data.at("type")));
     typeInput->setCurrentIndex((i != -1) ? i : 0);
 
-    nameInput->setText(data[QString("name")]);
+    nameInput->setText(QString::fromStdString(data.at("name")));
 }
 
-std::map<QString, QString> FactForm::getData()
+std::map<std::string, std::string> FactForm::getData()
 {
-    std::map<QString, QString> data;
+    std::map<std::string, std::string> data;
 
-    data.insert(std::pair<QString, QString>(QString("type"), typeInput->currentText()));
-    data.insert(std::pair<QString, QString>(QString("name"), nameInput->text()));
+    data.insert(std::pair<std::string, std::string>("type", typeInput->currentText().toStdString()));
+    data.insert(std::pair<std::string, std::string>("name", nameInput->text().toStdString()));
 
     return data;
 }

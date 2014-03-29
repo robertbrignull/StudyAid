@@ -9,7 +9,7 @@
 
 #include "dialogs/formDialog.h"
 
-FormDialog::FormDialog(QWidget *parent, Form *form, QString topText, QString buttonText)
+FormDialog::FormDialog(QWidget *parent, Form *form, std::string topText, std::string buttonText)
     : QDialog(parent)
 {
     setFixedWidth(500);
@@ -19,7 +19,7 @@ FormDialog::FormDialog(QWidget *parent, Form *form, QString topText, QString but
 
     QVBoxLayout *layout = new QVBoxLayout(this);
 
-    layout->addWidget(new QLabel(topText));
+    layout->addWidget(new QLabel(QString::fromStdString(topText)));
 
     layout->addSpacing(15);
     layout->addWidget(new HorizontalSeperator(QColor(200, 200, 200), 1));
@@ -32,7 +32,7 @@ FormDialog::FormDialog(QWidget *parent, Form *form, QString topText, QString but
     layout->addSpacing(15);
 
     QPushButton *cancelButton = new QPushButton("Cancel");
-    QPushButton *completeButton = new QPushButton(buttonText);
+    QPushButton *completeButton = new QPushButton(QString::fromStdString(buttonText));
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     buttonLayout->addWidget(cancelButton);

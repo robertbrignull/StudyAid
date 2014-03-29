@@ -26,11 +26,11 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
     : QWidget(parent)
 {
     FactForm *factEditForm = new FactForm();
-    FormDialog *factEditDialog = new FormDialog(this, factEditForm, QString("Edit the fact..."), QString("Change"));
+    FormDialog *factEditDialog = new FormDialog(this, factEditForm, "Edit the fact...", "Change");
 
     DeleteDialog *factDeleteDialog = new DeleteDialog(this, "Are you sure you want to delete this fact?");
 
-    FormDialog *proofAddDialog = new FormDialog(this, new ProofForm(), QString("Add a new proof..."), QString("Add"));
+    FormDialog *proofAddDialog = new FormDialog(this, new ProofForm(), "Add a new proof...", "Add");
 
 
 
@@ -222,8 +222,8 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
         proofAddDialog->show();
     });
 
-    connect(proofAddDialog, &FormDialog::completed, [=](std::map<QString, QString> data){
-        std::cout << "Proof added: " << data[QString("name")].toStdString() << std::endl;
+    connect(proofAddDialog, &FormDialog::completed, [=](std::map<std::string, std::string> data){
+        std::cout << "Proof added: " << data.at("name") << std::endl;
         proofAddDialog->close();
         pageStack->setCurrentIndex(3);
     });
@@ -241,9 +241,9 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
 
 
     connect(editFactButton, &ImageButton::clicked, [=](){
-        std::map<QString, QString> data;
-        data.insert(std::pair<QString, QString>(QString("type"), QString("Definition")));
-        data.insert(std::pair<QString, QString>(QString("name"), QString("Vector space")));
+        std::map<std::string, std::string> data;
+        data.insert(std::pair<std::string, std::string>("type", "Definition"));
+        data.insert(std::pair<std::string, std::string>("name", "Vector space"));
         factEditForm->setData(data);
         factEditDialog->show();
     });
@@ -252,8 +252,8 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
         factEditDialog->close();
     });
 
-    connect(factEditDialog, &FormDialog::completed, [=](std::map<QString, QString> data){
-        std::cout << "Change fact to: " << data[QString("type")].toStdString() << ", " << data[QString("name")].toStdString() << std::endl;
+    connect(factEditDialog, &FormDialog::completed, [=](std::map<std::string, std::string> data){
+        std::cout << "Change fact to: " << data.at("type") << ", " << data.at("name") << std::endl;
         factEditDialog->close();
     });
 

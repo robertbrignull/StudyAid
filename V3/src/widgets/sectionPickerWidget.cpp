@@ -3,7 +3,6 @@
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include <QString>
 
 #include "widgets/clickableQLabel.h"
 #include "widgets/imageButton.h"
@@ -11,7 +10,7 @@
 
 #include "widgets/sectionPickerWidget.h"
 
-SectionPickerWidget::SectionPickerWidget(int id, QString courseName, FormDialog *factAddDialog, QWidget *parent)
+SectionPickerWidget::SectionPickerWidget(int id, std::string courseName, FormDialog *factAddDialog, QWidget *parent)
     : QWidget(parent)
 {
     QHBoxLayout *courseLayout = new QHBoxLayout();

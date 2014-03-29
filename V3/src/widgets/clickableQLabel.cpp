@@ -5,8 +5,8 @@
 
 #include "widgets/clickableQLabel.h"
 
-ClickableQLabel::ClickableQLabel(QString text, QWidget *parent)
-    : QLabel(text, parent)
+ClickableQLabel::ClickableQLabel(std::string text, QWidget *parent)
+    : QLabel(QString::fromStdString(text), parent)
 {
 
 }

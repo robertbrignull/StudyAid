@@ -1,6 +1,7 @@
 #pragma once
 
-#include "map"
+#include <iostream>
+#include <map>
 
 #include <QDialog>
 #include <QString>
@@ -12,9 +13,9 @@ class FormDialog : public QDialog
     Q_OBJECT
 
 public:
-    FormDialog(QWidget *parent, Form *form, QString topText, QString buttonText);
+    FormDialog(QWidget *parent, Form *form, std::string topText, std::string buttonText);
 
 signals:
-    void completed(std::map<QString, QString> data);
+    void completed(std::map<std::string, std::string> data);
     void cancelled();
 };

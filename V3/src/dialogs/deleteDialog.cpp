@@ -9,7 +9,7 @@
 
 #include "dialogs/deleteDialog.h"
 
-DeleteDialog::DeleteDialog(QWidget *parent, QString text)
+DeleteDialog::DeleteDialog(QWidget *parent, std::string text)
     : QDialog(parent)
 {
     setFixedWidth(500);
@@ -19,7 +19,7 @@ DeleteDialog::DeleteDialog(QWidget *parent, QString text)
 
     QVBoxLayout *layout = new QVBoxLayout(this);
 
-    QLabel *label = new QLabel(text);
+    QLabel *label = new QLabel(QString::fromStdString(text));
     label->setAlignment(Qt::AlignCenter);
     layout->addWidget(label);
 

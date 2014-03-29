@@ -12,12 +12,9 @@
 
 #include "widgets/expandingFactWidget.h"
 
-ExpandingFactWidget::ExpandingFactWidget(int id, QString title, QWidget *parent)
+ExpandingFactWidget::ExpandingFactWidget(std::string title, QWidget *parent)
     : QWidget(parent)
 {
-    this->id = id;
-    this->title = title;
-
     headColor = QColor(66, 139, 202);
     bodyColor = Qt::white;
     borderColor = QColor(66, 139, 202);
@@ -33,7 +30,7 @@ ExpandingFactWidget::ExpandingFactWidget(int id, QString title, QWidget *parent)
     QHBoxLayout *headLayout = new QHBoxLayout(headWidget);
     headLayout->setContentsMargins(16, 8, 16, 8);
 
-    QLabel *label = new QLabel(title);
+    QLabel *label = new QLabel(QString::fromStdString(title));
     label->setWordWrap(true);
 
     QFont font = label->font();

@@ -27,11 +27,11 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
     : QWidget(parent)
 {
     CourseForm *courseEditForm = new CourseForm();
-    FormDialog *courseEditDialog = new FormDialog(this, courseEditForm, QString("Edit the course..."), QString("Change"));
+    FormDialog *courseEditDialog = new FormDialog(this, courseEditForm, "Edit the course...", "Change");
 
     DeleteDialog *courseDeleteDialog = new DeleteDialog(this, "Are you sure you want to delete this course?");
 
-    FormDialog *factAddDialog = new FormDialog(this, new FactForm(), QString("Add a new fact..."), QString("Add"));
+    FormDialog *factAddDialog = new FormDialog(this, new FactForm(), "Add a new fact...", "Add");
 
 
 
@@ -164,8 +164,8 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
 
 
     connect(editCourseButton, &ImageButton::clicked, [=](){
-        std::map<QString, QString> data;
-        data.insert(std::pair<QString, QString>(QString("name"), QString("Linear Algebra")));
+        std::map<std::string, std::string> data;
+        data.insert(std::pair<std::string, std::string>("name", "Linear Algebra"));
         courseEditForm->setData(data);
         courseEditDialog->show();
     });
@@ -174,8 +174,8 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
         courseEditDialog->close();
     });
 
-    connect(courseEditDialog, &FormDialog::completed, [=](std::map<QString, QString> data){
-        std::cout << "Change course name to: " << data[QString("name")].toStdString() << std::endl;
+    connect(courseEditDialog, &FormDialog::completed, [=](std::map<std::string, std::string> data){
+        std::cout << "Change course name to: " << data.at("name") << std::endl;
         courseEditDialog->close();
     });
 
@@ -200,8 +200,8 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
 
 
 
-    connect(factAddDialog, &FormDialog::completed, [=](std::map<QString, QString> data){
-        std::cout << "Fact added: " << data[QString("type")].toStdString() << ", " << data[QString("name")].toStdString() << std::endl;
+    connect(factAddDialog, &FormDialog::completed, [=](std::map<std::string, std::string> data){
+        std::cout << "Fact added: " << data.at("type") << ", " << data.at("name") << std::endl;
         factAddDialog->close();
         pageStack->setCurrentIndex(2);
     });

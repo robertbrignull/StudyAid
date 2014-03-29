@@ -1,7 +1,8 @@
 #pragma once
 
+#include <iostream>
+
 #include <QWidget>
-#include <QString>
 #include <QPixmap>
 
 class CourseTitleWidget : public QWidget
@@ -9,7 +10,7 @@ class CourseTitleWidget : public QWidget
     Q_OBJECT
 
 public:
-    CourseTitleWidget(int id, QString name, QWidget *parent = 0);
+    CourseTitleWidget(std::string name, QWidget *parent = 0);
 
     void paintEvent(QPaintEvent *);
 
@@ -17,9 +18,6 @@ signals:
     void viewButtonClicked();
 
 private:
-    int id;
-    QString name;
-
     int radius;
     QColor headColor, borderColor;
 };

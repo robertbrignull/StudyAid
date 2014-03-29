@@ -521,15 +521,15 @@ compiler_rcc_clean:
 	-$(DEL_FILE) qrc_resources.cpp
 qrc_resources.cpp: resources.qrc \
 		images/pencil_black.png \
+		images/arrow_right_white.png \
 		images/triangle_left_black.png \
-		images/triangle_up_black.png \
+		images/arrow_right_black.png \
 		images/plus_black.png \
 		images/cross_black.png \
-		images/arrow_right_white.png \
+		images/trash_black.png \
+		images/triangle_up_black.png \
 		images/triangle_right_black.png \
-		images/triangle_down_black.png \
-		images/arrow_right_black.png \
-		images/trash_black.png
+		images/triangle_down_black.png
 	/usr/local/qt5/bin/rcc -name resources resources.qrc -o qrc_resources.cpp
 
 compiler_moc_header_make_all: moc/moc_StudyAid.cpp moc/moc_coursePage.cpp moc/moc_factPage.cpp moc/moc_proofPage.cpp moc/moc_rootPage.cpp moc/moc_clickableQLabel.cpp moc/moc_courseTitleWidget.cpp moc/moc_courseWidget.cpp moc/moc_dependenciesWidget.cpp moc/moc_expandingFactWidget.cpp moc/moc_horizontalSeperator.cpp moc/moc_imageButton.cpp moc/moc_resizableImage.cpp moc/moc_resizableStackedWidget.cpp moc/moc_sectionPickerWidget.cpp moc/moc_sectionWidget.cpp moc/moc_splitter.cpp moc/moc_courseForm.cpp moc/moc_factForm.cpp moc/moc_form.cpp moc/moc_proofForm.cpp moc/moc_deleteDialog.cpp moc/moc_formDialog.cpp
