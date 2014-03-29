@@ -495,7 +495,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d obj/StudyAid1.0.0 || mkdir -p obj/StudyAid1.0.0
-	$(COPY_FILE) --parents $(SOURCES) $(DIST) obj/StudyAid1.0.0/ && $(COPY_FILE) --parents resources.qrc obj/StudyAid1.0.0/ && $(COPY_FILE) --parents src/StudyAid.h src/pages/coursePage.h src/pages/factPage.h src/pages/proofPage.h src/pages/rootPage.h src/database/setup.h src/widgets/clickableQLabel.h src/widgets/courseTitleWidget.h src/widgets/courseWidget.h src/widgets/dependenciesWidget.h src/widgets/expandingFactWidget.h src/widgets/horizontalSeperator.h src/widgets/imageButton.h src/widgets/resizableImage.h src/widgets/resizableStackedWidget.h src/widgets/sectionPickerWidget.h src/widgets/sectionWidget.h src/widgets/splitter.h src/forms/courseForm.h src/forms/factForm.h src/forms/form.h src/forms/proofForm.h src/dialogs/deleteDialog.h src/dialogs/formDialog.h obj/StudyAid1.0.0/ && $(COPY_FILE) --parents src/StudyAid.cpp src/pages/coursePage.cpp src/pages/factPage.cpp src/pages/proofPage.cpp src/pages/rootPage.cpp src/database/setup.cpp src/widgets/clickableQLabel.cpp src/widgets/courseTitleWidget.cpp src/widgets/courseWidget.cpp src/widgets/dependenciesWidget.cpp src/widgets/expandingFactWidget.cpp src/widgets/imageButton.cpp src/widgets/resizableImage.cpp src/widgets/resizableStackedWidget.cpp src/widgets/sectionPickerWidget.cpp src/widgets/sectionWidget.cpp src/widgets/splitter.cpp src/forms/courseForm.cpp src/forms/factForm.cpp src/forms/proofForm.cpp src/dialogs/deleteDialog.cpp src/dialogs/formDialog.cpp obj/StudyAid1.0.0/ && (cd `dirname obj/StudyAid1.0.0` && $(TAR) StudyAid1.0.0.tar StudyAid1.0.0 && $(COMPRESS) StudyAid1.0.0.tar) && $(MOVE) `dirname obj/StudyAid1.0.0`/StudyAid1.0.0.tar.gz . && $(DEL_FILE) -r obj/StudyAid1.0.0
+	$(COPY_FILE) --parents $(SOURCES) $(DIST) obj/StudyAid1.0.0/ && $(COPY_FILE) --parents resources.qrc obj/StudyAid1.0.0/ && $(COPY_FILE) --parents src/StudyAid.h src/pages/coursePage.h src/pages/factPage.h src/pages/proofPage.h src/pages/rootPage.h src/database/methods.h src/database/setup.h src/database/structures.h src/widgets/clickableQLabel.h src/widgets/courseTitleWidget.h src/widgets/courseWidget.h src/widgets/dependenciesWidget.h src/widgets/expandingFactWidget.h src/widgets/horizontalSeperator.h src/widgets/imageButton.h src/widgets/resizableImage.h src/widgets/resizableStackedWidget.h src/widgets/sectionPickerWidget.h src/widgets/sectionWidget.h src/widgets/splitter.h src/forms/courseForm.h src/forms/factForm.h src/forms/form.h src/forms/proofForm.h src/dialogs/deleteDialog.h src/dialogs/formDialog.h obj/StudyAid1.0.0/ && $(COPY_FILE) --parents src/StudyAid.cpp src/pages/coursePage.cpp src/pages/factPage.cpp src/pages/proofPage.cpp src/pages/rootPage.cpp src/database/setup.cpp src/widgets/clickableQLabel.cpp src/widgets/courseTitleWidget.cpp src/widgets/courseWidget.cpp src/widgets/dependenciesWidget.cpp src/widgets/expandingFactWidget.cpp src/widgets/imageButton.cpp src/widgets/resizableImage.cpp src/widgets/resizableStackedWidget.cpp src/widgets/sectionPickerWidget.cpp src/widgets/sectionWidget.cpp src/widgets/splitter.cpp src/forms/courseForm.cpp src/forms/factForm.cpp src/forms/proofForm.cpp src/dialogs/deleteDialog.cpp src/dialogs/formDialog.cpp obj/StudyAid1.0.0/ && (cd `dirname obj/StudyAid1.0.0` && $(TAR) StudyAid1.0.0.tar StudyAid1.0.0 && $(COMPRESS) StudyAid1.0.0.tar) && $(MOVE) `dirname obj/StudyAid1.0.0`/StudyAid1.0.0.tar.gz . && $(DEL_FILE) -r obj/StudyAid1.0.0
 
 
 clean:compiler_clean 
@@ -520,16 +520,16 @@ compiler_rcc_make_all: qrc_resources.cpp
 compiler_rcc_clean:
 	-$(DEL_FILE) qrc_resources.cpp
 qrc_resources.cpp: resources.qrc \
-		images/pencil_black.png \
-		images/arrow_right_white.png \
-		images/triangle_left_black.png \
-		images/arrow_right_black.png \
-		images/plus_black.png \
-		images/cross_black.png \
-		images/trash_black.png \
-		images/triangle_up_black.png \
+		images/triangle_down_black.png \
 		images/triangle_right_black.png \
-		images/triangle_down_black.png
+		images/triangle_up_black.png \
+		images/cross_black.png \
+		images/pencil_black.png \
+		images/triangle_left_black.png \
+		images/trash_black.png \
+		images/arrow_right_white.png \
+		images/plus_black.png \
+		images/arrow_right_black.png
 	/usr/local/qt5/bin/rcc -name resources resources.qrc -o qrc_resources.cpp
 
 compiler_moc_header_make_all: moc/moc_StudyAid.cpp moc/moc_coursePage.cpp moc/moc_factPage.cpp moc/moc_proofPage.cpp moc/moc_rootPage.cpp moc/moc_clickableQLabel.cpp moc/moc_courseTitleWidget.cpp moc/moc_courseWidget.cpp moc/moc_dependenciesWidget.cpp moc/moc_expandingFactWidget.cpp moc/moc_horizontalSeperator.cpp moc/moc_imageButton.cpp moc/moc_resizableImage.cpp moc/moc_resizableStackedWidget.cpp moc/moc_sectionPickerWidget.cpp moc/moc_sectionWidget.cpp moc/moc_splitter.cpp moc/moc_courseForm.cpp moc/moc_factForm.cpp moc/moc_form.cpp moc/moc_proofForm.cpp moc/moc_deleteDialog.cpp moc/moc_formDialog.cpp
@@ -1311,7 +1311,6 @@ moc/moc_courseTitleWidget.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
 		/usr/local/qt5/include/QtCore/qfiledevice.h \
 		/usr/local/qt5/include/QtGui/qvector2d.h \
 		/usr/local/qt5/include/QtGui/qtouchdevice.h \
-		/usr/local/qt5/include/QtCore/QString \
 		/usr/local/qt5/include/QtGui/QPixmap \
 		src/widgets/courseTitleWidget.h
 	/usr/local/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/widgets/courseTitleWidget.h -o moc/moc_courseTitleWidget.cpp
@@ -1646,7 +1645,6 @@ moc/moc_expandingFactWidget.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
 		/usr/local/qt5/include/QtCore/qfiledevice.h \
 		/usr/local/qt5/include/QtGui/qvector2d.h \
 		/usr/local/qt5/include/QtGui/qtouchdevice.h \
-		/usr/local/qt5/include/QtCore/QString \
 		/usr/local/qt5/include/QtGui/QPixmap \
 		src/widgets/expandingFactWidget.h
 	/usr/local/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/widgets/expandingFactWidget.h -o moc/moc_expandingFactWidget.cpp
@@ -2219,7 +2217,6 @@ moc/moc_sectionPickerWidget.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
 		/usr/local/qt5/include/QtCore/qfiledevice.h \
 		/usr/local/qt5/include/QtGui/qvector2d.h \
 		/usr/local/qt5/include/QtGui/qtouchdevice.h \
-		/usr/local/qt5/include/QtCore/QString \
 		src/widgets/sectionPickerWidget.h
 	/usr/local/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/widgets/sectionPickerWidget.h -o moc/moc_sectionPickerWidget.cpp
 
@@ -2331,7 +2328,6 @@ moc/moc_sectionWidget.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
 		/usr/local/qt5/include/QtCore/qfiledevice.h \
 		/usr/local/qt5/include/QtGui/qvector2d.h \
 		/usr/local/qt5/include/QtGui/qtouchdevice.h \
-		/usr/local/qt5/include/QtCore/QString \
 		src/widgets/sectionWidget.h
 	/usr/local/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/widgets/sectionWidget.h -o moc/moc_sectionWidget.cpp
 
@@ -3457,7 +3453,6 @@ obj/coursePage.o: src/pages/coursePage.cpp /usr/local/qt5/include/QtWidgets/QHBo
 		src/widgets/clickableQLabel.h \
 		src/widgets/courseWidget.h \
 		src/widgets/sectionPickerWidget.h \
-		/usr/local/qt5/include/QtCore/QString \
 		src/widgets/splitter.h \
 		/usr/local/qt5/include/QtWidgets/QSplitter \
 		/usr/local/qt5/include/QtWidgets/qsplitter.h \
@@ -3465,6 +3460,7 @@ obj/coursePage.o: src/pages/coursePage.cpp /usr/local/qt5/include/QtWidgets/QHBo
 		src/dialogs/deleteDialog.h \
 		/usr/local/qt5/include/QtWidgets/QDialog \
 		/usr/local/qt5/include/QtWidgets/qdialog.h \
+		/usr/local/qt5/include/QtCore/QString \
 		src/dialogs/formDialog.h \
 		src/forms/form.h \
 		src/forms/courseForm.h \
@@ -3920,7 +3916,6 @@ obj/rootPage.o: src/pages/rootPage.cpp /usr/local/qt5/include/QtWidgets/QVBoxLay
 		/usr/local/qt5/include/QtWidgets/QScrollArea \
 		/usr/local/qt5/include/QtWidgets/qscrollarea.h \
 		/usr/local/qt5/include/QtWidgets/qabstractscrollarea.h \
-		/usr/local/qt5/include/QtCore/QString \
 		src/widgets/courseTitleWidget.h \
 		/usr/local/qt5/include/QtWidgets/QWidget \
 		/usr/local/qt5/include/QtGui/QPixmap \
@@ -3937,6 +3932,7 @@ obj/rootPage.o: src/pages/rootPage.cpp /usr/local/qt5/include/QtWidgets/QVBoxLay
 		src/dialogs/formDialog.h \
 		/usr/local/qt5/include/QtWidgets/QDialog \
 		/usr/local/qt5/include/QtWidgets/qdialog.h \
+		/usr/local/qt5/include/QtCore/QString \
 		src/forms/form.h \
 		src/forms/courseForm.h \
 		src/pages/rootPage.h
@@ -4233,8 +4229,7 @@ obj/courseTitleWidget.o: src/widgets/courseTitleWidget.cpp /usr/local/qt5/includ
 		/usr/local/qt5/include/QtGui/QPen \
 		/usr/local/qt5/include/QtGui/QBrush \
 		src/widgets/courseTitleWidget.h \
-		/usr/local/qt5/include/QtWidgets/QWidget \
-		/usr/local/qt5/include/QtCore/QString
+		/usr/local/qt5/include/QtWidgets/QWidget
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/courseTitleWidget.o src/widgets/courseTitleWidget.cpp
 
 obj/courseWidget.o: src/widgets/courseWidget.cpp /usr/local/qt5/include/QtWidgets/QVBoxLayout \
@@ -4354,7 +4349,6 @@ obj/courseWidget.o: src/widgets/courseWidget.cpp /usr/local/qt5/include/QtWidget
 		/usr/local/qt5/include/QtWidgets/qframe.h \
 		src/widgets/expandingFactWidget.h \
 		/usr/local/qt5/include/QtWidgets/QWidget \
-		/usr/local/qt5/include/QtCore/QString \
 		/usr/local/qt5/include/QtGui/QPixmap \
 		src/widgets/sectionWidget.h \
 		src/widgets/courseWidget.h
@@ -4631,8 +4625,7 @@ obj/expandingFactWidget.o: src/widgets/expandingFactWidget.cpp /usr/local/qt5/in
 		/usr/local/qt5/include/QtGui/QBrush \
 		src/widgets/resizableImage.h \
 		/usr/local/qt5/include/QtWidgets/QWidget \
-		src/widgets/expandingFactWidget.h \
-		/usr/local/qt5/include/QtCore/QString
+		src/widgets/expandingFactWidget.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/expandingFactWidget.o src/widgets/expandingFactWidget.cpp
 
 obj/imageButton.o: src/widgets/imageButton.cpp /usr/local/qt5/include/QtGui/QPainter \
@@ -5107,7 +5100,6 @@ obj/sectionPickerWidget.o: src/widgets/sectionPickerWidget.cpp /usr/local/qt5/in
 		/usr/local/qt5/include/QtGui/qvector2d.h \
 		/usr/local/qt5/include/QtGui/qtouchdevice.h \
 		/usr/local/qt5/include/QtWidgets/QVBoxLayout \
-		/usr/local/qt5/include/QtCore/QString \
 		src/widgets/clickableQLabel.h \
 		/usr/local/qt5/include/QtWidgets/QLabel \
 		/usr/local/qt5/include/QtWidgets/qlabel.h \
@@ -5125,6 +5117,7 @@ obj/sectionPickerWidget.o: src/widgets/sectionPickerWidget.cpp /usr/local/qt5/in
 		src/dialogs/formDialog.h \
 		/usr/local/qt5/include/QtWidgets/QDialog \
 		/usr/local/qt5/include/QtWidgets/qdialog.h \
+		/usr/local/qt5/include/QtCore/QString \
 		src/forms/form.h \
 		/usr/local/qt5/include/QtWidgets/QWidget \
 		src/widgets/sectionPickerWidget.h
@@ -5251,7 +5244,6 @@ obj/sectionWidget.o: src/widgets/sectionWidget.cpp /usr/local/qt5/include/QtWidg
 		/usr/local/qt5/include/QtGui/qpen.h \
 		src/widgets/expandingFactWidget.h \
 		/usr/local/qt5/include/QtWidgets/QWidget \
-		/usr/local/qt5/include/QtCore/QString \
 		/usr/local/qt5/include/QtGui/QPixmap \
 		src/widgets/sectionWidget.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/sectionWidget.o src/widgets/sectionWidget.cpp
