@@ -1,0 +1,6 @@
+{ "_id" : { "$oid" : "521898c330e15e9c76226741" }, "name" : "axiom", "color" : "45A145", "canHaveProof" : false }
+{ "_id" : { "$oid" : "521898cd30e15e9c76226742" }, "name" : "definition", "color" : "5555A3", "canHaveProof" : false }
+{ "_id" : { "$oid" : "521898d830e15e9c76226743" }, "name" : "proposition", "color" : "998700", "canHaveProof" : true }
+{ "_id" : { "$oid" : "521898dd30e15e9c76226744" }, "name" : "theory", "color" : "990000", "canHaveProof" : true }
+{ "_id" : { "$oid" : "521898e530e15e9c76226745" }, "name" : "corollary", "color" : "1A5C00", "canHaveProof" : true }
+{ "_id" : { "$oid" : "521898e530e15e9c76226746" }, "name" : "example", "color" : "49C4C4", "canHaveProof" : true }
