@@ -1,0 +1,3 @@
+#!/bin/bash
+
+mysqldump -ustudy_aid_v3 study_aid_v3 > study_aid_v3.sql

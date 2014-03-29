@@ -25,6 +25,10 @@
 # Final application
 StudyAid
 
+# Qt compiled files
 /moc
 /obj
 qrc_resources.cpp
+
+# backup of database
+database/study_aid_v3.sql
