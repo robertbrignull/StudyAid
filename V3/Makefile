@@ -45,7 +45,8 @@ OBJECTS_DIR   = obj/
 
 ####### Files
 
-SOURCES       = src/StudyAid.cpp \
+SOURCES       = src/model.cpp \
+		src/StudyAid.cpp \
 		src/pages/coursePage.cpp \
 		src/pages/factPage.cpp \
 		src/pages/proofPage.cpp \
@@ -68,6 +69,7 @@ SOURCES       = src/StudyAid.cpp \
 		src/forms/proofForm.cpp \
 		src/dialogs/deleteDialog.cpp \
 		src/dialogs/formDialog.cpp qrc_resources.cpp \
+		moc/moc_model.cpp \
 		moc/moc_StudyAid.cpp \
 		moc/moc_coursePage.cpp \
 		moc/moc_factPage.cpp \
@@ -91,7 +93,8 @@ SOURCES       = src/StudyAid.cpp \
 		moc/moc_proofForm.cpp \
 		moc/moc_deleteDialog.cpp \
 		moc/moc_formDialog.cpp
-OBJECTS       = obj/StudyAid.o \
+OBJECTS       = obj/model.o \
+		obj/StudyAid.o \
 		obj/coursePage.o \
 		obj/factPage.o \
 		obj/proofPage.o \
@@ -115,6 +118,7 @@ OBJECTS       = obj/StudyAid.o \
 		obj/deleteDialog.o \
 		obj/formDialog.o \
 		obj/qrc_resources.o \
+		obj/moc_model.o \
 		obj/moc_StudyAid.o \
 		obj/moc_coursePage.o \
 		obj/moc_factPage.o \
@@ -497,7 +501,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d obj/StudyAid1.0.0 || mkdir -p obj/StudyAid1.0.0
-	$(COPY_FILE) --parents $(SOURCES) $(DIST) obj/StudyAid1.0.0/ && $(COPY_FILE) --parents resources.qrc obj/StudyAid1.0.0/ && $(COPY_FILE) --parents src/StudyAid.h src/pages/coursePage.h src/pages/factPage.h src/pages/proofPage.h src/pages/rootPage.h src/database/methods.h src/database/setup.h src/database/structures.h src/widgets/clickableQLabel.h src/widgets/courseTitleWidget.h src/widgets/courseWidget.h src/widgets/dependenciesWidget.h src/widgets/expandingFactWidget.h src/widgets/horizontalSeperator.h src/widgets/imageButton.h src/widgets/resizableImage.h src/widgets/resizableStackedWidget.h src/widgets/sectionPickerWidget.h src/widgets/sectionWidget.h src/widgets/splitter.h src/forms/courseForm.h src/forms/factForm.h src/forms/form.h src/forms/proofForm.h src/dialogs/deleteDialog.h src/dialogs/formDialog.h obj/StudyAid1.0.0/ && $(COPY_FILE) --parents src/StudyAid.cpp src/pages/coursePage.cpp src/pages/factPage.cpp src/pages/proofPage.cpp src/pages/rootPage.cpp src/database/methods.cpp src/database/setup.cpp src/widgets/clickableQLabel.cpp src/widgets/courseTitleWidget.cpp src/widgets/courseWidget.cpp src/widgets/dependenciesWidget.cpp src/widgets/expandingFactWidget.cpp src/widgets/imageButton.cpp src/widgets/resizableImage.cpp src/widgets/resizableStackedWidget.cpp src/widgets/sectionPickerWidget.cpp src/widgets/sectionWidget.cpp src/widgets/splitter.cpp src/forms/courseForm.cpp src/forms/factForm.cpp src/forms/proofForm.cpp src/dialogs/deleteDialog.cpp src/dialogs/formDialog.cpp obj/StudyAid1.0.0/ && (cd `dirname obj/StudyAid1.0.0` && $(TAR) StudyAid1.0.0.tar StudyAid1.0.0 && $(COMPRESS) StudyAid1.0.0.tar) && $(MOVE) `dirname obj/StudyAid1.0.0`/StudyAid1.0.0.tar.gz . && $(DEL_FILE) -r obj/StudyAid1.0.0
+	$(COPY_FILE) --parents $(SOURCES) $(DIST) obj/StudyAid1.0.0/ && $(COPY_FILE) --parents resources.qrc obj/StudyAid1.0.0/ && $(COPY_FILE) --parents src/model.h src/StudyAid.h src/pages/coursePage.h src/pages/factPage.h src/pages/proofPage.h src/pages/rootPage.h src/database/methods.h src/database/setup.h src/database/structures.h src/widgets/clickableQLabel.h src/widgets/courseTitleWidget.h src/widgets/courseWidget.h src/widgets/dependenciesWidget.h src/widgets/expandingFactWidget.h src/widgets/horizontalSeperator.h src/widgets/imageButton.h src/widgets/resizableImage.h src/widgets/resizableStackedWidget.h src/widgets/sectionPickerWidget.h src/widgets/sectionWidget.h src/widgets/splitter.h src/forms/courseForm.h src/forms/factForm.h src/forms/form.h src/forms/proofForm.h src/dialogs/deleteDialog.h src/dialogs/formDialog.h obj/StudyAid1.0.0/ && $(COPY_FILE) --parents src/model.cpp src/StudyAid.cpp src/pages/coursePage.cpp src/pages/factPage.cpp src/pages/proofPage.cpp src/pages/rootPage.cpp src/database/methods.cpp src/database/setup.cpp src/widgets/clickableQLabel.cpp src/widgets/courseTitleWidget.cpp src/widgets/courseWidget.cpp src/widgets/dependenciesWidget.cpp src/widgets/expandingFactWidget.cpp src/widgets/imageButton.cpp src/widgets/resizableImage.cpp src/widgets/resizableStackedWidget.cpp src/widgets/sectionPickerWidget.cpp src/widgets/sectionWidget.cpp src/widgets/splitter.cpp src/forms/courseForm.cpp src/forms/factForm.cpp src/forms/proofForm.cpp src/dialogs/deleteDialog.cpp src/dialogs/formDialog.cpp obj/StudyAid1.0.0/ && (cd `dirname obj/StudyAid1.0.0` && $(TAR) StudyAid1.0.0.tar StudyAid1.0.0 && $(COMPRESS) StudyAid1.0.0.tar) && $(MOVE) `dirname obj/StudyAid1.0.0`/StudyAid1.0.0.tar.gz . && $(DEL_FILE) -r obj/StudyAid1.0.0
 
 
 clean:compiler_clean 
@@ -522,21 +526,82 @@ compiler_rcc_make_all: qrc_resources.cpp
 compiler_rcc_clean:
 	-$(DEL_FILE) qrc_resources.cpp
 qrc_resources.cpp: resources.qrc \
-		images/plus_black.png \
+		images/triangle_right_black.png \
 		images/triangle_down_black.png \
 		images/arrow_right_white.png \
-		images/pencil_black.png \
 		images/arrow_right_black.png \
-		images/triangle_right_black.png \
-		images/cross_black.png \
+		images/trash_black.png \
+		images/plus_black.png \
 		images/triangle_left_black.png \
+		images/pencil_black.png \
 		images/triangle_up_black.png \
-		images/trash_black.png
+		images/cross_black.png
 	/usr/local/qt5/bin/rcc -name resources resources.qrc -o qrc_resources.cpp
 
-compiler_moc_header_make_all: moc/moc_StudyAid.cpp moc/moc_coursePage.cpp moc/moc_factPage.cpp moc/moc_proofPage.cpp moc/moc_rootPage.cpp moc/moc_clickableQLabel.cpp moc/moc_courseTitleWidget.cpp moc/moc_courseWidget.cpp moc/moc_dependenciesWidget.cpp moc/moc_expandingFactWidget.cpp moc/moc_horizontalSeperator.cpp moc/moc_imageButton.cpp moc/moc_resizableImage.cpp moc/moc_resizableStackedWidget.cpp moc/moc_sectionPickerWidget.cpp moc/moc_sectionWidget.cpp moc/moc_splitter.cpp moc/moc_courseForm.cpp moc/moc_factForm.cpp moc/moc_form.cpp moc/moc_proofForm.cpp moc/moc_deleteDialog.cpp moc/moc_formDialog.cpp
+compiler_moc_header_make_all: moc/moc_model.cpp moc/moc_StudyAid.cpp moc/moc_coursePage.cpp moc/moc_factPage.cpp moc/moc_proofPage.cpp moc/moc_rootPage.cpp moc/moc_clickableQLabel.cpp moc/moc_courseTitleWidget.cpp moc/moc_courseWidget.cpp moc/moc_dependenciesWidget.cpp moc/moc_expandingFactWidget.cpp moc/moc_horizontalSeperator.cpp moc/moc_imageButton.cpp moc/moc_resizableImage.cpp moc/moc_resizableStackedWidget.cpp moc/moc_sectionPickerWidget.cpp moc/moc_sectionWidget.cpp moc/moc_splitter.cpp moc/moc_courseForm.cpp moc/moc_factForm.cpp moc/moc_form.cpp moc/moc_proofForm.cpp moc/moc_deleteDialog.cpp moc/moc_formDialog.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc/moc_StudyAid.cpp moc/moc_coursePage.cpp moc/moc_factPage.cpp moc/moc_proofPage.cpp moc/moc_rootPage.cpp moc/moc_clickableQLabel.cpp moc/moc_courseTitleWidget.cpp moc/moc_courseWidget.cpp moc/moc_dependenciesWidget.cpp moc/moc_expandingFactWidget.cpp moc/moc_horizontalSeperator.cpp moc/moc_imageButton.cpp moc/moc_resizableImage.cpp moc/moc_resizableStackedWidget.cpp moc/moc_sectionPickerWidget.cpp moc/moc_sectionWidget.cpp moc/moc_splitter.cpp moc/moc_courseForm.cpp moc/moc_factForm.cpp moc/moc_form.cpp moc/moc_proofForm.cpp moc/moc_deleteDialog.cpp moc/moc_formDialog.cpp
+	-$(DEL_FILE) moc/moc_model.cpp moc/moc_StudyAid.cpp moc/moc_coursePage.cpp moc/moc_factPage.cpp moc/moc_proofPage.cpp moc/moc_rootPage.cpp moc/moc_clickableQLabel.cpp moc/moc_courseTitleWidget.cpp moc/moc_courseWidget.cpp moc/moc_dependenciesWidget.cpp moc/moc_expandingFactWidget.cpp moc/moc_horizontalSeperator.cpp moc/moc_imageButton.cpp moc/moc_resizableImage.cpp moc/moc_resizableStackedWidget.cpp moc/moc_sectionPickerWidget.cpp moc/moc_sectionWidget.cpp moc/moc_splitter.cpp moc/moc_courseForm.cpp moc/moc_factForm.cpp moc/moc_form.cpp moc/moc_proofForm.cpp moc/moc_deleteDialog.cpp moc/moc_formDialog.cpp
+moc/moc_model.cpp: /usr/local/qt5/include/QtCore/QObject \
+		/usr/local/qt5/include/QtCore/qobject.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs.h \
+		/usr/local/qt5/include/QtCore/qnamespace.h \
+		/usr/local/qt5/include/QtCore/qglobal.h \
+		/usr/local/qt5/include/QtCore/qconfig.h \
+		/usr/local/qt5/include/QtCore/qfeatures.h \
+		/usr/local/qt5/include/QtCore/qsystemdetection.h \
+		/usr/local/qt5/include/QtCore/qprocessordetection.h \
+		/usr/local/qt5/include/QtCore/qcompilerdetection.h \
+		/usr/local/qt5/include/QtCore/qglobalstatic.h \
+		/usr/local/qt5/include/QtCore/qatomic.h \
+		/usr/local/qt5/include/QtCore/qbasicatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_bootstrap.h \
+		/usr/local/qt5/include/QtCore/qgenericatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_msvc.h \
+		/usr/local/qt5/include/QtCore/qatomic_integrity.h \
+		/usr/local/qt5/include/QtCore/qoldbasicatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_vxworks.h \
+		/usr/local/qt5/include/QtCore/qatomic_power.h \
+		/usr/local/qt5/include/QtCore/qatomic_alpha.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv7.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv6.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv5.h \
+		/usr/local/qt5/include/QtCore/qatomic_bfin.h \
+		/usr/local/qt5/include/QtCore/qatomic_ia64.h \
+		/usr/local/qt5/include/QtCore/qatomic_mips.h \
+		/usr/local/qt5/include/QtCore/qatomic_s390.h \
+		/usr/local/qt5/include/QtCore/qatomic_sh4a.h \
+		/usr/local/qt5/include/QtCore/qatomic_sparc.h \
+		/usr/local/qt5/include/QtCore/qatomic_x86.h \
+		/usr/local/qt5/include/QtCore/qatomic_cxx11.h \
+		/usr/local/qt5/include/QtCore/qatomic_gcc.h \
+		/usr/local/qt5/include/QtCore/qatomic_unix.h \
+		/usr/local/qt5/include/QtCore/qmutex.h \
+		/usr/local/qt5/include/QtCore/qlogging.h \
+		/usr/local/qt5/include/QtCore/qflags.h \
+		/usr/local/qt5/include/QtCore/qtypeinfo.h \
+		/usr/local/qt5/include/QtCore/qtypetraits.h \
+		/usr/local/qt5/include/QtCore/qsysinfo.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs_impl.h \
+		/usr/local/qt5/include/QtCore/qstring.h \
+		/usr/local/qt5/include/QtCore/qchar.h \
+		/usr/local/qt5/include/QtCore/qbytearray.h \
+		/usr/local/qt5/include/QtCore/qrefcount.h \
+		/usr/local/qt5/include/QtCore/qarraydata.h \
+		/usr/local/qt5/include/QtCore/qstringbuilder.h \
+		/usr/local/qt5/include/QtCore/qlist.h \
+		/usr/local/qt5/include/QtCore/qalgorithms.h \
+		/usr/local/qt5/include/QtCore/qiterator.h \
+		/usr/local/qt5/include/QtCore/qcoreevent.h \
+		/usr/local/qt5/include/QtCore/qscopedpointer.h \
+		/usr/local/qt5/include/QtCore/qmetatype.h \
+		/usr/local/qt5/include/QtCore/qvarlengtharray.h \
+		/usr/local/qt5/include/QtCore/qcontainerfwd.h \
+		/usr/local/qt5/include/QtCore/qisenum.h \
+		/usr/local/qt5/include/QtCore/qobject_impl.h \
+		src/database/structures.h \
+		src/model.h
+	/usr/local/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/model.h -o moc/moc_model.cpp
+
 moc/moc_StudyAid.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
 		/usr/local/qt5/include/QtWidgets/qwidget.h \
 		/usr/local/qt5/include/QtGui/qwindowdefs.h \
@@ -3136,6 +3201,67 @@ compiler_clean: compiler_rcc_clean compiler_moc_header_clean
 
 ####### Compile
 
+obj/model.o: src/model.cpp src/model.h \
+		/usr/local/qt5/include/QtCore/QObject \
+		/usr/local/qt5/include/QtCore/qobject.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs.h \
+		/usr/local/qt5/include/QtCore/qnamespace.h \
+		/usr/local/qt5/include/QtCore/qglobal.h \
+		/usr/local/qt5/include/QtCore/qconfig.h \
+		/usr/local/qt5/include/QtCore/qfeatures.h \
+		/usr/local/qt5/include/QtCore/qsystemdetection.h \
+		/usr/local/qt5/include/QtCore/qprocessordetection.h \
+		/usr/local/qt5/include/QtCore/qcompilerdetection.h \
+		/usr/local/qt5/include/QtCore/qglobalstatic.h \
+		/usr/local/qt5/include/QtCore/qatomic.h \
+		/usr/local/qt5/include/QtCore/qbasicatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_bootstrap.h \
+		/usr/local/qt5/include/QtCore/qgenericatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_msvc.h \
+		/usr/local/qt5/include/QtCore/qatomic_integrity.h \
+		/usr/local/qt5/include/QtCore/qoldbasicatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_vxworks.h \
+		/usr/local/qt5/include/QtCore/qatomic_power.h \
+		/usr/local/qt5/include/QtCore/qatomic_alpha.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv7.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv6.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv5.h \
+		/usr/local/qt5/include/QtCore/qatomic_bfin.h \
+		/usr/local/qt5/include/QtCore/qatomic_ia64.h \
+		/usr/local/qt5/include/QtCore/qatomic_mips.h \
+		/usr/local/qt5/include/QtCore/qatomic_s390.h \
+		/usr/local/qt5/include/QtCore/qatomic_sh4a.h \
+		/usr/local/qt5/include/QtCore/qatomic_sparc.h \
+		/usr/local/qt5/include/QtCore/qatomic_x86.h \
+		/usr/local/qt5/include/QtCore/qatomic_cxx11.h \
+		/usr/local/qt5/include/QtCore/qatomic_gcc.h \
+		/usr/local/qt5/include/QtCore/qatomic_unix.h \
+		/usr/local/qt5/include/QtCore/qmutex.h \
+		/usr/local/qt5/include/QtCore/qlogging.h \
+		/usr/local/qt5/include/QtCore/qflags.h \
+		/usr/local/qt5/include/QtCore/qtypeinfo.h \
+		/usr/local/qt5/include/QtCore/qtypetraits.h \
+		/usr/local/qt5/include/QtCore/qsysinfo.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs_impl.h \
+		/usr/local/qt5/include/QtCore/qstring.h \
+		/usr/local/qt5/include/QtCore/qchar.h \
+		/usr/local/qt5/include/QtCore/qbytearray.h \
+		/usr/local/qt5/include/QtCore/qrefcount.h \
+		/usr/local/qt5/include/QtCore/qarraydata.h \
+		/usr/local/qt5/include/QtCore/qstringbuilder.h \
+		/usr/local/qt5/include/QtCore/qlist.h \
+		/usr/local/qt5/include/QtCore/qalgorithms.h \
+		/usr/local/qt5/include/QtCore/qiterator.h \
+		/usr/local/qt5/include/QtCore/qcoreevent.h \
+		/usr/local/qt5/include/QtCore/qscopedpointer.h \
+		/usr/local/qt5/include/QtCore/qmetatype.h \
+		/usr/local/qt5/include/QtCore/qvarlengtharray.h \
+		/usr/local/qt5/include/QtCore/qcontainerfwd.h \
+		/usr/local/qt5/include/QtCore/qisenum.h \
+		/usr/local/qt5/include/QtCore/qobject_impl.h \
+		src/database/structures.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/model.o src/model.cpp
+
 obj/StudyAid.o: src/StudyAid.cpp /usr/local/qt5/include/QtWidgets/QApplication \
 		/usr/local/qt5/include/QtWidgets/qapplication.h \
 		/usr/local/qt5/include/QtCore/qcoreapplication.h \
@@ -3257,6 +3383,9 @@ obj/StudyAid.o: src/StudyAid.cpp /usr/local/qt5/include/QtWidgets/QApplication \
 		/usr/local/qt5/include/QtWidgets/qlayoutitem.h \
 		/usr/local/qt5/include/QtWidgets/qgridlayout.h \
 		/usr/local/qt5/include/QtGui/QFont \
+		src/model.h \
+		/usr/local/qt5/include/QtCore/QObject \
+		src/database/structures.h \
 		src/database/setup.h \
 		/usr/include/mysql++/mysql++.h \
 		/usr/include/mysql++/connection.h \
@@ -3438,6 +3567,9 @@ obj/coursePage.o: src/pages/coursePage.cpp /usr/local/qt5/include/QtWidgets/QHBo
 		/usr/local/qt5/include/QtWidgets/QScrollArea \
 		/usr/local/qt5/include/QtWidgets/qscrollarea.h \
 		/usr/local/qt5/include/QtWidgets/qabstractscrollarea.h \
+		src/model.h \
+		/usr/local/qt5/include/QtCore/QObject \
+		src/database/structures.h \
 		src/widgets/resizableStackedWidget.h \
 		/usr/local/qt5/include/QtWidgets/QStackedWidget \
 		/usr/local/qt5/include/QtWidgets/qstackedwidget.h \
@@ -3602,6 +3734,9 @@ obj/factPage.o: src/pages/factPage.cpp /usr/local/qt5/include/QtWidgets/QHBoxLay
 		/usr/local/qt5/include/QtGui/qtextcursor.h \
 		/usr/local/qt5/include/QtGui/qtextformat.h \
 		/usr/local/qt5/include/QtGui/qpen.h \
+		src/model.h \
+		/usr/local/qt5/include/QtCore/QObject \
+		src/database/structures.h \
 		src/widgets/resizableStackedWidget.h \
 		/usr/local/qt5/include/QtWidgets/QStackedWidget \
 		/usr/local/qt5/include/QtWidgets/qstackedwidget.h \
@@ -3763,6 +3898,9 @@ obj/proofPage.o: src/pages/proofPage.cpp /usr/local/qt5/include/QtWidgets/QHBoxL
 		/usr/local/qt5/include/QtGui/qtextcursor.h \
 		/usr/local/qt5/include/QtGui/qtextformat.h \
 		/usr/local/qt5/include/QtGui/qpen.h \
+		src/model.h \
+		/usr/local/qt5/include/QtCore/QObject \
+		src/database/structures.h \
 		src/widgets/resizableStackedWidget.h \
 		/usr/local/qt5/include/QtWidgets/QStackedWidget \
 		/usr/local/qt5/include/QtWidgets/qstackedwidget.h \
@@ -3918,6 +4056,9 @@ obj/rootPage.o: src/pages/rootPage.cpp /usr/local/qt5/include/QtWidgets/QVBoxLay
 		/usr/local/qt5/include/QtWidgets/QScrollArea \
 		/usr/local/qt5/include/QtWidgets/qscrollarea.h \
 		/usr/local/qt5/include/QtWidgets/qabstractscrollarea.h \
+		src/model.h \
+		/usr/local/qt5/include/QtCore/QObject \
+		src/database/structures.h \
 		src/widgets/courseTitleWidget.h \
 		/usr/local/qt5/include/QtWidgets/QWidget \
 		/usr/local/qt5/include/QtGui/QPixmap \
@@ -6094,6 +6235,9 @@ obj/formDialog.o: src/dialogs/formDialog.cpp /usr/local/qt5/include/QtWidgets/QH
 
 obj/qrc_resources.o: qrc_resources.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/qrc_resources.o qrc_resources.cpp
+
+obj/moc_model.o: moc/moc_model.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_model.o moc/moc_model.cpp
 
 obj/moc_StudyAid.o: moc/moc_StudyAid.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_StudyAid.o moc/moc_StudyAid.cpp

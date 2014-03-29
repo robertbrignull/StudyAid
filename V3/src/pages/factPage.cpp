@@ -9,6 +9,7 @@
 #include <QScrollArea>
 #include <QTextEdit>
 
+#include "model.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/imageButton.h"
 #include "widgets/horizontalSeperator.h"
@@ -22,7 +23,7 @@
 
 #include "pages/factPage.h"
 
-FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
+FactPage::FactPage(ResizableStackedWidget *pageStack, Model *, QWidget *parent)
     : QWidget(parent)
 {
     FactForm *factEditForm = new FactForm();

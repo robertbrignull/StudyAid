@@ -9,6 +9,7 @@
 #include <QScrollArea>
 #include <QTextEdit>
 
+#include "model.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/imageButton.h"
 #include "widgets/horizontalSeperator.h"
@@ -22,7 +23,7 @@
 
 #include "pages/proofPage.h"
 
-ProofPage::ProofPage(ResizableStackedWidget *pageStack, QWidget *parent)
+ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *, QWidget *parent)
     : QWidget(parent)
 {
     ProofForm *proofEditForm = new ProofForm();

@@ -3,11 +3,12 @@
 #include <QWidget>
 
 class ResizableStackedWidget;
+class Model;
 
 class CoursePage : public QWidget
 {
     Q_OBJECT
 
 public:
-    CoursePage(ResizableStackedWidget *pageStack, QWidget *parent = 0);
+    CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget *parent = 0);
 };

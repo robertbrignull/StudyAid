@@ -10,6 +10,8 @@
 #include <QStackedWidget>
 #include <QScrollArea>
 
+#include "model.h"
+#include "database/methods.h"
 #include "widgets/courseTitleWidget.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/horizontalSeperator.h"
@@ -19,7 +21,7 @@
 
 #include "pages/rootPage.h"
 
-RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
+RootPage::RootPage(ResizableStackedWidget *pageStack, Model *model, QWidget *parent)
     : QWidget(parent)
 {
     FormDialog *courseAddDialog = new FormDialog(this, new CourseForm(), "Add a new course...", "Add");
@@ -81,22 +83,25 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
     scrollArea->setFrameShape(QFrame::NoFrame);
 
     QWidget *scrollWidget = new QWidget();
-    QVBoxLayout *scrollLayout = new QVBoxLayout(scrollWidget);
+    scrollLayout = new QVBoxLayout(scrollWidget);
     
     scrollArea->setWidget(scrollWidget);
     innerLayout->addWidget(scrollArea);
 
-    CourseTitleWidget *courseTitleWidget1 = new CourseTitleWidget("Part A: Linear Algebra");
-    connect(courseTitleWidget1, &CourseTitleWidget::viewButtonClicked, [=](){ pageStack->setCurrentIndex(1); });
-    scrollLayout->addWidget(courseTitleWidget1);
+    std::vector<Course> courses = findAllCourses();
+    courseWidgetMap = std::map<int, std::pair<CourseTitleWidget*, int> >();
 
-    CourseTitleWidget *courseTitleWidget2 = new CourseTitleWidget("Part A: Complex Analysis");
-    connect(courseTitleWidget2, &CourseTitleWidget::viewButtonClicked, [=](){ pageStack->setCurrentIndex(1); });
-    scrollLayout->addWidget(courseTitleWidget2);
+    for (size_t i = 0; i < courses.size(); ++i) {
+        CourseTitleWidget *courseTitleWidget = new CourseTitleWidget(courses[i].name);
+        scrollLayout->addWidget(courseTitleWidget);
 
-    CourseTitleWidget *courseTitleWidget3 = new CourseTitleWidget("Part B: Set Theory");
-    connect(courseTitleWidget3, &CourseTitleWidget::viewButtonClicked, [=](){ pageStack->setCurrentIndex(1); });
-    scrollLayout->addWidget(courseTitleWidget3);
+        courseWidgetMap.insert(std::pair<int, std::pair<CourseTitleWidget*, int> >(courses[i].id, std::pair<CourseTitleWidget*, int>(courseTitleWidget, courses[i].ordering)));
+
+        connect(courseTitleWidget, &CourseTitleWidget::viewButtonClicked, [=](){
+            model->setCourseSelected(courses[i]);
+            pageStack->setCurrentIndex(1);
+        });
+    }
 
     scrollLayout->addStretch(1);
 
@@ -107,12 +112,69 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
     });
 
     connect(courseAddDialog, &FormDialog::completed, [=](std::map<std::string, std::string> data){
-        std::cout << "Added course: " << data.at("name") << std::endl;
+        Course course = findCourse(addCourse(data.at("name")));
+
         courseAddDialog->close();
+        model->addCourse(course);
+        model->setCourseSelected(course);
         pageStack->setCurrentIndex(1);
     });
 
     connect(courseAddDialog, &FormDialog::cancelled, [=](){
         courseAddDialog->close();
+    });
+
+
+
+    connect(model, &Model::courseAdded, [=](Course course){
+        int i = courseWidgetMap.size();
+
+        if (i != 0) {
+            for (auto it = courseWidgetMap.begin(); it != courseWidgetMap.end(); ++it) {
+                int j = scrollLayout->indexOf(it->second.first);
+                if (it->second.second > course.ordering && j < i) {
+                    i = j;
+                }
+            }
+        }
+
+        CourseTitleWidget *courseTitleWidget = new CourseTitleWidget(course.name);
+        scrollLayout->insertWidget(i, courseTitleWidget);
+
+        courseWidgetMap.insert(std::pair<int, std::pair<CourseTitleWidget*, int> >(course.id, std::pair<CourseTitleWidget*, int>(courseTitleWidget, course.ordering)));
+
+        connect(courseTitleWidget, &CourseTitleWidget::viewButtonClicked, [=](){
+            model->setCourseSelected(course);
+            pageStack->setCurrentIndex(1);
+        });
+    });
+
+    connect(model, &Model::courseEdited, [=](Course course){
+        CourseTitleWidget *courseTitleWidget = courseWidgetMap.at(course.id).first;
+        int i = scrollLayout->indexOf(courseTitleWidget);
+
+        scrollLayout->removeWidget(courseTitleWidget);
+        delete courseTitleWidget;
+
+        courseWidgetMap.erase(course.id);
+
+        courseTitleWidget = new CourseTitleWidget(course.name);
+        scrollLayout->insertWidget(i, courseTitleWidget);
+
+        courseWidgetMap.insert(std::pair<int, std::pair<CourseTitleWidget*, int> >(course.id, std::pair<CourseTitleWidget*, int>(courseTitleWidget, course.ordering)));
+
+        connect(courseTitleWidget, &CourseTitleWidget::viewButtonClicked, [=](){
+            model->setCourseSelected(course);
+            pageStack->setCurrentIndex(1);
+        });
+    });
+
+    connect(model, &Model::courseDeleted, [=](int id){
+        CourseTitleWidget *courseTitleWidget = courseWidgetMap.at(id).first;
+
+        scrollLayout->removeWidget(courseTitleWidget);
+        delete courseTitleWidget;
+
+        courseWidgetMap.erase(id);
     });
 }

@@ -9,6 +9,7 @@
 #include <QPalette>
 #include <QScrollArea>
 
+#include "model.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/imageButton.h"
 #include "widgets/horizontalSeperator.h"
@@ -23,7 +24,7 @@
 
 #include "pages/coursePage.h"
 
-CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
+CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *, QWidget *parent)
     : QWidget(parent)
 {
     CourseForm *courseEditForm = new CourseForm();

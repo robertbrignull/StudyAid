@@ -8,13 +8,13 @@ int addCourse(std::string name)
     mysqlpp::Query query(conn, true);
     mysqlpp::SimpleResult result;
 
-    query << "INSERT INTO fact (fact_parent, fact_name, fact_type, fact_statement, fact_ordering) VALUES (NULL, '', Section, '', 0)";
+    query << "INSERT INTO fact (fact_parent, fact_name, fact_type, fact_statement, fact_ordering) VALUES (NULL, '', 'Section', '', 0)";
     result = query.execute();
 
     int root_fact_id = result.insert_id();
 
     query.reset();
-    query << "INSERT INTO course (course_name, course_ordering, course_root_fact) VALUES (%0:name, 0, %2:root_fact)";
+    query << "INSERT INTO course (course_name, course_ordering, course_root_fact) VALUES (%0q:name, 0, %1q:root_fact)";
     query.parse();
     result = query.execute(name, root_fact_id);
 
@@ -25,7 +25,7 @@ Course findCourse(int id)
 {
     mysqlpp::Connection *conn = getConn();
 
-    mysqlpp::Query query(conn, true, "SELECT * FROM course WHERE id = %0");
+    mysqlpp::Query query(conn, true, "SELECT * FROM course WHERE course_id = %0q");
     query.parse();
 
     mysqlpp::StoreQueryResult result = query.store(id);
@@ -71,7 +71,7 @@ void editCourse(Course course)
 {
     mysqlpp::Connection *conn = getConn();
 
-    mysqlpp::Query query(conn, true, "UPDATE course SET course_name = %0, course_ordering = %1, course_root_fact = %2 WHERE course_id = %3");
+    mysqlpp::Query query(conn, true, "UPDATE course SET course_name = %0q, course_ordering = %1q, course_root_fact = %2q WHERE course_id = %3q");
     query.parse();
 
     query.execute(course.name, course.ordering, course.root_fact, course.id);
@@ -81,7 +81,7 @@ void deleteCourse(int id)
 {
     mysqlpp::Connection *conn = getConn();
 
-    mysqlpp::Query query(conn, true, "DELETE FROM course WHERE id = %0");
+    mysqlpp::Query query(conn, true, "DELETE FROM course WHERE course_id = %0q");
     query.parse();
 
     query.execute(id);
