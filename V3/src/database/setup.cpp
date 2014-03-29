@@ -25,6 +25,6 @@ bool connectToDatabase() {
     return true;
 }
 
-mysqlpp::Connection getConn() {
-    return conn;
+mysqlpp::Connection *getConn() {
+    return &conn;
 }

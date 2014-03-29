@@ -9,4 +9,4 @@ bool connectToDatabase();
 
 /* Returns a connection to the database.
  */
-mysqlpp::Connection getConn();
+mysqlpp::Connection *getConn();

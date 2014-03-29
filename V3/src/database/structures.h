@@ -30,3 +30,7 @@ typedef struct Course
     int ordering;
     int root_fact;
 } Course;
+
+
+
+class NotFoundException : public std::exception { };
