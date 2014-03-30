@@ -6,6 +6,7 @@
 #include <QFont>
 
 #include "model.h"
+#include "database/setup.h"
 #include "pages/rootPage.h"
 #include "pages/coursePage.h"
 #include "pages/factPage.h"
@@ -39,6 +40,10 @@ StudyAid::~StudyAid()
 
 int main(int argc, char **argv)
 {
+    bool testMode = (argc >= 2 && strncmp(argv[1], "test", 4) != 0);
+
+    initialiseDatabase(testMode);
+
     QApplication app(argc, argv);
 
     QFont font;

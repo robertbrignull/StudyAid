@@ -526,16 +526,16 @@ compiler_rcc_make_all: qrc_resources.cpp
 compiler_rcc_clean:
 	-$(DEL_FILE) qrc_resources.cpp
 qrc_resources.cpp: resources.qrc \
-		images/triangle_down_black.png \
-		images/arrow_right_white.png \
-		images/pencil_black.png \
-		images/arrow_right_black.png \
 		images/plus_black.png \
-		images/cross_black.png \
+		images/arrow_right_white.png \
+		images/trash_black.png \
 		images/triangle_left_black.png \
 		images/triangle_right_black.png \
+		images/arrow_right_black.png \
+		images/pencil_black.png \
 		images/triangle_up_black.png \
-		images/trash_black.png
+		images/cross_black.png \
+		images/triangle_down_black.png
 	/usr/local/qt5/bin/rcc -name resources resources.qrc -o qrc_resources.cpp
 
 compiler_moc_header_make_all: moc/moc_model.cpp moc/moc_StudyAid.cpp moc/moc_coursePage.cpp moc/moc_factPage.cpp moc/moc_proofPage.cpp moc/moc_rootPage.cpp moc/moc_clickableQLabel.cpp moc/moc_courseTitleWidget.cpp moc/moc_courseWidget.cpp moc/moc_dependenciesWidget.cpp moc/moc_expandingFactWidget.cpp moc/moc_horizontalSeperator.cpp moc/moc_imageButton.cpp moc/moc_resizableImage.cpp moc/moc_resizableStackedWidget.cpp moc/moc_sectionPickerWidget.cpp moc/moc_sectionWidget.cpp moc/moc_splitter.cpp moc/moc_courseForm.cpp moc/moc_factForm.cpp moc/moc_form.cpp moc/moc_proofForm.cpp moc/moc_deleteDialog.cpp moc/moc_formDialog.cpp
@@ -713,7 +713,8 @@ moc/moc_StudyAid.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
 		src/StudyAid.h
 	/usr/local/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/StudyAid.h -o moc/moc_StudyAid.cpp
 
-moc/moc_coursePage.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
+moc/moc_coursePage.cpp: src/database/structures.h \
+		/usr/local/qt5/include/QtWidgets/QWidget \
 		/usr/local/qt5/include/QtWidgets/qwidget.h \
 		/usr/local/qt5/include/QtGui/qwindowdefs.h \
 		/usr/local/qt5/include/QtCore/qglobal.h \
@@ -3387,6 +3388,51 @@ obj/StudyAid.o: src/StudyAid.cpp /usr/local/qt5/include/QtWidgets/QApplication \
 		src/model.h \
 		/usr/local/qt5/include/QtCore/QObject \
 		src/database/structures.h \
+		src/database/setup.h \
+		/usr/include/mysql++/mysql++.h \
+		/usr/include/mysql++/connection.h \
+		/usr/include/mysql++/common.h \
+		/usr/include/mysql/mysql_version.h \
+		/usr/include/mysql/mysql.h \
+		/usr/include/mysql/mysql_com.h \
+		/usr/include/mysql/mysql_time.h \
+		/usr/include/mysql/my_list.h \
+		/usr/include/mysql/typelib.h \
+		/usr/include/mysql/my_alloc.h \
+		/usr/include/mysql++/noexceptions.h \
+		/usr/include/mysql++/options.h \
+		/usr/include/mysql++/tcp_connection.h \
+		/usr/include/mysql++/uds_connection.h \
+		/usr/include/mysql++/wnp_connection.h \
+		/usr/include/mysql++/cpool.h \
+		/usr/include/mysql++/beemutex.h \
+		/usr/include/mysql++/exceptions.h \
+		/usr/include/mysql++/query.h \
+		/usr/include/mysql++/qparms.h \
+		/usr/include/mysql++/stadapter.h \
+		/usr/include/mysql++/datetime.h \
+		/usr/include/mysql++/comparable.h \
+		/usr/include/mysql++/null.h \
+		/usr/include/mysql++/sql_buffer.h \
+		/usr/include/mysql++/refcounted.h \
+		/usr/include/mysql++/type_info.h \
+		/usr/include/mysql++/tiny_int.h \
+		/usr/include/mysql++/querydef.h \
+		/usr/include/mysql++/result.h \
+		/usr/include/mysql++/field.h \
+		/usr/include/mysql++/field_names.h \
+		/usr/include/mysql++/field_types.h \
+		/usr/include/mysql++/row.h \
+		/usr/include/mysql++/mystring.h \
+		/usr/include/mysql++/vallist.h \
+		/usr/include/mysql++/manip.h \
+		/usr/include/mysql++/myset.h \
+		/usr/include/mysql++/stream2string.h \
+		/usr/include/mysql++/sqlstream.h \
+		/usr/include/mysql++/transaction.h \
+		/usr/include/mysql++/insertpolicy.h \
+		/usr/include/mysql++/scopedconnection.h \
+		/usr/include/mysql++/sql_types.h \
 		src/pages/rootPage.h \
 		src/pages/coursePage.h \
 		src/pages/factPage.h \
