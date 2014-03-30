@@ -4,75 +4,66 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
+#include "database/methods.h"
 #include "widgets/clickableQLabel.h"
 #include "widgets/imageButton.h"
 #include "dialogs/formDialog.h"
+#include "forms/factForm.h"
 
 #include "widgets/sectionPickerWidget.h"
 
-SectionPickerWidget::SectionPickerWidget(int id, std::string courseName, FormDialog *factAddDialog, QWidget *parent)
+SectionPickerWidget::SectionPickerWidget(int id, std::string name, QWidget *parent)
     : QWidget(parent)
 {
-    QHBoxLayout *courseLayout = new QHBoxLayout();
-    ClickableQLabel *courseLabel = new ClickableQLabel(courseName);
-    ImageButton *courseImage = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(16, 16));
-
-    courseLayout->addWidget(courseLabel);
-    courseLayout->addStretch(1);
-    courseLayout->addWidget(courseImage);
-
-
-    
-    QHBoxLayout *sec1Layout = new QHBoxLayout();
-    ClickableQLabel *sec1Label = new ClickableQLabel("Section 1");
-    ImageButton *sec1Image = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(16, 16));
-
-    sec1Layout->addWidget(sec1Label);
-    sec1Layout->addStretch(1);
-    sec1Layout->addWidget(sec1Image);
-
-
-
-    QHBoxLayout *sec2Layout = new QHBoxLayout();
-    ClickableQLabel *sec2Label = new ClickableQLabel("Section 2");
-    ImageButton *sec2Image = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(16, 16));
-
-    sec2Layout->addWidget(sec2Label);
-    sec2Layout->addStretch(1);
-    sec2Layout->addWidget(sec2Image);
-
-
+    FormDialog *factAddDialog = new FormDialog(this, new FactForm(), "Add a new fact...", "Add");
 
     QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->addLayout(courseLayout);
-    layout->addLayout(sec1Layout);
-    layout->addLayout(sec2Layout);
 
 
 
-    connect(courseLabel, &ClickableQLabel::clicked, [=](){
+    QHBoxLayout *sectionLayout = new QHBoxLayout();
+    ClickableQLabel *sectionLabel = new ClickableQLabel(name);
+    ImageButton *viewSectionButton = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(16, 16));
+
+    sectionLayout->addWidget(sectionLabel);
+    sectionLayout->addStretch(1);
+    sectionLayout->addWidget(viewSectionButton);
+
+    layout->addLayout(sectionLayout);
+
+    connect(sectionLabel, &ClickableQLabel::clicked, [=](){
         emit sectionSelected(id);
     });
 
-    connect(sec1Label, &ClickableQLabel::clicked, [=](){
-        emit sectionSelected(1);
-    });
-
-    connect(sec2Label, &ClickableQLabel::clicked, [=](){
-        emit sectionSelected(3);
-    });
-
-
-
-    connect(courseImage, &ImageButton::clicked, [=](){
+    connect(viewSectionButton, &ImageButton::clicked, [=](){
         factAddDialog->show();
     });
 
-    connect(sec1Image, &ImageButton::clicked, [=](){
-        factAddDialog->show();
+    connect(factAddDialog, &FormDialog::cancelled, [=](){
+        factAddDialog->close();
     });
 
-    connect(sec2Image, &ImageButton::clicked, [=](){
-        factAddDialog->show();
+    connect(factAddDialog, &FormDialog::completed, [=](std::map<std::string, std::string> data){
+        Fact fact = findFact(addFact(id, data.at("name"), data.at("type")));
+        factAddDialog->close();
+        emit factAdded(fact);
     });
+
+
+
+    std::vector<Fact> facts = findChildSections(id);
+
+    for (size_t i = 0; i < facts.size(); ++i) {
+        SectionPickerWidget *sectionPickerWidget = new SectionPickerWidget(facts[i].id, facts[i].name);
+
+        layout->addWidget(sectionPickerWidget);
+
+        connect(sectionPickerWidget, &SectionPickerWidget::sectionSelected, [=](int id){
+            emit sectionSelected(id);
+        });
+
+        connect(sectionPickerWidget, &SectionPickerWidget::factAdded, [=](Fact fact){
+            emit factAdded(fact);
+        });
+    }
 }

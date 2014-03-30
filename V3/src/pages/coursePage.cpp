@@ -28,12 +28,15 @@
 CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget *parent)
     : QWidget(parent)
 {
+    this->model = model;
+    this->pageStack = pageStack;
+
+
+
     CourseForm *courseEditForm = new CourseForm();
     FormDialog *courseEditDialog = new FormDialog(this, courseEditForm, "Edit the course...", "Change");
 
     DeleteDialog *courseDeleteDialog = new DeleteDialog(this, "Are you sure you want to delete this course?");
-
-    FormDialog *factAddDialog = new FormDialog(this, new FactForm(), "Add a new fact...", "Add");
 
 
 
@@ -211,43 +214,37 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
 
 
 
-    connect(factAddDialog, &FormDialog::completed, [=](std::map<std::string, std::string> data){
-        std::cout << "Fact added: " << data.at("type") << ", " << data.at("name") << std::endl;
-        factAddDialog->close();
-        pageStack->setCurrentIndex(2);
-    });
-
-    connect(factAddDialog, &FormDialog::cancelled, [=](){
-        factAddDialog->close();
-    });
-
-
-
     connect(model, &Model::courseSelectedChanged, [=](Course course){
-        currentCourseLabel->setText(QString::fromStdString(course.name));
-
-        courseLabel->setText(QString::fromStdString(course.name));
-
-        while (pickerScrollLayout->count() > 0) {
-            delete pickerScrollLayout->takeAt(0)->widget();
-        }
-        SectionPickerWidget *sectionPicker = new SectionPickerWidget(course.root_fact, course.name, factAddDialog);
-        pickerScrollLayout->addWidget(sectionPicker);
-        pickerScrollLayout->addStretch(1);
+        rebuildPage(course);
     });
 
     connect(model, &Model::courseEdited, [=](Course course){
         if (model->isCourseSelected() && model->getCourseSelected().id == course.id) {
-            currentCourseLabel->setText(QString::fromStdString(course.name));
-
-            courseLabel->setText(QString::fromStdString(course.name));
-
-            while (pickerScrollLayout->count() > 0) {
-                delete pickerScrollLayout->takeAt(0)->widget();
-            }
-            SectionPickerWidget *sectionPicker = new SectionPickerWidget(course.root_fact, course.name, factAddDialog);
-            pickerScrollLayout->addWidget(sectionPicker);
-            pickerScrollLayout->addStretch(1);
+            rebuildPage(course);
         }
+    });
+}
+
+void CoursePage::rebuildPage(Course course)
+{
+    currentCourseLabel->setText(QString::fromStdString(course.name));
+
+    courseLabel->setText(QString::fromStdString(course.name));
+
+    while (pickerScrollLayout->count() > 0) {
+        delete pickerScrollLayout->takeAt(0)->widget();
+    }
+    SectionPickerWidget *sectionPicker = new SectionPickerWidget(course.root_fact, course.name);
+    pickerScrollLayout->addWidget(sectionPicker);
+    pickerScrollLayout->addStretch(1);
+
+    connect(sectionPicker, &SectionPickerWidget::sectionSelected, [=](int id){
+        std::cout << "Section selected " << id << std::endl;
+    });
+
+    connect(sectionPicker, &SectionPickerWidget::factAdded, [=](Fact fact){
+        model->addFact(fact);
+        model->setFactSelected(fact);
+        pageStack->setCurrentIndex(2);
     });
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "database/structures.h"
+
 #include <QWidget>
 
 class ResizableStackedWidget;
@@ -15,6 +17,12 @@ public:
     CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget *parent = 0);
 
 private:
+    void rebuildPage(Course course);
+
+
+
+    Model *model;
+    ResizableStackedWidget *pageStack;
     QLabel *currentCourseLabel, *courseLabel;
     QVBoxLayout *pickerScrollLayout;
 };

@@ -2,6 +2,28 @@
 
 #include "database/methods.h"
 
+Course loadCourse(mysqlpp::Row row)
+{
+    Course course;
+    course.id = row["course_id"];
+    course.name = std::string(row["course_name"]);
+    course.ordering = row["course_ordering"];
+    course.root_fact = row["course_root_fact"];
+    return course;
+}
+
+Fact loadFact(mysqlpp::Row row)
+{
+    Fact fact;
+    fact.id = row["fact_id"];
+    fact.parent = row["fact_parent"];
+    fact.name = std::string(row["fact_name"].c_str());
+    fact.type = std::string(row["fact_type"].c_str());
+    fact.statement = std::string(row["fact_statement"].c_str());
+    fact.ordering = row["fact_ordering"];
+    return fact;
+}
+
 int addCourse(std::string name)
 {
     mysqlpp::Connection *conn = getConn();
@@ -14,9 +36,18 @@ int addCourse(std::string name)
     int root_fact_id = result.insert_id();
 
     query.reset();
-    query << "INSERT INTO course (course_name, course_ordering, course_root_fact) VALUES (%0q:name, (SELECT MAX(course_ordering)+1 FROM course), %1q:root_fact)";
+    query << "SELECT MAX(course_ordering) AS ordering FROM course";
+    mysqlpp::StoreQueryResult storeResult = query.store();
+
+    int ordering = 0;
+    if (storeResult[0]["ordering"] != mysqlpp::null) {
+        ordering = storeResult[0]["ordering"] + 1;
+    }
+
+    query.reset();
+    query << "INSERT INTO course (course_name, course_ordering, course_root_fact) VALUES (%0q, %1q, %2q)";
     query.parse();
-    result = query.execute(name, root_fact_id);
+    result = query.execute(name, ordering, root_fact_id);
 
     return result.insert_id();
 }
@@ -34,13 +65,7 @@ Course findCourse(int id)
         throw new NotFoundException();
     }
 
-    Course course;
-    course.id = id;
-    course.name = std::string(result[0]["course_name"]);
-    course.ordering = result[0]["course_ordering"];
-    course.root_fact = result[0]["course_root_fact"];
-
-    return course;
+    return loadCourse(result[0]);
 }
 
 std::vector<Course> findAllCourses()
@@ -55,13 +80,7 @@ std::vector<Course> findAllCourses()
     std::vector<Course> courses;
 
     for (size_t i = 0; i < result.num_rows(); ++i) {
-        Course course;
-        course.id = result[i]["course_id"];
-        course.name = std::string(result[i]["course_name"]);
-        course.ordering = result[i]["course_ordering"];
-        course.root_fact = result[i]["course_root_fact"];
-
-        courses.push_back(course);
+        courses.push_back(loadCourse(result[i]));
     }
 
     return courses;
@@ -90,13 +109,22 @@ void deleteCourse(int id)
 int addFact(int parent, std::string name, FactType type)
 {
     mysqlpp::Connection *conn = getConn();
+    mysqlpp::Query query(conn, true);
 
-    mysqlpp::Query query(conn, true, "INSERT INTO fact (fact_parent, fact_name, fact_type, fact_statement, fact_ordering) VALUES (%0q, %1q, %2q, '', (SELECT MAX(fact_ordering)+1 FROM fact WHERE fact_parent = %0q))");
+    query << "SELECT MAX(fact_ordering) AS ordering FROM fact WHERE fact_parent = %0q";
+    query.parse();
+    mysqlpp::StoreQueryResult storeResult = query.store(parent);
+
+    int ordering = 0;
+    if (storeResult[0]["ordering"] != mysqlpp::null) {
+        ordering = storeResult[0]["ordering"] + 1;
+    }
+
+    query.reset();
+    query << "INSERT INTO fact (fact_parent, fact_name, fact_type, fact_statement, fact_ordering) VALUES (%0q, %1q, %2q, '', %3q)";
     query.parse();
 
-    mysqlpp::SimpleResult result = query.execute(parent, name, type);
-
-    return result.insert_id();
+    return query.execute(parent, name, type, ordering).insert_id();
 }
 
 Fact findFact(int id)
@@ -112,15 +140,25 @@ Fact findFact(int id)
         throw new NotFoundException();
     }
 
-    Fact fact;
-    fact.id = id;
-    fact.parent = result[0]["fact_parent"];
-    fact.name = std::string(result[0]["fact_name"].c_str());
-    fact.type = std::string(result[0]["fact_type"].c_str());
-    fact.statement = std::string(result[0]["fact_statement"].c_str());
-    fact.ordering = result[0]["fact_ordering"];
+    return loadFact(result[0]);
+}
 
-    return fact;
+std::vector<Fact> findChildSections(int parent)
+{
+    mysqlpp::Connection *conn = getConn();
+
+    mysqlpp::Query query(conn, true, "SELECT * FROM fact WHERE fact_parent = %0q AND fact_type = 'Section'");
+    query.parse();
+
+    mysqlpp::StoreQueryResult result = query.store(parent);
+
+    std::vector<Fact> facts;
+
+    for (size_t i = 0; i < result.num_rows(); ++i) {
+        facts.push_back(loadFact(result[i]));
+    }
+
+    return facts;
 }
 
 std::vector<Fact> findChildFacts(int parent)
@@ -135,15 +173,7 @@ std::vector<Fact> findChildFacts(int parent)
     std::vector<Fact> facts;
 
     for (size_t i = 0; i < result.num_rows(); ++i) {
-        Fact fact;
-        fact.id = result[i]["fact_id"];
-        fact.parent = result[i]["fact_parent"];
-        fact.name = std::string(result[i]["fact_name"].c_str());
-        fact.type = std::string(result[i]["fact_type"].c_str());
-        fact.statement = std::string(result[i]["fact_statement"].c_str());
-        fact.ordering = result[i]["fact_ordering"];
-
-        facts.push_back(fact);
+        facts.push_back(loadFact(result[i]));
     }
 
     return facts;

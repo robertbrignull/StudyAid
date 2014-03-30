@@ -2,18 +2,18 @@
 
 #include <iostream>
 
-#include <QWidget>
+#include "database/structures.h"
 
-class FormDialog;
+#include <QWidget>
 
 class SectionPickerWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    SectionPickerWidget(int id, std::string courseName, FormDialog *factAddDialog, QWidget *parent = 0);
+    SectionPickerWidget(int id, std::string name, QWidget *parent = 0);
 
 signals:
     void sectionSelected(int id);
-    void factAdded(int id);
+    void factAdded(Fact fact);
 };

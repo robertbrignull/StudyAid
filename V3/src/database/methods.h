@@ -38,6 +38,10 @@ int addFact(int parent, std::string name, FactType type);
  */
 Fact findFact(int id);
 
+/* Returns all the children of a given parent fact which are sections.
+ */
+std::vector<Fact> findChildSections(int parent);
+
 /* Returns all the children of a given parent fact.
  */
 std::vector<Fact> findChildFacts(int parent);
