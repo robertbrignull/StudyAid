@@ -6,7 +6,6 @@
 #include <QFont>
 
 #include "model.h"
-#include "database/setup.h"
 #include "pages/rootPage.h"
 #include "pages/coursePage.h"
 #include "pages/factPage.h"
@@ -18,13 +17,6 @@
 StudyAid::StudyAid(QWidget *parent)
     : QWidget(parent)
 {
-    if (!connectToDatabase()) {
-        QCoreApplication::exit();
-        exit(1);
-    }
-
-
-
     QHBoxLayout *layout = new QHBoxLayout(this);
 
     ResizableStackedWidget *stack = new ResizableStackedWidget();
