@@ -113,10 +113,11 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
     connect(courseAddDialog, &FormDialog::completed, [=](std::map<std::string, std::string> data){
         Course course = findCourse(addCourse(data.at("name")));
-
-        courseAddDialog->close();
+        
         model->addCourse(course);
         model->setCourseSelected(course);
+
+        courseAddDialog->close();
         pageStack->setCurrentIndex(1);
     });
 

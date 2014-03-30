@@ -4,6 +4,8 @@
 
 class ResizableStackedWidget;
 class Model;
+class QLabel;
+class QVBoxLayout;
 
 class CoursePage : public QWidget
 {
@@ -11,4 +13,8 @@ class CoursePage : public QWidget
 
 public:
     CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget *parent = 0);
+
+private:
+    QLabel *currentCourseLabel, *courseLabel;
+    QVBoxLayout *pickerScrollLayout;
 };

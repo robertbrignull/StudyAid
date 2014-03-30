@@ -19,6 +19,7 @@ Course Model::getCourseSelected()
 
 void Model::setCourseSelected(Course course)
 {
+    courseSelected = true;
     this->course = course;
     emit courseSelectedChanged(course);
 }
@@ -50,6 +51,7 @@ Fact Model::getFactSelected()
 
 void Model::setFactSelected(Fact fact)
 {
+    factSelected = true;
     this->fact = fact;
     emit factSelectedChanged(fact);
 }
@@ -81,6 +83,7 @@ Proof Model::getProofSelected()
 
 void Model::setProofSelected(Proof proof)
 {
+    proofSelected = true;
     this->proof = proof;
     emit proofSelectedChanged(proof);
 }

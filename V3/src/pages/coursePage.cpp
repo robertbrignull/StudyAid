@@ -10,6 +10,7 @@
 #include <QScrollArea>
 
 #include "model.h"
+#include "database/methods.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/imageButton.h"
 #include "widgets/horizontalSeperator.h"
@@ -24,7 +25,7 @@
 
 #include "pages/coursePage.h"
 
-CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *, QWidget *parent)
+CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget *parent)
     : QWidget(parent)
 {
     CourseForm *courseEditForm = new CourseForm();
@@ -48,7 +49,8 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *, QWidget *pare
     crumbLayout->setContentsMargins(0, 0, 0, 0);
 
     ClickableQLabel *coursesLabel = new ClickableQLabel("Courses");
-    QLabel *currentCourseLabel = new QLabel(" / Linear Algebra");
+    QLabel *sepLabel = new QLabel(" / ");
+    currentCourseLabel = new QLabel();
 
     QFont font = coursesLabel->font();
     font.setPointSize(14);
@@ -63,9 +65,11 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *, QWidget *pare
 
     palette.setColor(QPalette::WindowText, Qt::gray);
     palette.setColor(QPalette::Text, Qt::gray);
+    sepLabel->setPalette(palette);
     currentCourseLabel->setPalette(palette);
 
     crumbLayout->addWidget(coursesLabel);
+    crumbLayout->addWidget(sepLabel);
     crumbLayout->addWidget(currentCourseLabel);
     crumbLayout->addStretch(1);
 
@@ -84,7 +88,7 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *, QWidget *pare
     QHBoxLayout *topLayout = new QHBoxLayout(topWidget);
     topLayout->setContentsMargins(0, 0, 0, 0);
 
-    QLabel *courseLabel = new QLabel("Linear Algebra");
+    courseLabel = new QLabel();
     QFont courseFont = courseLabel->font();
     courseFont.setPointSize(38);
     courseLabel->setFont(courseFont);
@@ -129,11 +133,9 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *, QWidget *pare
     splitter->addWidget(pickerScrollArea);
 
     QWidget *pickerScrollWidget = new QWidget();
-    QVBoxLayout *pickerScrollLayout = new QVBoxLayout(pickerScrollWidget);
+    pickerScrollLayout = new QVBoxLayout(pickerScrollWidget);
     pickerScrollArea->setWidget(pickerScrollWidget);
 
-    SectionPickerWidget *sectionPicker = new SectionPickerWidget(0, "Linear Algebra", factAddDialog);
-    pickerScrollLayout->addWidget(sectionPicker);
     pickerScrollLayout->addStretch(1);
 
 
@@ -153,8 +155,7 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *, QWidget *pare
 
 
 
-    splitter->setStretchFactor(0, 1);
-    splitter->setStretchFactor(1, 4);
+    splitter->setSizes(QList<int>({0, 1}));
 
 
 
@@ -166,8 +167,9 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *, QWidget *pare
 
     connect(editCourseButton, &ImageButton::clicked, [=](){
         std::map<std::string, std::string> data;
-        data.insert(std::pair<std::string, std::string>("name", "Linear Algebra"));
+        data.insert(std::pair<std::string, std::string>("name", model->getCourseSelected().name));
         courseEditForm->setData(data);
+
         courseEditDialog->show();
     });
 
@@ -176,7 +178,12 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *, QWidget *pare
     });
 
     connect(courseEditDialog, &FormDialog::completed, [=](std::map<std::string, std::string> data){
-        std::cout << "Change course name to: " << data.at("name") << std::endl;
+        Course course = model->getCourseSelected();
+        course.name = data.at("name");
+        editCourse(course);
+
+        model->editCourse(course);
+
         courseEditDialog->close();
     });
 
@@ -185,7 +192,10 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *, QWidget *pare
     });
 
     connect(courseDeleteDialog, &DeleteDialog::accepted, [=](){
-        std::cout << "Deleted course" << std::endl;
+        deleteCourse(model->getCourseSelected().id);
+
+        model->deleteCourse(model->getCourseSelected().id);
+
         courseDeleteDialog->close();
         pageStack->setCurrentIndex(0);
     });
@@ -209,5 +219,35 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *, QWidget *pare
 
     connect(factAddDialog, &FormDialog::cancelled, [=](){
         factAddDialog->close();
+    });
+
+
+
+    connect(model, &Model::courseSelectedChanged, [=](Course course){
+        currentCourseLabel->setText(QString::fromStdString(course.name));
+
+        courseLabel->setText(QString::fromStdString(course.name));
+
+        while (pickerScrollLayout->count() > 0) {
+            delete pickerScrollLayout->takeAt(0)->widget();
+        }
+        SectionPickerWidget *sectionPicker = new SectionPickerWidget(course.root_fact, course.name, factAddDialog);
+        pickerScrollLayout->addWidget(sectionPicker);
+        pickerScrollLayout->addStretch(1);
+    });
+
+    connect(model, &Model::courseEdited, [=](Course course){
+        if (model->isCourseSelected() && model->getCourseSelected().id == course.id) {
+            currentCourseLabel->setText(QString::fromStdString(course.name));
+
+            courseLabel->setText(QString::fromStdString(course.name));
+
+            while (pickerScrollLayout->count() > 0) {
+                delete pickerScrollLayout->takeAt(0)->widget();
+            }
+            SectionPickerWidget *sectionPicker = new SectionPickerWidget(course.root_fact, course.name, factAddDialog);
+            pickerScrollLayout->addWidget(sectionPicker);
+            pickerScrollLayout->addStretch(1);
+        }
     });
 }
