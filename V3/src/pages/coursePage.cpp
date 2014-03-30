@@ -149,12 +149,8 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
     splitter->addWidget(courseScrollArea);
 
     QWidget *courseScrollWidget = new QWidget();
-    QVBoxLayout *courseScrollLayout = new QVBoxLayout(courseScrollWidget);
+    courseScrollLayout = new QVBoxLayout(courseScrollWidget);
     courseScrollArea->setWidget(courseScrollWidget);
-
-    CourseWidget *courseWidget = new CourseWidget();
-    courseScrollLayout->addWidget(courseWidget);
-    courseScrollLayout->addStretch(1);
 
 
 
@@ -207,30 +203,37 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
         courseDeleteDialog->close();
     });
 
-    connect(courseWidget, &CourseWidget::viewButtonClicked, [=](int id){
-        std::cout << "Fact view button clicked: " << id << std::endl;
-        pageStack->setCurrentIndex(2);
-    });
-
 
 
     connect(model, &Model::courseSelectedChanged, [=](Course course){
-        rebuildPage(course);
+        rebuildCourseDetails(course);
+        rebuildSectionPicker(course);
+        rebuildFactList(course.root_fact);
     });
 
     connect(model, &Model::courseEdited, [=](Course course){
         if (model->isCourseSelected() && model->getCourseSelected().id == course.id) {
-            rebuildPage(course);
+            rebuildCourseDetails(course);
         }
+    });
+
+    connect(model, &Model::factAdded, [=](Fact fact){
+        if (fact.type == "Section") {
+            rebuildSectionPicker(model->getCourseSelected());
+        }
+        rebuildFactList(model->getCourseSelected().root_fact);
+    });
+
+    connect(model, &Model::factEdited, [=](Fact fact){
+        if (fact.type == "Section") {
+            rebuildSectionPicker(model->getCourseSelected());
+        }
+        rebuildFactList(model->getCourseSelected().root_fact);
     });
 }
 
-void CoursePage::rebuildPage(Course course)
+void CoursePage::rebuildSectionPicker(Course course)
 {
-    currentCourseLabel->setText(QString::fromStdString(course.name));
-
-    courseLabel->setText(QString::fromStdString(course.name));
-
     while (pickerScrollLayout->count() > 0) {
         delete pickerScrollLayout->takeAt(0)->widget();
     }
@@ -239,12 +242,37 @@ void CoursePage::rebuildPage(Course course)
     pickerScrollLayout->addStretch(1);
 
     connect(sectionPicker, &SectionPickerWidget::sectionSelected, [=](int id){
-        std::cout << "Section selected " << id << std::endl;
+        rebuildFactList(id);
     });
 
     connect(sectionPicker, &SectionPickerWidget::factAdded, [=](Fact fact){
         model->addFact(fact);
-        model->setFactSelected(fact);
+        
+        if (fact.type != "Section") {
+            model->setFactSelected(fact);
+            pageStack->setCurrentIndex(2);
+        }
+    });
+}
+
+void CoursePage::rebuildFactList(int id)
+{
+    while (courseScrollLayout->count() > 0) {
+        delete courseScrollLayout->takeAt(0)->widget();
+    }
+    CourseWidget *courseWidget = new CourseWidget(id);
+    courseScrollLayout->addWidget(courseWidget);
+    courseScrollLayout->addStretch(1);
+
+    connect(courseWidget, &CourseWidget::viewButtonClicked, [=](int id){
+        model->setFactSelected(findFact(id));
         pageStack->setCurrentIndex(2);
     });
+}
+
+void CoursePage::rebuildCourseDetails(Course course)
+{
+    currentCourseLabel->setText(QString::fromStdString(course.name));
+
+    courseLabel->setText(QString::fromStdString(course.name));
 }

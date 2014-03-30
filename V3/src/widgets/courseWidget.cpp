@@ -3,33 +3,36 @@
 #include <QVBoxLayout>
 #include <QLabel>
 
+#include "database/methods.h"
 #include "widgets/expandingFactWidget.h"
 #include "widgets/sectionWidget.h"
 
 #include "widgets/courseWidget.h"
 
-CourseWidget::CourseWidget(QWidget *parent)
+CourseWidget::CourseWidget(int id, QWidget *parent)
     : QWidget(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->setContentsMargins(0, 0, 0, 11);
 
-    ExpandingFactWidget *fact = new ExpandingFactWidget("Independent fact");
-    SectionWidget *section1 = new SectionWidget(1, "Section 1");
-    SectionWidget *section2 = new SectionWidget(3, "Section 2");
+    std::vector<Fact> facts = findChildFacts(id);
 
-    layout->addWidget(fact);
-    layout->addWidget(section1);
-    layout->addWidget(section2);
+    for (size_t i = 0; i < facts.size(); ++i) {
+        if (facts[i].type == "Section") {
+            SectionWidget *sectionWidget = new SectionWidget(facts[i].id, facts[i].name);
+            layout->addWidget(sectionWidget);
 
-    connect(fact, &ExpandingFactWidget::viewButtonClicked, [=](){
-        emit viewButtonClicked(0);
-    });
+            connect(sectionWidget, &SectionWidget::viewButtonClicked, [=](int id){
+                emit viewButtonClicked(id);
+            });
+        }
+        else {
+            ExpandingFactWidget *factWidget = new ExpandingFactWidget(facts[i].id, facts[i].name);
+            layout->addWidget(factWidget);
 
-    connect(section1, &SectionWidget::viewButtonClicked, [=](int id){
-        emit viewButtonClicked(id);
-    });
-
-    connect(section2, &SectionWidget::viewButtonClicked, [=](int id){
-        emit viewButtonClicked(id);
-    });
+            connect(factWidget, &ExpandingFactWidget::viewButtonClicked, [=](int id){
+                emit viewButtonClicked(id);
+            });
+        }
+    }
 }

@@ -22,6 +22,7 @@ FactForm::FactForm(QWidget *parent)
     QHBoxLayout *typeRightLayout = new QHBoxLayout();
 
     typeInput = new QComboBox();
+    typeInput->addItem("Section");
     typeInput->addItem("Axiom");
     typeInput->addItem("Definition");
     typeInput->addItem("Proposition");

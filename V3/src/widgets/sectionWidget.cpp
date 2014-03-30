@@ -4,6 +4,7 @@
 #include <QLabel>
 #include <QPainter>
 
+#include "database/methods.h"
 #include "widgets/expandingFactWidget.h"
 
 #include "widgets/sectionWidget.h"
@@ -12,22 +13,30 @@ SectionWidget::SectionWidget(int id, std::string title, QWidget *parent)
     : QWidget(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->setContentsMargins(11, 0, 0, 11);
 
     layout->addWidget(new QLabel(QString::fromStdString(title)));
 
-    ExpandingFactWidget *fact1 = new ExpandingFactWidget("Dependent fact 1");
-    ExpandingFactWidget *fact2 = new ExpandingFactWidget("Dependent fact 2");
+    std::vector<Fact> facts = findChildFacts(id);
 
-    layout->addWidget(fact1);
-    layout->addWidget(fact2);
+    for (size_t i = 0; i < facts.size(); ++i) {
+        if (facts[i].type == "Section") {
+            SectionWidget *sectionWidget = new SectionWidget(facts[i].id, facts[i].name);
+            layout->addWidget(sectionWidget);
 
-    connect(fact1, &ExpandingFactWidget::viewButtonClicked, [=](){
-        emit viewButtonClicked(id);
-    });
+            connect(sectionWidget, &SectionWidget::viewButtonClicked, [=](int id){
+                emit viewButtonClicked(id);
+            });
+        }
+        else {
+            ExpandingFactWidget *factWidget = new ExpandingFactWidget(facts[i].id, facts[i].name);
+            layout->addWidget(factWidget);
 
-    connect(fact2, &ExpandingFactWidget::viewButtonClicked, [=](){
-        emit viewButtonClicked(id+1);
-    });
+            connect(factWidget, &ExpandingFactWidget::viewButtonClicked, [=](int id){
+                emit viewButtonClicked(id);
+            });
+        }
+    }
 }
 
 void SectionWidget::paintEvent(QPaintEvent *)

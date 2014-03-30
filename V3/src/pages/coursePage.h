@@ -8,6 +8,7 @@ class ResizableStackedWidget;
 class Model;
 class QLabel;
 class QVBoxLayout;
+class QScrollLayout;
 
 class CoursePage : public QWidget
 {
@@ -17,12 +18,14 @@ public:
     CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget *parent = 0);
 
 private:
-    void rebuildPage(Course course);
+    void rebuildSectionPicker(Course course);
+    void rebuildFactList(int id);
+    void rebuildCourseDetails(Course course);
 
 
 
     Model *model;
     ResizableStackedWidget *pageStack;
     QLabel *currentCourseLabel, *courseLabel;
-    QVBoxLayout *pickerScrollLayout;
+    QVBoxLayout *pickerScrollLayout, *courseScrollLayout;
 };

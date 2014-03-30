@@ -12,7 +12,7 @@
 
 #include "widgets/expandingFactWidget.h"
 
-ExpandingFactWidget::ExpandingFactWidget(std::string title, QWidget *parent)
+ExpandingFactWidget::ExpandingFactWidget(int id, std::string title, QWidget *parent)
     : QWidget(parent)
 {
     headColor = QColor(66, 139, 202);
@@ -65,7 +65,7 @@ ExpandingFactWidget::ExpandingFactWidget(std::string title, QWidget *parent)
 
 
     connect(viewButton, &ImageButton::clicked, [=](){
-        emit viewButtonClicked();
+        emit viewButtonClicked(id);
     });
 }
 

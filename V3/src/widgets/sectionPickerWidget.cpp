@@ -18,6 +18,7 @@ SectionPickerWidget::SectionPickerWidget(int id, std::string name, QWidget *pare
     FormDialog *factAddDialog = new FormDialog(this, new FactForm(), "Add a new fact...", "Add");
 
     QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->setContentsMargins(0, 0, 0, 0);
 
 
 
@@ -56,6 +57,7 @@ SectionPickerWidget::SectionPickerWidget(int id, std::string name, QWidget *pare
     for (size_t i = 0; i < facts.size(); ++i) {
         SectionPickerWidget *sectionPickerWidget = new SectionPickerWidget(facts[i].id, facts[i].name);
 
+        layout->addSpacing(5);
         layout->addWidget(sectionPickerWidget);
 
         connect(sectionPickerWidget, &SectionPickerWidget::sectionSelected, [=](int id){

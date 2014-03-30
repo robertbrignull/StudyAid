@@ -13,14 +13,14 @@ class ExpandingFactWidget : public QWidget
     Q_OBJECT
 
 public:
-    ExpandingFactWidget(std::string title, QWidget *parent = 0);
+    ExpandingFactWidget(int id, std::string title, QWidget *parent = 0);
 
     void resizeEvent(QResizeEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *);
 
 signals:
-    void viewButtonClicked();
+    void viewButtonClicked(int id);
 
 private:
     void setExpanded(bool expanded);
