@@ -5,19 +5,25 @@
 #include <QWidget>
 #include <QPixmap>
 
+#include "database/structures.h"
+
 class CourseTitleWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    CourseTitleWidget(std::string name, QWidget *parent = 0);
+    CourseTitleWidget(Course course, QWidget *parent = 0);
 
     void paintEvent(QPaintEvent *);
 
 signals:
-    void viewButtonClicked();
+    void viewButtonClicked(Course course);
+
+public slots:
+    void viewButtonClickedSlot();
 
 private:
+    Course course;
     int radius;
     QColor headColor, borderColor;
 };

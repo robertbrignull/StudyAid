@@ -538,15 +538,15 @@ compiler_rcc_make_all: qrc_resources.cpp
 compiler_rcc_clean:
 	-$(DEL_FILE) qrc_resources.cpp
 qrc_resources.cpp: resources.qrc \
-		images/arrow_right_white.png \
-		images/arrow_right_black.png \
-		images/trash_black.png \
-		images/plus_black.png \
 		images/pencil_black.png \
-		images/triangle_left_black.png \
 		images/triangle_up_black.png \
+		images/triangle_left_black.png \
 		images/cross_black.png \
 		images/triangle_right_black.png \
+		images/arrow_right_white.png \
+		images/plus_black.png \
+		images/arrow_right_black.png \
+		images/trash_black.png \
 		images/triangle_down_black.png
 	/usr/local/qt5/bin/rcc -name resources resources.qrc -o qrc_resources.cpp
 
@@ -1059,7 +1059,8 @@ moc/moc_proofPage.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
 		src/pages/proofPage.h
 	/usr/local/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/pages/proofPage.h -o moc/moc_proofPage.cpp
 
-moc/moc_rootPage.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
+moc/moc_rootPage.cpp: src/database/structures.h \
+		/usr/local/qt5/include/QtWidgets/QWidget \
 		/usr/local/qt5/include/QtWidgets/qwidget.h \
 		/usr/local/qt5/include/QtGui/qwindowdefs.h \
 		/usr/local/qt5/include/QtCore/qglobal.h \
@@ -1392,6 +1393,7 @@ moc/moc_courseTitleWidget.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
 		/usr/local/qt5/include/QtGui/qvector2d.h \
 		/usr/local/qt5/include/QtGui/qtouchdevice.h \
 		/usr/local/qt5/include/QtGui/QPixmap \
+		src/database/structures.h \
 		src/widgets/courseTitleWidget.h
 	/usr/local/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/widgets/courseTitleWidget.h -o moc/moc_courseTitleWidget.cpp
 
@@ -4438,7 +4440,8 @@ obj/courseTitleWidget.o: src/widgets/courseTitleWidget.cpp /usr/local/qt5/includ
 		/usr/local/qt5/include/QtGui/QPen \
 		/usr/local/qt5/include/QtGui/QBrush \
 		src/widgets/courseTitleWidget.h \
-		/usr/local/qt5/include/QtWidgets/QWidget
+		/usr/local/qt5/include/QtWidgets/QWidget \
+		src/database/structures.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/courseTitleWidget.o src/widgets/courseTitleWidget.cpp
 
 obj/courseWidget.o: src/widgets/courseWidget.cpp /usr/local/qt5/include/QtWidgets/QVBoxLayout \

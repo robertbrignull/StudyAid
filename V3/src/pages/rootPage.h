@@ -2,6 +2,8 @@
 
 #include <map>
 
+#include "database/structures.h"
+
 #include <QWidget>
 
 class ResizableStackedWidget;
@@ -16,7 +18,20 @@ class RootPage : public QWidget
 public:
     RootPage(ResizableStackedWidget *pageStack, Model *model, QWidget *parent = 0);
 
+public slots:
+    void courseViewButtonClicked(Course course);
+
+    void addCourseSlot(Course course);
+    void editCourseSlot(Course course);
+    void deleteCourseSlot(int id);
+
 private:
+    Model *model;
+    ResizableStackedWidget *pageStack;
+
+    // The layout that contains the courses
     QVBoxLayout *scrollLayout;
-    std::map<int, std::pair<CourseTitleWidget*, int> > courseWidgetMap;
+    
+    // Maps from ids to Courses and CourseTitleWidgets
+    std::map<int, std::pair<Course, CourseTitleWidget*> > idCourseMap;
 };
