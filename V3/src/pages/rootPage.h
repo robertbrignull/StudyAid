@@ -8,6 +8,7 @@
 
 class ResizableStackedWidget;
 class Model;
+class FormDialog;
 class QVBoxLayout;
 class CourseTitleWidget;
 
@@ -21,13 +22,18 @@ public:
 public slots:
     void courseViewButtonClicked(Course course);
 
-    void addCourseSlot(Course course);
-    void editCourseSlot(Course course);
-    void deleteCourseSlot(int id);
+    void courseAddDialogCompleted(std::map<std::string, std::string> data);
+
+    void courseAddedSlot(Course course);
+    void courseEditedSlot(Course course);
+    void courseDeletedSlot(int id);
 
 private:
     Model *model;
     ResizableStackedWidget *pageStack;
+
+    // The dialog for adding a new course
+    FormDialog *courseAddDialog;
 
     // The layout that contains the courses
     QVBoxLayout *scrollLayout;

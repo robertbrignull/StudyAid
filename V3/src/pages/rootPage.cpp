@@ -29,7 +29,7 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
 
 
-    FormDialog *courseAddDialog = new FormDialog(this, new CourseForm(), "Add a new course...", "Add");
+    courseAddDialog = new FormDialog(this, new CourseForm(), "Add a new course...", "Add");
 
 
 
@@ -122,7 +122,7 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     idCourseMap = std::map<int, std::pair<Course, CourseTitleWidget*> >();
 
     for (size_t i = 0; i < courses.size(); ++i) {
-        addCourseSlot(courses[i]);
+        courseAddedSlot(courses[i]);
     }
 
     scrollLayout->addStretch(1);
@@ -137,29 +137,14 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     // ##   ##  ##  ##   ## ##  ### ##   ## ##      ##   ##
     //  #####  ####  #####  ##   ## ##   ## #######  #####
 
-    connect(newCourseButton, &QPushButton::clicked, [=](){
-        courseAddDialog->show();
-    });
+    connect(newCourseButton, SIGNAL(clicked()), courseAddDialog, SLOT(show()));
 
-    connect(courseAddDialog, &FormDialog::completed, [=](std::map<std::string, std::string> data){
-        Course course = findCourse(addCourse(data.at("name")));
-        
-        model->addCourse(course);
-        model->setCourseSelected(course);
+    connect(courseAddDialog, SIGNAL(completed(std::map<std::string, std::string>)), this, SLOT(courseAddDialogCompleted(std::map<std::string, std::string>)));
+    connect(courseAddDialog, SIGNAL(cancelled()), courseAddDialog, SLOT(close()));
 
-        courseAddDialog->close();
-        pageStack->setCurrentIndex(1);
-    });
-
-    connect(courseAddDialog, &FormDialog::cancelled, [=](){
-        courseAddDialog->close();
-    });
-
-
-
-    connect(model, SIGNAL(courseAdded(Course)), this, SLOT(addCourseSlot(Course)));
-    connect(model, SIGNAL(courseEdited(Course)), this, SLOT(editCourseSlot(Course)));
-    connect(model, SIGNAL(courseDeleted(int)), this, SLOT(deleteCourseSlot(int)));
+    connect(model, SIGNAL(courseAdded(Course)), this, SLOT(courseAddedSlot(Course)));
+    connect(model, SIGNAL(courseEdited(Course)), this, SLOT(courseEditedSlot(Course)));
+    connect(model, SIGNAL(courseDeleted(int)), this, SLOT(courseDeletedSlot(int)));
 }
 
 //   #####  ##       #####  ########  #####
@@ -170,7 +155,24 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 //  ##   ## ##      ##   ##    ##    ##   ##
 //   #####  #######  #####     ##     #####
 
-void RootPage::addCourseSlot(Course course)
+void RootPage::courseViewButtonClicked(Course course)
+{
+    model->setCourseSelected(course);
+    pageStack->setCurrentIndex(1);
+}
+
+void RootPage::courseAddDialogCompleted(std::map<std::string, std::string> data)
+{
+    Course course = findCourse(addCourse(data.at("name")));
+        
+    model->addCourse(course);
+    model->setCourseSelected(course);
+
+    courseAddDialog->close();
+    pageStack->setCurrentIndex(1);
+}
+
+void RootPage::courseAddedSlot(Course course)
 {
     int position = idCourseMap.size();
 
@@ -188,13 +190,13 @@ void RootPage::addCourseSlot(Course course)
     connect(courseTitleWidget, SIGNAL(viewButtonClicked(Course)), this, SLOT(courseViewButtonClicked(Course)));
 }
 
-void RootPage::editCourseSlot(Course course)
+void RootPage::courseEditedSlot(Course course)
 {
-    deleteCourseSlot(course.id);
-    addCourseSlot(course);
+    courseDeletedSlot(course.id);
+    courseAddedSlot(course);
 }
 
-void RootPage::deleteCourseSlot(int id)
+void RootPage::courseDeletedSlot(int id)
 {
     auto pair = idCourseMap.at(id);
 
@@ -202,10 +204,4 @@ void RootPage::deleteCourseSlot(int id)
     delete pair.second;
 
     idCourseMap.erase(id);
-}
-
-void RootPage::courseViewButtonClicked(Course course)
-{
-    model->setCourseSelected(course);
-    pageStack->setCurrentIndex(1);
 }

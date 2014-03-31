@@ -33,16 +33,24 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
 
 
 
-    CourseForm *courseEditForm = new CourseForm();
-    FormDialog *courseEditDialog = new FormDialog(this, courseEditForm, "Edit the course...", "Change");
+    courseEditForm = new CourseForm();
+    courseEditDialog = new FormDialog(this, courseEditForm, "Edit the course...", "Change");
 
-    DeleteDialog *courseDeleteDialog = new DeleteDialog(this, "Are you sure you want to delete this course?");
+    courseDeleteDialog = new DeleteDialog(this, "Are you sure you want to delete this course?");
 
 
 
     QVBoxLayout *outerLayout = new QVBoxLayout(this);
 
 
+
+    //  ##   ## #######   ###   #####   ####### #####
+    //  ##   ## ##       ## ##  ##  ##  ##      ##  ##
+    //  ##   ## ##      ##   ## ##   ## ##      ##   ##
+    //  ####### #####   ##   ## ##   ## #####   ##  ##
+    //  ##   ## ##      ####### ##   ## ##      #####
+    //  ##   ## ##      ##   ## ##  ##  ##      ##  ##
+    //  ##   ## ####### ##   ## #####   ####### ##   ##
 
     QHBoxLayout *crumbBorderLayout = new QHBoxLayout();
 
@@ -124,6 +132,14 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
 
 
 
+    //  #######   ###    #####  ########  #####
+    //  ##       ## ##  ##   ##    ##    ##   ##
+    //  ##      ##   ## ##         ##     ##
+    //  #####   ##   ## ##         ##      ###
+    //  ##      ####### ##         ##        ##
+    //  ##      ##   ## ##   ##    ##    ##   ##
+    //  ##      ##   ##  #####     ##     #####
+
     Splitter *splitter = new Splitter(Qt::Horizontal);
     outerLayout->addWidget(splitter);
     splitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -158,84 +174,116 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
 
 
 
+    //  #####  ####  #####  ##   ##   ###   ##       #####
+    // ##   ##  ##  ##   ## ###  ##  ## ##  ##      ##   ##
+    //  ##      ##  ##      ###  ## ##   ## ##       ##
+    //   ###    ##  ##      ####### ##   ## ##        ###
+    //     ##   ##  ##  ### ##  ### ####### ##          ##
+    // ##   ##  ##  ##   ## ##  ### ##   ## ##      ##   ##
+    //  #####  ####  #####  ##   ## ##   ## #######  #####
+
     connect(coursesLabel, &ClickableQLabel::clicked, [=](){
         pageStack->setCurrentIndex(0);
     });
 
+    connect(editCourseButton, SIGNAL(clicked()), this, SLOT(courseEditButtonClicked()));
 
+    connect(courseEditDialog, SIGNAL(cancelled()), courseEditDialog, SLOT(close()));
+    connect(courseEditDialog, SIGNAL(completed(std::map<std::string, std::string>)), this, SLOT(courseEditDialogCompleted(std::map<std::string, std::string>)));
 
-    connect(editCourseButton, &ImageButton::clicked, [=](){
-        std::map<std::string, std::string> data;
-        data.insert(std::pair<std::string, std::string>("name", model->getCourseSelected().name));
-        courseEditForm->setData(data);
+    connect(deleteCourseButton, SIGNAL(clicked()), courseDeleteDialog, SLOT(show()));
 
-        courseEditDialog->show();
-    });
+    connect(courseDeleteDialog, SIGNAL(accepted()), this, SLOT(courseDeleteFormAccepted()));
+    connect(courseDeleteDialog, SIGNAL(cancelled()), courseDeleteDialog, SLOT(close()));
 
-    connect(courseEditDialog, &FormDialog::cancelled, [=](){
-        courseEditDialog->close();
-    });
-
-    connect(courseEditDialog, &FormDialog::completed, [=](std::map<std::string, std::string> data){
-        Course course = model->getCourseSelected();
-        course.name = data.at("name");
-        editCourse(course);
-
-        model->editCourse(course);
-
-        courseEditDialog->close();
-    });
-
-    connect(deleteCourseButton, &ImageButton::clicked, [=](){
-        courseDeleteDialog->show();
-    });
-
-    connect(courseDeleteDialog, &DeleteDialog::accepted, [=](){
-        deleteCourse(model->getCourseSelected().id);
-
-        model->deleteCourse(model->getCourseSelected().id);
-
-        courseDeleteDialog->close();
-        pageStack->setCurrentIndex(0);
-    });
-
-    connect(courseDeleteDialog, &DeleteDialog::cancelled, [=](){
-        courseDeleteDialog->close();
-    });
-
-
-
-    connect(model, &Model::courseSelectedChanged, [=](Course course){
-        rebuildCourseDetails(course);
-        rebuildSectionPicker(course);
-        rebuildFactList(course.root_fact);
-    });
-
-    connect(model, &Model::courseEdited, [=](Course course){
-        if (model->isCourseSelected() && model->getCourseSelected().id == course.id) {
-            rebuildCourseDetails(course);
-        }
-    });
-
-    connect(model, &Model::factAdded, [=](Fact fact){
-        if (fact.type == "Section") {
-            rebuildSectionPicker(model->getCourseSelected());
-        }
-        rebuildFactList(model->getCourseSelected().root_fact);
-    });
-
-    connect(model, &Model::factEdited, [=](Fact fact){
-        if (fact.type == "Section") {
-            rebuildSectionPicker(model->getCourseSelected());
-        }
-        rebuildFactList(model->getCourseSelected().root_fact);
-    });
-
-    connect(model, &Model::factDeleted, [=](int){
-        rebuildSectionPicker(model->getCourseSelected());
-        rebuildFactList(model->getCourseSelected().root_fact);
-    });
+    connect(model, SIGNAL(courseSelectedChanged(Course)), this, SLOT(courseSelectedChangedSlot(Course)));
+    connect(model, SIGNAL(courseEdited(Course)), this, SLOT(courseEditedSlot(Course)));
+    connect(model, SIGNAL(factAdded(Fact)), this, SLOT(factAddedSlot(Fact)));
+    connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
+    connect(model, SIGNAL(factDeleted(int)), this, SLOT(factDeletedSlot(int)));
 }
+
+//   #####  ##       #####  ########  #####
+//  ##   ## ##      ##   ##    ##    ##   ##
+//   ##     ##      ##   ##    ##     ##
+//    ###   ##      ##   ##    ##      ###
+//      ##  ##      ##   ##    ##        ##
+//  ##   ## ##      ##   ##    ##    ##   ##
+//   #####  #######  #####     ##     #####
+
+void CoursePage::courseEditButtonClicked()
+{
+    std::map<std::string, std::string> data;
+    data.insert(std::pair<std::string, std::string>("name", model->getCourseSelected().name));
+    courseEditForm->setData(data);
+
+    courseEditDialog->show();
+}
+
+void CoursePage::courseEditDialogCompleted(std::map<std::string, std::string> data)
+{
+    Course course = model->getCourseSelected();
+    course.name = data.at("name");
+    editCourse(course);
+
+    model->editCourse(course);
+
+    courseEditDialog->close();
+}
+
+void CoursePage::courseDeleteFormAccepted()
+{
+    deleteCourse(model->getCourseSelected().id);
+
+    model->deleteCourse(model->getCourseSelected().id);
+
+    courseDeleteDialog->close();
+    pageStack->setCurrentIndex(0);
+}
+
+void CoursePage::courseSelectedChangedSlot(Course course)
+{
+    rebuildCourseDetails(course);
+    rebuildSectionPicker(course);
+    rebuildFactList(course.root_fact);
+}
+
+void CoursePage::courseEditedSlot(Course course)
+{
+    if (model->isCourseSelected() && model->getCourseSelected().id == course.id) {
+        rebuildCourseDetails(course);
+    }
+}
+
+void CoursePage::factAddedSlot(Fact fact)
+{
+    if (fact.type == "Section") {
+        rebuildSectionPicker(model->getCourseSelected());
+    }
+    rebuildFactList(model->getCourseSelected().root_fact);
+}
+
+void CoursePage::factEditedSlot(Fact fact)
+{
+    if (fact.type == "Section") {
+        rebuildSectionPicker(model->getCourseSelected());
+    }
+    rebuildFactList(model->getCourseSelected().root_fact);
+}
+
+void CoursePage::factDeletedSlot(int)
+{
+    rebuildSectionPicker(model->getCourseSelected());
+    rebuildFactList(model->getCourseSelected().root_fact);
+}
+
+//  ##     ## ####### ######## ##   ##  #####  #####    #####
+//  ###   ### ##         ##    ##   ## ##   ## ##  ### ##   ##
+//  #### #### ##         ##    ##   ## ##   ## ##   ##  ##
+//  ## ### ## #####      ##    ####### ##   ## ##   ##   ###
+//  ##  #  ## ##         ##    ##   ## ##   ## ##   ##     ##
+//  ##     ## ##         ##    ##   ## ##   ## ##  ### ##   ##
+//  ##     ## #######    ##    ##   ##  #####  #####    #####
 
 void CoursePage::rebuildSectionPicker(Course course)
 {

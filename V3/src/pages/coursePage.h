@@ -6,6 +6,9 @@
 
 class ResizableStackedWidget;
 class Model;
+class CourseForm;
+class FormDialog;
+class DeleteDialog;
 class QLabel;
 class QVBoxLayout;
 class QScrollLayout;
@@ -17,6 +20,19 @@ class CoursePage : public QWidget
 public:
     CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget *parent = 0);
 
+public slots:
+    void courseEditButtonClicked();
+    void courseEditDialogCompleted(std::map<std::string, std::string> data);
+
+    void courseDeleteFormAccepted();
+
+    void courseSelectedChangedSlot(Course course);
+    void courseEditedSlot(Course course);
+
+    void factAddedSlot(Fact fact);
+    void factEditedSlot(Fact fact);
+    void factDeletedSlot(int id);
+
 private:
     void rebuildSectionPicker(Course course);
     void rebuildFactList(int id);
@@ -26,6 +42,17 @@ private:
 
     Model *model;
     ResizableStackedWidget *pageStack;
+
+    // The form and dialog for editing a course
+    CourseForm *courseEditForm;
+    FormDialog *courseEditDialog;
+
+    // Dialog for deleting a course
+    DeleteDialog *courseDeleteDialog;
+
+    // Both labels that hold the name of the current course
     QLabel *currentCourseLabel, *courseLabel;
+
+    // The layouts for the two sides of the splitter
     QVBoxLayout *pickerScrollLayout, *courseScrollLayout;
 };
