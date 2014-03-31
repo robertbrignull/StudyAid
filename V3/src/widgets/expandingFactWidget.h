@@ -5,6 +5,10 @@
 #include <QWidget>
 #include <QPixmap>
 
+#include "database/structures.h"
+
+class Model;
+class ResizableStackedWidget;
 class QMouseEvent;
 class ResizableImage;
 
@@ -13,19 +17,19 @@ class ExpandingFactWidget : public QWidget
     Q_OBJECT
 
 public:
-    ExpandingFactWidget(int id, std::string title, QWidget *parent = 0);
+    ExpandingFactWidget(Fact fact, Model *model, ResizableStackedWidget *pageStack, QWidget *parent = 0);
 
     void resizeEvent(QResizeEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *);
 
-signals:
-    void viewButtonClicked(int id);
-
 private:
     void setExpanded(bool expanded);
 
 
+
+    Model *model;
+    ResizableStackedWidget *pageStack;
 
     bool expanded;
     double currentHeight;

@@ -7,14 +7,19 @@
 #include <QLabel>
 #include <QVariantAnimation>
 
+#include "model.h"
 #include "widgets/imageButton.h"
 #include "widgets/resizableImage.h"
+#include "widgets/resizableStackedWidget.h"
 
 #include "widgets/expandingFactWidget.h"
 
-ExpandingFactWidget::ExpandingFactWidget(int id, std::string title, QWidget *parent)
+ExpandingFactWidget::ExpandingFactWidget(Fact fact, Model *model, ResizableStackedWidget *pageStack, QWidget *parent)
     : QWidget(parent)
 {
+    this->model = model;
+    this->pageStack = pageStack;
+
     headColor = QColor(66, 139, 202);
     bodyColor = Qt::white;
     borderColor = QColor(66, 139, 202);
@@ -30,7 +35,7 @@ ExpandingFactWidget::ExpandingFactWidget(int id, std::string title, QWidget *par
     QHBoxLayout *headLayout = new QHBoxLayout(headWidget);
     headLayout->setContentsMargins(16, 8, 16, 8);
 
-    QLabel *label = new QLabel(QString::fromStdString(title));
+    QLabel *label = new QLabel(QString::fromStdString(fact.name));
     label->setWordWrap(true);
 
     QFont font = label->font();
@@ -65,7 +70,8 @@ ExpandingFactWidget::ExpandingFactWidget(int id, std::string title, QWidget *par
 
 
     connect(viewButton, &ImageButton::clicked, [=](){
-        emit viewButtonClicked(id);
+        model->setFactSelected(fact);
+        pageStack->setCurrentIndex(2);
     });
 }
 

@@ -15,7 +15,7 @@
 #include "widgets/imageButton.h"
 #include "widgets/horizontalSeperator.h"
 #include "widgets/clickableQLabel.h"
-#include "widgets/courseWidget.h"
+#include "widgets/factListView.h"
 #include "widgets/sectionPickerWidget.h"
 #include "widgets/splitter.h"
 #include "dialogs/deleteDialog.h"
@@ -198,9 +198,6 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
 
     connect(model, SIGNAL(courseSelectedChanged(Course)), this, SLOT(courseSelectedChangedSlot(Course)));
     connect(model, SIGNAL(courseEdited(Course)), this, SLOT(courseEditedSlot(Course)));
-    connect(model, SIGNAL(factAdded(Fact)), this, SLOT(factAddedSlot(Fact)));
-    connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
-    connect(model, SIGNAL(factDeleted(int)), this, SLOT(factDeletedSlot(int)));
 }
 
 //   #####  ##       #####  ########  #####
@@ -243,69 +240,38 @@ void CoursePage::courseDeleteFormAccepted()
 
 void CoursePage::courseSelectedChangedSlot(Course course)
 {
-    rebuildCourseDetails(course);
-    rebuildSectionPicker(course);
-    rebuildFactList(course.root_fact);
-}
+    // Update the labels with the name of the course
+    currentCourseLabel->setText(QString::fromStdString(course.name));
+    courseLabel->setText(QString::fromStdString(course.name));
 
-void CoursePage::courseEditedSlot(Course course)
-{
-    if (model->isCourseSelected() && model->getCourseSelected().id == course.id) {
-        rebuildCourseDetails(course);
-    }
-}
-
-void CoursePage::factAddedSlot(Fact)
-{
-    rebuildFactList(model->getCourseSelected().root_fact);
-}
-
-void CoursePage::factEditedSlot(Fact)
-{
-    rebuildFactList(model->getCourseSelected().root_fact);
-}
-
-void CoursePage::factDeletedSlot(int)
-{
-    rebuildFactList(model->getCourseSelected().root_fact);
-}
-
-//  ##     ## ####### ######## ##   ##  #####  #####    #####
-//  ###   ### ##         ##    ##   ## ##   ## ##  ### ##   ##
-//  #### #### ##         ##    ##   ## ##   ## ##   ##  ##
-//  ## ### ## #####      ##    ####### ##   ## ##   ##   ###
-//  ##  #  ## ##         ##    ##   ## ##   ## ##   ##     ##
-//  ##     ## ##         ##    ##   ## ##   ## ##  ### ##   ##
-//  ##     ## #######    ##    ##   ##  #####  #####    #####
-
-void CoursePage::rebuildSectionPicker(Course course)
-{
+    // Rebuild the section picker
     while (pickerScrollLayout->count() > 0) {
         delete pickerScrollLayout->takeAt(0)->widget();
     }
     SectionPickerWidget *sectionPicker = new SectionPickerWidget(findFact(course.root_fact), model, pageStack);
     pickerScrollLayout->addWidget(sectionPicker);
     pickerScrollLayout->addStretch(1);
-}
 
-void CoursePage::rebuildFactList(int id)
-{
+    // Rebuild the fact list
     while (courseScrollLayout->count() > 0) {
         delete courseScrollLayout->takeAt(0)->widget();
     }
-    CourseWidget *courseWidget = new CourseWidget(id);
-    courseScrollLayout->addWidget(courseWidget);
+    FactListView *factListView = new FactListView(course, model, pageStack);
+    courseScrollLayout->addWidget(factListView);
     courseScrollLayout->addStretch(1);
 
-    connect(courseWidget, &CourseWidget::viewButtonClicked, [=](int id){
-        model->setFactSelected(findFact(id));
-        pageStack->setCurrentIndex(2);
-    });
+    // Connect the two together
+    connect(sectionPicker, SIGNAL(sectionSelected(int)), factListView, SLOT(selectSection(int)));
+
+    // Set the starting view to everything
+    factListView->selectSection(course.root_fact);
 }
 
-void CoursePage::rebuildCourseDetails(Course course)
+void CoursePage::courseEditedSlot(Course course)
 {
-    currentCourseLabel->setText(QString::fromStdString(course.name));
-
-    courseLabel->setText(QString::fromStdString(course.name));
+    if (model->isCourseSelected() && model->getCourseSelected().id == course.id) {
+        // Update the labels with the name of the course
+        currentCourseLabel->setText(QString::fromStdString(course.name));
+        courseLabel->setText(QString::fromStdString(course.name));
+    }
 }

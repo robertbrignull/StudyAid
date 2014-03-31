@@ -29,17 +29,7 @@ public slots:
     void courseSelectedChangedSlot(Course course);
     void courseEditedSlot(Course course);
 
-    void factAddedSlot(Fact fact);
-    void factEditedSlot(Fact fact);
-    void factDeletedSlot(int id);
-
 private:
-    void rebuildSectionPicker(Course course);
-    void rebuildFactList(int id);
-    void rebuildCourseDetails(Course course);
-
-
-
     Model *model;
     ResizableStackedWidget *pageStack;
 

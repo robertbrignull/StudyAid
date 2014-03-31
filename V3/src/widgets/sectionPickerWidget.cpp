@@ -51,7 +51,9 @@ SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStack
 
 
 
-    connect(sectionLabel, SIGNAL(clicked()), this, SLOT(viewButtonClicked()));
+    connect(sectionLabel, &ClickableQLabel::clicked, [=](){
+        emit sectionSelected(fact.id);
+    });
 
     connect(viewSectionButton, SIGNAL(clicked()), factAddDialog, SLOT(show()));
 
@@ -63,10 +65,9 @@ SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStack
     connect(model, SIGNAL(factDeleted(int)), this, SLOT(factDeletedSlot(int)));
 }
 
-void SectionPickerWidget::viewButtonClicked()
+void SectionPickerWidget::sectionSelectedSlot(int id)
 {
-    model->setFactSelected(fact);
-    pageStack->setCurrentIndex(2);
+    emit sectionSelected(id);
 }
 
 void SectionPickerWidget::factAddFormCompleted(std::map<std::string, std::string> data)
@@ -100,6 +101,8 @@ void SectionPickerWidget::factAddedSlot(Fact fact)
         layout->addWidget(sectionPickerWidget);
 
         idSectionPickerMap.insert(std::pair<int, std::pair<Fact, SectionPickerWidget*> >(fact.id, std::pair<Fact, SectionPickerWidget*>(fact, sectionPickerWidget)));
+
+        connect(sectionPickerWidget, SIGNAL(sectionSelected(int)), this, SLOT(sectionSelectedSlot(int)));
     }
 }
 

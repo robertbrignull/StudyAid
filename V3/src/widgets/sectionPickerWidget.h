@@ -20,8 +20,11 @@ class SectionPickerWidget : public QWidget
 public:
     SectionPickerWidget(Fact fact, Model *model, ResizableStackedWidget *pageStack, QWidget *parent = 0);
 
+signals:
+    void sectionSelected(int id);
+
 public slots:
-    void viewButtonClicked();
+    void sectionSelectedSlot(int id);
 
     void factAddFormCompleted(std::map<std::string, std::string> data);
 
