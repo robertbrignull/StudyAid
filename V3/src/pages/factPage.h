@@ -4,6 +4,9 @@
 
 class ResizableStackedWidget;
 class Model;
+class ClickableQLabel;
+class QLabel;
+class QTextEdit;
 
 class FactPage : public QWidget
 {
@@ -11,4 +14,9 @@ class FactPage : public QWidget
 
 public:
     FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *parent = 0);
+
+private:
+    ClickableQLabel *factsLabel;
+    QLabel *currentFactLabel, *factLabel;
+    QTextEdit *statementTextEdit;
 };

@@ -12,13 +12,13 @@ MAKEFILE      = Makefile
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
+DEFINES       = -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_TESTLIB_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_TESTCASE_BUILDDIR=\"/home/robert/Documents/coding/StudyAid/V3\"
 CFLAGS        = -pipe -O2 -D_REENTRANT -Wall -W -fPIE $(DEFINES)
 CXXFLAGS      = -pipe -std=c++11 -g -Wall -Wextra -Werror -O2 -D_REENTRANT -Wall -W -fPIE $(DEFINES)
-INCPATH       = -I/usr/local/qt5/mkspecs/linux-g++ -I. -I. -Isrc -I/usr/include/mysql -I/usr/include/mysql++ -I/usr/local/qt5/include -I/usr/local/qt5/include/QtWidgets -I/usr/local/qt5/include/QtGui -I/usr/local/qt5/include/QtCore -Imoc
+INCPATH       = -I/usr/local/qt5/mkspecs/linux-g++ -I. -I. -Isrc -I/usr/include/mysql -I/usr/include/mysql++ -I/usr/local/qt5/include -I/usr/local/qt5/include/QtWidgets -I/usr/local/qt5/include/QtTest -I/usr/local/qt5/include/QtGui -I/usr/local/qt5/include/QtCore -Imoc
 LINK          = g++
 LFLAGS        = -Wl,-O1 -Wl,-rpath,/usr/local/qt5/lib
-LIBS          = $(SUBLIBS) -lmysqlpp -lmysqlclient -L/usr/local/qt5/lib -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
+LIBS          = $(SUBLIBS) -lmysqlpp -lmysqlclient -L/usr/local/qt5/lib -lQt5Widgets -lQt5Test -lQt5Gui -lQt5Core -lGL -lpthread 
 AR            = ar cqs
 RANLIB        = 
 QMAKE         = /usr/local/qt5/bin/qmake
@@ -232,10 +232,13 @@ DIST          = /usr/local/qt5/mkspecs/features/spec_pre.prf \
 		/usr/local/qt5/mkspecs/features/default_pre.prf \
 		/usr/local/qt5/mkspecs/features/resolve_config.prf \
 		/usr/local/qt5/mkspecs/features/default_post.prf \
+		/usr/local/qt5/mkspecs/features/resolve_target.prf \
+		/usr/local/qt5/mkspecs/features/testcase.prf \
 		/usr/local/qt5/mkspecs/features/qt.prf \
 		/usr/local/qt5/mkspecs/features/resources.prf \
 		/usr/local/qt5/mkspecs/features/moc.prf \
 		/usr/local/qt5/mkspecs/features/unix/opengl.prf \
+		/usr/local/qt5/mkspecs/features/testlib_defines.prf \
 		/usr/local/qt5/mkspecs/features/uic.prf \
 		/usr/local/qt5/mkspecs/features/unix/thread.prf \
 		/usr/local/qt5/mkspecs/features/unix/gdb_dwarf_index.prf \
@@ -369,10 +372,13 @@ Makefile: StudyAid.pro /usr/local/qt5/mkspecs/linux-g++/qmake.conf /usr/local/qt
 		/usr/local/qt5/mkspecs/features/default_pre.prf \
 		/usr/local/qt5/mkspecs/features/resolve_config.prf \
 		/usr/local/qt5/mkspecs/features/default_post.prf \
+		/usr/local/qt5/mkspecs/features/resolve_target.prf \
+		/usr/local/qt5/mkspecs/features/testcase.prf \
 		/usr/local/qt5/mkspecs/features/qt.prf \
 		/usr/local/qt5/mkspecs/features/resources.prf \
 		/usr/local/qt5/mkspecs/features/moc.prf \
 		/usr/local/qt5/mkspecs/features/unix/opengl.prf \
+		/usr/local/qt5/mkspecs/features/testlib_defines.prf \
 		/usr/local/qt5/mkspecs/features/uic.prf \
 		/usr/local/qt5/mkspecs/features/unix/thread.prf \
 		/usr/local/qt5/mkspecs/features/unix/gdb_dwarf_index.prf \
@@ -385,7 +391,8 @@ Makefile: StudyAid.pro /usr/local/qt5/mkspecs/linux-g++/qmake.conf /usr/local/qt
 		resources.qrc \
 		/usr/local/qt5/lib/libQt5Widgets.prl \
 		/usr/local/qt5/lib/libQt5Gui.prl \
-		/usr/local/qt5/lib/libQt5Core.prl
+		/usr/local/qt5/lib/libQt5Core.prl \
+		/usr/local/qt5/lib/libQt5Test.prl
 	$(QMAKE) -o Makefile StudyAid.pro
 /usr/local/qt5/mkspecs/features/spec_pre.prf:
 /usr/local/qt5/mkspecs/common/shell-unix.conf:
@@ -477,10 +484,13 @@ Makefile: StudyAid.pro /usr/local/qt5/mkspecs/linux-g++/qmake.conf /usr/local/qt
 /usr/local/qt5/mkspecs/features/default_pre.prf:
 /usr/local/qt5/mkspecs/features/resolve_config.prf:
 /usr/local/qt5/mkspecs/features/default_post.prf:
+/usr/local/qt5/mkspecs/features/resolve_target.prf:
+/usr/local/qt5/mkspecs/features/testcase.prf:
 /usr/local/qt5/mkspecs/features/qt.prf:
 /usr/local/qt5/mkspecs/features/resources.prf:
 /usr/local/qt5/mkspecs/features/moc.prf:
 /usr/local/qt5/mkspecs/features/unix/opengl.prf:
+/usr/local/qt5/mkspecs/features/testlib_defines.prf:
 /usr/local/qt5/mkspecs/features/uic.prf:
 /usr/local/qt5/mkspecs/features/unix/thread.prf:
 /usr/local/qt5/mkspecs/features/unix/gdb_dwarf_index.prf:
@@ -494,6 +504,7 @@ resources.qrc:
 /usr/local/qt5/lib/libQt5Widgets.prl:
 /usr/local/qt5/lib/libQt5Gui.prl:
 /usr/local/qt5/lib/libQt5Core.prl:
+/usr/local/qt5/lib/libQt5Test.prl:
 qmake: FORCE
 	@$(QMAKE) -o Makefile StudyAid.pro
 
@@ -516,11 +527,12 @@ distclean: clean
 	-$(DEL_FILE) Makefile
 
 
+check: first
+	LD_LIBRARY_PATH=/usr/local/qt5/lib$${LD_LIBRARY_PATH:+:$$LD_LIBRARY_PATH} $(TESTRUNNER) ./$(QMAKE_TARGET) $(TESTARGS)
+
 mocclean: compiler_moc_header_clean compiler_moc_source_clean
 
 mocables: compiler_moc_header_make_all compiler_moc_source_make_all
-
-check: first
 
 compiler_rcc_make_all: qrc_resources.cpp
 compiler_rcc_clean:
@@ -528,14 +540,14 @@ compiler_rcc_clean:
 qrc_resources.cpp: resources.qrc \
 		images/arrow_right_white.png \
 		images/arrow_right_black.png \
-		images/triangle_left_black.png \
-		images/pencil_black.png \
-		images/cross_black.png \
+		images/trash_black.png \
 		images/plus_black.png \
+		images/pencil_black.png \
+		images/triangle_left_black.png \
 		images/triangle_up_black.png \
-		images/triangle_down_black.png \
+		images/cross_black.png \
 		images/triangle_right_black.png \
-		images/trash_black.png
+		images/triangle_down_black.png
 	/usr/local/qt5/bin/rcc -name resources resources.qrc -o qrc_resources.cpp
 
 compiler_moc_header_make_all: moc/moc_model.cpp moc/moc_StudyAid.cpp moc/moc_coursePage.cpp moc/moc_factPage.cpp moc/moc_proofPage.cpp moc/moc_rootPage.cpp moc/moc_clickableQLabel.cpp moc/moc_courseTitleWidget.cpp moc/moc_courseWidget.cpp moc/moc_dependenciesWidget.cpp moc/moc_expandingFactWidget.cpp moc/moc_horizontalSeperator.cpp moc/moc_imageButton.cpp moc/moc_resizableImage.cpp moc/moc_resizableStackedWidget.cpp moc/moc_sectionPickerWidget.cpp moc/moc_sectionWidget.cpp moc/moc_splitter.cpp moc/moc_courseForm.cpp moc/moc_factForm.cpp moc/moc_form.cpp moc/moc_proofForm.cpp moc/moc_deleteDialog.cpp moc/moc_formDialog.cpp
@@ -3740,6 +3752,7 @@ obj/factPage.o: src/pages/factPage.cpp /usr/local/qt5/include/QtWidgets/QHBoxLay
 		src/model.h \
 		/usr/local/qt5/include/QtCore/QObject \
 		src/database/structures.h \
+		src/database/methods.h \
 		src/widgets/resizableStackedWidget.h \
 		/usr/local/qt5/include/QtWidgets/QStackedWidget \
 		/usr/local/qt5/include/QtWidgets/qstackedwidget.h \
@@ -6321,9 +6334,19 @@ obj/moc_formDialog.o: moc/moc_formDialog.cpp
 
 ####### Install
 
-install:   FORCE
+install_target: first FORCE
+	@test -d $(INSTALL_ROOT)/usr/local/qt5/tests/StudyAid || mkdir -p $(INSTALL_ROOT)/usr/local/qt5/tests/StudyAid
+	-$(INSTALL_PROGRAM) "$(QMAKE_TARGET)" "$(INSTALL_ROOT)/usr/local/qt5/tests/StudyAid/$(QMAKE_TARGET)"
+	-$(STRIP) "$(INSTALL_ROOT)/usr/local/qt5/tests/StudyAid/$(QMAKE_TARGET)"
 
-uninstall:   FORCE
+uninstall_target: FORCE
+	-$(DEL_FILE) "$(INSTALL_ROOT)/usr/local/qt5/tests/StudyAid/$(QMAKE_TARGET)"
+	-$(DEL_DIR) $(INSTALL_ROOT)/usr/local/qt5/tests/StudyAid/ 
+
+
+install:  install_target  FORCE
+
+uninstall: uninstall_target   FORCE
 
 FORCE:
 

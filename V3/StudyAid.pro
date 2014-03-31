@@ -1,7 +1,7 @@
 TEMPLATE = app
 INCLUDEPATH += . src /usr/include/mysql /usr/include/mysql++
-CONFIG += qt
-QT += widgets
+CONFIG += qt testcase
+QT += widgets testlib
 
 QMAKE_CXXFLAGS += -std=c++11 -g -Wall -Wextra -Werror
 

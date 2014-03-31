@@ -230,6 +230,11 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
         }
         rebuildFactList(model->getCourseSelected().root_fact);
     });
+
+    connect(model, &Model::factDeleted, [=](int){
+        rebuildSectionPicker(model->getCourseSelected());
+        rebuildFactList(model->getCourseSelected().root_fact);
+    });
 }
 
 void CoursePage::rebuildSectionPicker(Course course)
