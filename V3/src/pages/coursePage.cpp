@@ -255,25 +255,18 @@ void CoursePage::courseEditedSlot(Course course)
     }
 }
 
-void CoursePage::factAddedSlot(Fact fact)
+void CoursePage::factAddedSlot(Fact)
 {
-    if (fact.type == "Section") {
-        rebuildSectionPicker(model->getCourseSelected());
-    }
     rebuildFactList(model->getCourseSelected().root_fact);
 }
 
-void CoursePage::factEditedSlot(Fact fact)
+void CoursePage::factEditedSlot(Fact)
 {
-    if (fact.type == "Section") {
-        rebuildSectionPicker(model->getCourseSelected());
-    }
     rebuildFactList(model->getCourseSelected().root_fact);
 }
 
 void CoursePage::factDeletedSlot(int)
 {
-    rebuildSectionPicker(model->getCourseSelected());
     rebuildFactList(model->getCourseSelected().root_fact);
 }
 
@@ -290,22 +283,9 @@ void CoursePage::rebuildSectionPicker(Course course)
     while (pickerScrollLayout->count() > 0) {
         delete pickerScrollLayout->takeAt(0)->widget();
     }
-    SectionPickerWidget *sectionPicker = new SectionPickerWidget(course.root_fact, course.name);
+    SectionPickerWidget *sectionPicker = new SectionPickerWidget(findFact(course.root_fact), model, pageStack);
     pickerScrollLayout->addWidget(sectionPicker);
     pickerScrollLayout->addStretch(1);
-
-    connect(sectionPicker, &SectionPickerWidget::sectionSelected, [=](int id){
-        rebuildFactList(id);
-    });
-
-    connect(sectionPicker, &SectionPickerWidget::factAdded, [=](Fact fact){
-        model->addFact(fact);
-        
-        if (fact.type != "Section") {
-            model->setFactSelected(fact);
-            pageStack->setCurrentIndex(2);
-        }
-    });
 }
 
 void CoursePage::rebuildFactList(int id)

@@ -31,6 +31,10 @@ void Model::addCourse(Course course)
 
 void Model::editCourse(Course course)
 {
+    if (course.id == this->course.id) {
+        this->course = course;
+    }
+
     emit courseEdited(course);
 }
 
@@ -63,6 +67,10 @@ void Model::addFact(Fact fact)
 
 void Model::editFact(Fact fact)
 {
+    if (fact.id == this->fact.id) {
+        this->fact = fact;
+    }
+
     emit factEdited(fact);
 }
 
@@ -95,6 +103,10 @@ void Model::addProof(Proof proof)
 
 void Model::editProof(Proof proof)
 {
+    if (proof.id == this->proof.id) {
+        this->proof = proof;
+    }
+
     emit proofEdited(proof);
 }
 

@@ -16,7 +16,7 @@ Fact loadFact(mysqlpp::Row row)
 {
     Fact fact;
     fact.id = row["fact_id"];
-    fact.parent = row["fact_parent"];
+    fact.parent = (row["fact_parent"] != mysqlpp::null) ? row["fact_parent"] : -1;
     fact.name = std::string(row["fact_name"].c_str());
     fact.type = std::string(row["fact_type"].c_str());
     fact.statement = std::string(row["fact_statement"].c_str());
@@ -186,7 +186,12 @@ void editFact(Fact fact)
     mysqlpp::Query query(conn, true, "UPDATE fact SET fact_parent = %0q, fact_name = %1q, fact_type = %2q, fact_statement = %3q, fact_ordering = %4q WHERE fact_id = %5q");
     query.parse();
 
-    query.execute(fact.parent, fact.name, fact.type, fact.statement, fact.ordering, fact.id);
+    if (fact.parent != -1) {
+        query.execute(fact.parent, fact.name, fact.type, fact.statement, fact.ordering, fact.id);
+    }
+    else {
+        query.execute(mysqlpp::null, fact.name, fact.type, fact.statement, fact.ordering, fact.id);
+    }
 }
 
 void deleteFact(int id)
