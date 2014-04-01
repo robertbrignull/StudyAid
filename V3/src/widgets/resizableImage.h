@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 #include <QWidget>
 #include <QPixmap>
 #include <QSize>
@@ -12,7 +14,7 @@ class ResizableImage : public QWidget
     Q_OBJECT
 
 public:
-    ResizableImage(QString filename, QWidget *parent = 0);
+    ResizableImage(std::string filename, QWidget *parent = 0);
 
     void setWidth(int width);
     void reloadImage();
@@ -23,7 +25,7 @@ public:
     void paintEvent(QPaintEvent *);
 
 private:
-    QString filename;
+    std::string filename;
     QPixmap image, scaledImage;
     QSize imageSize;
 };

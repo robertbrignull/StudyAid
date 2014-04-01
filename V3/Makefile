@@ -12,13 +12,13 @@ MAKEFILE      = Makefile
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
+DEFINES       = -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_TESTLIB_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_TESTCASE_BUILDDIR=\"/home/robert/Documents/coding/StudyAid/V3\"
 CFLAGS        = -pipe -O2 -D_REENTRANT -Wall -W -fPIE $(DEFINES)
 CXXFLAGS      = -pipe -std=c++11 -g -Wall -Wextra -Werror -O2 -D_REENTRANT -Wall -W -fPIE $(DEFINES)
-INCPATH       = -I/usr/local/qt5/mkspecs/linux-g++ -I. -I. -Isrc -I/usr/include/mysql -I/usr/include/mysql++ -I/usr/local/qt5/include -I/usr/local/qt5/include/QtWidgets -I/usr/local/qt5/include/QtGui -I/usr/local/qt5/include/QtCore -Imoc
+INCPATH       = -I/usr/local/qt5/mkspecs/linux-g++ -I. -I. -Isrc -I/usr/include/mysql -I/usr/include/mysql++ -I/usr/local/qt5/include -I/usr/local/qt5/include/QtWidgets -I/usr/local/qt5/include/QtTest -I/usr/local/qt5/include/QtGui -I/usr/local/qt5/include/QtCore -Imoc
 LINK          = g++
 LFLAGS        = -Wl,-O1 -Wl,-rpath,/usr/local/qt5/lib
-LIBS          = $(SUBLIBS) -lmysqlpp -lmysqlclient -L/usr/local/qt5/lib -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
+LIBS          = $(SUBLIBS) -lmysqlpp -lmysqlclient -L/usr/local/qt5/lib -lQt5Widgets -lQt5Test -lQt5Gui -lQt5Core -lGL -lpthread 
 AR            = ar cqs
 RANLIB        = 
 QMAKE         = /usr/local/qt5/bin/qmake
@@ -45,28 +45,31 @@ OBJECTS_DIR   = obj/
 
 ####### Files
 
-SOURCES       = src/StudyAid.cpp \
+SOURCES       = src/model.cpp \
+		src/StudyAid.cpp \
 		src/pages/coursePage.cpp \
 		src/pages/factPage.cpp \
 		src/pages/proofPage.cpp \
 		src/pages/rootPage.cpp \
+		src/database/methods.cpp \
 		src/database/setup.cpp \
 		src/widgets/clickableQLabel.cpp \
 		src/widgets/courseTitleWidget.cpp \
-		src/widgets/courseWidget.cpp \
 		src/widgets/dependenciesWidget.cpp \
 		src/widgets/expandingFactWidget.cpp \
+		src/widgets/factList.cpp \
+		src/widgets/factListView.cpp \
 		src/widgets/imageButton.cpp \
 		src/widgets/resizableImage.cpp \
 		src/widgets/resizableStackedWidget.cpp \
 		src/widgets/sectionPickerWidget.cpp \
-		src/widgets/sectionWidget.cpp \
 		src/widgets/splitter.cpp \
 		src/forms/courseForm.cpp \
 		src/forms/factForm.cpp \
 		src/forms/proofForm.cpp \
 		src/dialogs/deleteDialog.cpp \
 		src/dialogs/formDialog.cpp qrc_resources.cpp \
+		moc/moc_model.cpp \
 		moc/moc_StudyAid.cpp \
 		moc/moc_coursePage.cpp \
 		moc/moc_factPage.cpp \
@@ -74,15 +77,15 @@ SOURCES       = src/StudyAid.cpp \
 		moc/moc_rootPage.cpp \
 		moc/moc_clickableQLabel.cpp \
 		moc/moc_courseTitleWidget.cpp \
-		moc/moc_courseWidget.cpp \
 		moc/moc_dependenciesWidget.cpp \
 		moc/moc_expandingFactWidget.cpp \
+		moc/moc_factList.cpp \
+		moc/moc_factListView.cpp \
 		moc/moc_horizontalSeperator.cpp \
 		moc/moc_imageButton.cpp \
 		moc/moc_resizableImage.cpp \
 		moc/moc_resizableStackedWidget.cpp \
 		moc/moc_sectionPickerWidget.cpp \
-		moc/moc_sectionWidget.cpp \
 		moc/moc_splitter.cpp \
 		moc/moc_courseForm.cpp \
 		moc/moc_factForm.cpp \
@@ -90,22 +93,24 @@ SOURCES       = src/StudyAid.cpp \
 		moc/moc_proofForm.cpp \
 		moc/moc_deleteDialog.cpp \
 		moc/moc_formDialog.cpp
-OBJECTS       = obj/StudyAid.o \
+OBJECTS       = obj/model.o \
+		obj/StudyAid.o \
 		obj/coursePage.o \
 		obj/factPage.o \
 		obj/proofPage.o \
 		obj/rootPage.o \
+		obj/methods.o \
 		obj/setup.o \
 		obj/clickableQLabel.o \
 		obj/courseTitleWidget.o \
-		obj/courseWidget.o \
 		obj/dependenciesWidget.o \
 		obj/expandingFactWidget.o \
+		obj/factList.o \
+		obj/factListView.o \
 		obj/imageButton.o \
 		obj/resizableImage.o \
 		obj/resizableStackedWidget.o \
 		obj/sectionPickerWidget.o \
-		obj/sectionWidget.o \
 		obj/splitter.o \
 		obj/courseForm.o \
 		obj/factForm.o \
@@ -113,6 +118,7 @@ OBJECTS       = obj/StudyAid.o \
 		obj/deleteDialog.o \
 		obj/formDialog.o \
 		obj/qrc_resources.o \
+		obj/moc_model.o \
 		obj/moc_StudyAid.o \
 		obj/moc_coursePage.o \
 		obj/moc_factPage.o \
@@ -120,15 +126,15 @@ OBJECTS       = obj/StudyAid.o \
 		obj/moc_rootPage.o \
 		obj/moc_clickableQLabel.o \
 		obj/moc_courseTitleWidget.o \
-		obj/moc_courseWidget.o \
 		obj/moc_dependenciesWidget.o \
 		obj/moc_expandingFactWidget.o \
+		obj/moc_factList.o \
+		obj/moc_factListView.o \
 		obj/moc_horizontalSeperator.o \
 		obj/moc_imageButton.o \
 		obj/moc_resizableImage.o \
 		obj/moc_resizableStackedWidget.o \
 		obj/moc_sectionPickerWidget.o \
-		obj/moc_sectionWidget.o \
 		obj/moc_splitter.o \
 		obj/moc_courseForm.o \
 		obj/moc_factForm.o \
@@ -226,10 +232,13 @@ DIST          = /usr/local/qt5/mkspecs/features/spec_pre.prf \
 		/usr/local/qt5/mkspecs/features/default_pre.prf \
 		/usr/local/qt5/mkspecs/features/resolve_config.prf \
 		/usr/local/qt5/mkspecs/features/default_post.prf \
+		/usr/local/qt5/mkspecs/features/resolve_target.prf \
+		/usr/local/qt5/mkspecs/features/testcase.prf \
 		/usr/local/qt5/mkspecs/features/qt.prf \
 		/usr/local/qt5/mkspecs/features/resources.prf \
 		/usr/local/qt5/mkspecs/features/moc.prf \
 		/usr/local/qt5/mkspecs/features/unix/opengl.prf \
+		/usr/local/qt5/mkspecs/features/testlib_defines.prf \
 		/usr/local/qt5/mkspecs/features/uic.prf \
 		/usr/local/qt5/mkspecs/features/unix/thread.prf \
 		/usr/local/qt5/mkspecs/features/unix/gdb_dwarf_index.prf \
@@ -363,10 +372,13 @@ Makefile: StudyAid.pro /usr/local/qt5/mkspecs/linux-g++/qmake.conf /usr/local/qt
 		/usr/local/qt5/mkspecs/features/default_pre.prf \
 		/usr/local/qt5/mkspecs/features/resolve_config.prf \
 		/usr/local/qt5/mkspecs/features/default_post.prf \
+		/usr/local/qt5/mkspecs/features/resolve_target.prf \
+		/usr/local/qt5/mkspecs/features/testcase.prf \
 		/usr/local/qt5/mkspecs/features/qt.prf \
 		/usr/local/qt5/mkspecs/features/resources.prf \
 		/usr/local/qt5/mkspecs/features/moc.prf \
 		/usr/local/qt5/mkspecs/features/unix/opengl.prf \
+		/usr/local/qt5/mkspecs/features/testlib_defines.prf \
 		/usr/local/qt5/mkspecs/features/uic.prf \
 		/usr/local/qt5/mkspecs/features/unix/thread.prf \
 		/usr/local/qt5/mkspecs/features/unix/gdb_dwarf_index.prf \
@@ -379,7 +391,8 @@ Makefile: StudyAid.pro /usr/local/qt5/mkspecs/linux-g++/qmake.conf /usr/local/qt
 		resources.qrc \
 		/usr/local/qt5/lib/libQt5Widgets.prl \
 		/usr/local/qt5/lib/libQt5Gui.prl \
-		/usr/local/qt5/lib/libQt5Core.prl
+		/usr/local/qt5/lib/libQt5Core.prl \
+		/usr/local/qt5/lib/libQt5Test.prl
 	$(QMAKE) -o Makefile StudyAid.pro
 /usr/local/qt5/mkspecs/features/spec_pre.prf:
 /usr/local/qt5/mkspecs/common/shell-unix.conf:
@@ -471,10 +484,13 @@ Makefile: StudyAid.pro /usr/local/qt5/mkspecs/linux-g++/qmake.conf /usr/local/qt
 /usr/local/qt5/mkspecs/features/default_pre.prf:
 /usr/local/qt5/mkspecs/features/resolve_config.prf:
 /usr/local/qt5/mkspecs/features/default_post.prf:
+/usr/local/qt5/mkspecs/features/resolve_target.prf:
+/usr/local/qt5/mkspecs/features/testcase.prf:
 /usr/local/qt5/mkspecs/features/qt.prf:
 /usr/local/qt5/mkspecs/features/resources.prf:
 /usr/local/qt5/mkspecs/features/moc.prf:
 /usr/local/qt5/mkspecs/features/unix/opengl.prf:
+/usr/local/qt5/mkspecs/features/testlib_defines.prf:
 /usr/local/qt5/mkspecs/features/uic.prf:
 /usr/local/qt5/mkspecs/features/unix/thread.prf:
 /usr/local/qt5/mkspecs/features/unix/gdb_dwarf_index.prf:
@@ -488,6 +504,7 @@ resources.qrc:
 /usr/local/qt5/lib/libQt5Widgets.prl:
 /usr/local/qt5/lib/libQt5Gui.prl:
 /usr/local/qt5/lib/libQt5Core.prl:
+/usr/local/qt5/lib/libQt5Test.prl:
 qmake: FORCE
 	@$(QMAKE) -o Makefile StudyAid.pro
 
@@ -495,7 +512,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d obj/StudyAid1.0.0 || mkdir -p obj/StudyAid1.0.0
-	$(COPY_FILE) --parents $(SOURCES) $(DIST) obj/StudyAid1.0.0/ && $(COPY_FILE) --parents resources.qrc obj/StudyAid1.0.0/ && $(COPY_FILE) --parents src/StudyAid.h src/pages/coursePage.h src/pages/factPage.h src/pages/proofPage.h src/pages/rootPage.h src/database/setup.h src/widgets/clickableQLabel.h src/widgets/courseTitleWidget.h src/widgets/courseWidget.h src/widgets/dependenciesWidget.h src/widgets/expandingFactWidget.h src/widgets/horizontalSeperator.h src/widgets/imageButton.h src/widgets/resizableImage.h src/widgets/resizableStackedWidget.h src/widgets/sectionPickerWidget.h src/widgets/sectionWidget.h src/widgets/splitter.h src/forms/courseForm.h src/forms/factForm.h src/forms/form.h src/forms/proofForm.h src/dialogs/deleteDialog.h src/dialogs/formDialog.h obj/StudyAid1.0.0/ && $(COPY_FILE) --parents src/StudyAid.cpp src/pages/coursePage.cpp src/pages/factPage.cpp src/pages/proofPage.cpp src/pages/rootPage.cpp src/database/setup.cpp src/widgets/clickableQLabel.cpp src/widgets/courseTitleWidget.cpp src/widgets/courseWidget.cpp src/widgets/dependenciesWidget.cpp src/widgets/expandingFactWidget.cpp src/widgets/imageButton.cpp src/widgets/resizableImage.cpp src/widgets/resizableStackedWidget.cpp src/widgets/sectionPickerWidget.cpp src/widgets/sectionWidget.cpp src/widgets/splitter.cpp src/forms/courseForm.cpp src/forms/factForm.cpp src/forms/proofForm.cpp src/dialogs/deleteDialog.cpp src/dialogs/formDialog.cpp obj/StudyAid1.0.0/ && (cd `dirname obj/StudyAid1.0.0` && $(TAR) StudyAid1.0.0.tar StudyAid1.0.0 && $(COMPRESS) StudyAid1.0.0.tar) && $(MOVE) `dirname obj/StudyAid1.0.0`/StudyAid1.0.0.tar.gz . && $(DEL_FILE) -r obj/StudyAid1.0.0
+	$(COPY_FILE) --parents $(SOURCES) $(DIST) obj/StudyAid1.0.0/ && $(COPY_FILE) --parents resources.qrc obj/StudyAid1.0.0/ && $(COPY_FILE) --parents src/model.h src/StudyAid.h src/pages/coursePage.h src/pages/factPage.h src/pages/proofPage.h src/pages/rootPage.h src/database/methods.h src/database/setup.h src/database/structures.h src/widgets/clickableQLabel.h src/widgets/courseTitleWidget.h src/widgets/dependenciesWidget.h src/widgets/expandingFactWidget.h src/widgets/factList.h src/widgets/factListView.h src/widgets/horizontalSeperator.h src/widgets/imageButton.h src/widgets/resizableImage.h src/widgets/resizableStackedWidget.h src/widgets/sectionPickerWidget.h src/widgets/splitter.h src/forms/courseForm.h src/forms/factForm.h src/forms/form.h src/forms/proofForm.h src/dialogs/deleteDialog.h src/dialogs/formDialog.h obj/StudyAid1.0.0/ && $(COPY_FILE) --parents src/model.cpp src/StudyAid.cpp src/pages/coursePage.cpp src/pages/factPage.cpp src/pages/proofPage.cpp src/pages/rootPage.cpp src/database/methods.cpp src/database/setup.cpp src/widgets/clickableQLabel.cpp src/widgets/courseTitleWidget.cpp src/widgets/dependenciesWidget.cpp src/widgets/expandingFactWidget.cpp src/widgets/factList.cpp src/widgets/factListView.cpp src/widgets/imageButton.cpp src/widgets/resizableImage.cpp src/widgets/resizableStackedWidget.cpp src/widgets/sectionPickerWidget.cpp src/widgets/splitter.cpp src/forms/courseForm.cpp src/forms/factForm.cpp src/forms/proofForm.cpp src/dialogs/deleteDialog.cpp src/dialogs/formDialog.cpp obj/StudyAid1.0.0/ && (cd `dirname obj/StudyAid1.0.0` && $(TAR) StudyAid1.0.0.tar StudyAid1.0.0 && $(COMPRESS) StudyAid1.0.0.tar) && $(MOVE) `dirname obj/StudyAid1.0.0`/StudyAid1.0.0.tar.gz . && $(DEL_FILE) -r obj/StudyAid1.0.0
 
 
 clean:compiler_clean 
@@ -510,31 +527,93 @@ distclean: clean
 	-$(DEL_FILE) Makefile
 
 
+check: first
+	LD_LIBRARY_PATH=/usr/local/qt5/lib$${LD_LIBRARY_PATH:+:$$LD_LIBRARY_PATH} $(TESTRUNNER) ./$(QMAKE_TARGET) $(TESTARGS)
+
 mocclean: compiler_moc_header_clean compiler_moc_source_clean
 
 mocables: compiler_moc_header_make_all compiler_moc_source_make_all
-
-check: first
 
 compiler_rcc_make_all: qrc_resources.cpp
 compiler_rcc_clean:
 	-$(DEL_FILE) qrc_resources.cpp
 qrc_resources.cpp: resources.qrc \
+		images/arrow_right_black.png \
+		images/trash_black.png \
+		images/triangle_down_black.png \
+		images/triangle_up_black.png \
 		images/pencil_black.png \
 		images/triangle_left_black.png \
-		images/triangle_up_black.png \
-		images/plus_black.png \
 		images/cross_black.png \
-		images/arrow_right_white.png \
 		images/triangle_right_black.png \
-		images/triangle_down_black.png \
-		images/arrow_right_black.png \
-		images/trash_black.png
+		images/plus_black.png \
+		images/arrow_right_white.png
 	/usr/local/qt5/bin/rcc -name resources resources.qrc -o qrc_resources.cpp
 
-compiler_moc_header_make_all: moc/moc_StudyAid.cpp moc/moc_coursePage.cpp moc/moc_factPage.cpp moc/moc_proofPage.cpp moc/moc_rootPage.cpp moc/moc_clickableQLabel.cpp moc/moc_courseTitleWidget.cpp moc/moc_courseWidget.cpp moc/moc_dependenciesWidget.cpp moc/moc_expandingFactWidget.cpp moc/moc_horizontalSeperator.cpp moc/moc_imageButton.cpp moc/moc_resizableImage.cpp moc/moc_resizableStackedWidget.cpp moc/moc_sectionPickerWidget.cpp moc/moc_sectionWidget.cpp moc/moc_splitter.cpp moc/moc_courseForm.cpp moc/moc_factForm.cpp moc/moc_form.cpp moc/moc_proofForm.cpp moc/moc_deleteDialog.cpp moc/moc_formDialog.cpp
+compiler_moc_header_make_all: moc/moc_model.cpp moc/moc_StudyAid.cpp moc/moc_coursePage.cpp moc/moc_factPage.cpp moc/moc_proofPage.cpp moc/moc_rootPage.cpp moc/moc_clickableQLabel.cpp moc/moc_courseTitleWidget.cpp moc/moc_dependenciesWidget.cpp moc/moc_expandingFactWidget.cpp moc/moc_factList.cpp moc/moc_factListView.cpp moc/moc_horizontalSeperator.cpp moc/moc_imageButton.cpp moc/moc_resizableImage.cpp moc/moc_resizableStackedWidget.cpp moc/moc_sectionPickerWidget.cpp moc/moc_splitter.cpp moc/moc_courseForm.cpp moc/moc_factForm.cpp moc/moc_form.cpp moc/moc_proofForm.cpp moc/moc_deleteDialog.cpp moc/moc_formDialog.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc/moc_StudyAid.cpp moc/moc_coursePage.cpp moc/moc_factPage.cpp moc/moc_proofPage.cpp moc/moc_rootPage.cpp moc/moc_clickableQLabel.cpp moc/moc_courseTitleWidget.cpp moc/moc_courseWidget.cpp moc/moc_dependenciesWidget.cpp moc/moc_expandingFactWidget.cpp moc/moc_horizontalSeperator.cpp moc/moc_imageButton.cpp moc/moc_resizableImage.cpp moc/moc_resizableStackedWidget.cpp moc/moc_sectionPickerWidget.cpp moc/moc_sectionWidget.cpp moc/moc_splitter.cpp moc/moc_courseForm.cpp moc/moc_factForm.cpp moc/moc_form.cpp moc/moc_proofForm.cpp moc/moc_deleteDialog.cpp moc/moc_formDialog.cpp
+	-$(DEL_FILE) moc/moc_model.cpp moc/moc_StudyAid.cpp moc/moc_coursePage.cpp moc/moc_factPage.cpp moc/moc_proofPage.cpp moc/moc_rootPage.cpp moc/moc_clickableQLabel.cpp moc/moc_courseTitleWidget.cpp moc/moc_dependenciesWidget.cpp moc/moc_expandingFactWidget.cpp moc/moc_factList.cpp moc/moc_factListView.cpp moc/moc_horizontalSeperator.cpp moc/moc_imageButton.cpp moc/moc_resizableImage.cpp moc/moc_resizableStackedWidget.cpp moc/moc_sectionPickerWidget.cpp moc/moc_splitter.cpp moc/moc_courseForm.cpp moc/moc_factForm.cpp moc/moc_form.cpp moc/moc_proofForm.cpp moc/moc_deleteDialog.cpp moc/moc_formDialog.cpp
+moc/moc_model.cpp: /usr/local/qt5/include/QtCore/QObject \
+		/usr/local/qt5/include/QtCore/qobject.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs.h \
+		/usr/local/qt5/include/QtCore/qnamespace.h \
+		/usr/local/qt5/include/QtCore/qglobal.h \
+		/usr/local/qt5/include/QtCore/qconfig.h \
+		/usr/local/qt5/include/QtCore/qfeatures.h \
+		/usr/local/qt5/include/QtCore/qsystemdetection.h \
+		/usr/local/qt5/include/QtCore/qprocessordetection.h \
+		/usr/local/qt5/include/QtCore/qcompilerdetection.h \
+		/usr/local/qt5/include/QtCore/qglobalstatic.h \
+		/usr/local/qt5/include/QtCore/qatomic.h \
+		/usr/local/qt5/include/QtCore/qbasicatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_bootstrap.h \
+		/usr/local/qt5/include/QtCore/qgenericatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_msvc.h \
+		/usr/local/qt5/include/QtCore/qatomic_integrity.h \
+		/usr/local/qt5/include/QtCore/qoldbasicatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_vxworks.h \
+		/usr/local/qt5/include/QtCore/qatomic_power.h \
+		/usr/local/qt5/include/QtCore/qatomic_alpha.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv7.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv6.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv5.h \
+		/usr/local/qt5/include/QtCore/qatomic_bfin.h \
+		/usr/local/qt5/include/QtCore/qatomic_ia64.h \
+		/usr/local/qt5/include/QtCore/qatomic_mips.h \
+		/usr/local/qt5/include/QtCore/qatomic_s390.h \
+		/usr/local/qt5/include/QtCore/qatomic_sh4a.h \
+		/usr/local/qt5/include/QtCore/qatomic_sparc.h \
+		/usr/local/qt5/include/QtCore/qatomic_x86.h \
+		/usr/local/qt5/include/QtCore/qatomic_cxx11.h \
+		/usr/local/qt5/include/QtCore/qatomic_gcc.h \
+		/usr/local/qt5/include/QtCore/qatomic_unix.h \
+		/usr/local/qt5/include/QtCore/qmutex.h \
+		/usr/local/qt5/include/QtCore/qlogging.h \
+		/usr/local/qt5/include/QtCore/qflags.h \
+		/usr/local/qt5/include/QtCore/qtypeinfo.h \
+		/usr/local/qt5/include/QtCore/qtypetraits.h \
+		/usr/local/qt5/include/QtCore/qsysinfo.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs_impl.h \
+		/usr/local/qt5/include/QtCore/qstring.h \
+		/usr/local/qt5/include/QtCore/qchar.h \
+		/usr/local/qt5/include/QtCore/qbytearray.h \
+		/usr/local/qt5/include/QtCore/qrefcount.h \
+		/usr/local/qt5/include/QtCore/qarraydata.h \
+		/usr/local/qt5/include/QtCore/qstringbuilder.h \
+		/usr/local/qt5/include/QtCore/qlist.h \
+		/usr/local/qt5/include/QtCore/qalgorithms.h \
+		/usr/local/qt5/include/QtCore/qiterator.h \
+		/usr/local/qt5/include/QtCore/qcoreevent.h \
+		/usr/local/qt5/include/QtCore/qscopedpointer.h \
+		/usr/local/qt5/include/QtCore/qmetatype.h \
+		/usr/local/qt5/include/QtCore/qvarlengtharray.h \
+		/usr/local/qt5/include/QtCore/qcontainerfwd.h \
+		/usr/local/qt5/include/QtCore/qisenum.h \
+		/usr/local/qt5/include/QtCore/qobject_impl.h \
+		src/database/structures.h \
+		src/model.h
+	/usr/local/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/model.h -o moc/moc_model.cpp
+
 moc/moc_StudyAid.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
 		/usr/local/qt5/include/QtWidgets/qwidget.h \
 		/usr/local/qt5/include/QtGui/qwindowdefs.h \
@@ -646,7 +725,8 @@ moc/moc_StudyAid.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
 		src/StudyAid.h
 	/usr/local/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/StudyAid.h -o moc/moc_StudyAid.cpp
 
-moc/moc_coursePage.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
+moc/moc_coursePage.cpp: src/database/structures.h \
+		/usr/local/qt5/include/QtWidgets/QWidget \
 		/usr/local/qt5/include/QtWidgets/qwidget.h \
 		/usr/local/qt5/include/QtGui/qwindowdefs.h \
 		/usr/local/qt5/include/QtCore/qglobal.h \
@@ -979,7 +1059,8 @@ moc/moc_proofPage.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
 		src/pages/proofPage.h
 	/usr/local/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/pages/proofPage.h -o moc/moc_proofPage.cpp
 
-moc/moc_rootPage.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
+moc/moc_rootPage.cpp: src/database/structures.h \
+		/usr/local/qt5/include/QtWidgets/QWidget \
 		/usr/local/qt5/include/QtWidgets/qwidget.h \
 		/usr/local/qt5/include/QtGui/qwindowdefs.h \
 		/usr/local/qt5/include/QtCore/qglobal.h \
@@ -1311,121 +1392,10 @@ moc/moc_courseTitleWidget.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
 		/usr/local/qt5/include/QtCore/qfiledevice.h \
 		/usr/local/qt5/include/QtGui/qvector2d.h \
 		/usr/local/qt5/include/QtGui/qtouchdevice.h \
-		/usr/local/qt5/include/QtCore/QString \
 		/usr/local/qt5/include/QtGui/QPixmap \
+		src/database/structures.h \
 		src/widgets/courseTitleWidget.h
 	/usr/local/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/widgets/courseTitleWidget.h -o moc/moc_courseTitleWidget.cpp
-
-moc/moc_courseWidget.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
-		/usr/local/qt5/include/QtWidgets/qwidget.h \
-		/usr/local/qt5/include/QtGui/qwindowdefs.h \
-		/usr/local/qt5/include/QtCore/qglobal.h \
-		/usr/local/qt5/include/QtCore/qconfig.h \
-		/usr/local/qt5/include/QtCore/qfeatures.h \
-		/usr/local/qt5/include/QtCore/qsystemdetection.h \
-		/usr/local/qt5/include/QtCore/qprocessordetection.h \
-		/usr/local/qt5/include/QtCore/qcompilerdetection.h \
-		/usr/local/qt5/include/QtCore/qglobalstatic.h \
-		/usr/local/qt5/include/QtCore/qatomic.h \
-		/usr/local/qt5/include/QtCore/qbasicatomic.h \
-		/usr/local/qt5/include/QtCore/qatomic_bootstrap.h \
-		/usr/local/qt5/include/QtCore/qgenericatomic.h \
-		/usr/local/qt5/include/QtCore/qatomic_msvc.h \
-		/usr/local/qt5/include/QtCore/qatomic_integrity.h \
-		/usr/local/qt5/include/QtCore/qoldbasicatomic.h \
-		/usr/local/qt5/include/QtCore/qatomic_vxworks.h \
-		/usr/local/qt5/include/QtCore/qatomic_power.h \
-		/usr/local/qt5/include/QtCore/qatomic_alpha.h \
-		/usr/local/qt5/include/QtCore/qatomic_armv7.h \
-		/usr/local/qt5/include/QtCore/qatomic_armv6.h \
-		/usr/local/qt5/include/QtCore/qatomic_armv5.h \
-		/usr/local/qt5/include/QtCore/qatomic_bfin.h \
-		/usr/local/qt5/include/QtCore/qatomic_ia64.h \
-		/usr/local/qt5/include/QtCore/qatomic_mips.h \
-		/usr/local/qt5/include/QtCore/qatomic_s390.h \
-		/usr/local/qt5/include/QtCore/qatomic_sh4a.h \
-		/usr/local/qt5/include/QtCore/qatomic_sparc.h \
-		/usr/local/qt5/include/QtCore/qatomic_x86.h \
-		/usr/local/qt5/include/QtCore/qatomic_cxx11.h \
-		/usr/local/qt5/include/QtCore/qatomic_gcc.h \
-		/usr/local/qt5/include/QtCore/qatomic_unix.h \
-		/usr/local/qt5/include/QtCore/qmutex.h \
-		/usr/local/qt5/include/QtCore/qlogging.h \
-		/usr/local/qt5/include/QtCore/qflags.h \
-		/usr/local/qt5/include/QtCore/qtypeinfo.h \
-		/usr/local/qt5/include/QtCore/qtypetraits.h \
-		/usr/local/qt5/include/QtCore/qsysinfo.h \
-		/usr/local/qt5/include/QtCore/qobjectdefs.h \
-		/usr/local/qt5/include/QtCore/qnamespace.h \
-		/usr/local/qt5/include/QtCore/qobjectdefs_impl.h \
-		/usr/local/qt5/include/QtGui/qwindowdefs_win.h \
-		/usr/local/qt5/include/QtCore/qobject.h \
-		/usr/local/qt5/include/QtCore/qstring.h \
-		/usr/local/qt5/include/QtCore/qchar.h \
-		/usr/local/qt5/include/QtCore/qbytearray.h \
-		/usr/local/qt5/include/QtCore/qrefcount.h \
-		/usr/local/qt5/include/QtCore/qarraydata.h \
-		/usr/local/qt5/include/QtCore/qstringbuilder.h \
-		/usr/local/qt5/include/QtCore/qlist.h \
-		/usr/local/qt5/include/QtCore/qalgorithms.h \
-		/usr/local/qt5/include/QtCore/qiterator.h \
-		/usr/local/qt5/include/QtCore/qcoreevent.h \
-		/usr/local/qt5/include/QtCore/qscopedpointer.h \
-		/usr/local/qt5/include/QtCore/qmetatype.h \
-		/usr/local/qt5/include/QtCore/qvarlengtharray.h \
-		/usr/local/qt5/include/QtCore/qcontainerfwd.h \
-		/usr/local/qt5/include/QtCore/qisenum.h \
-		/usr/local/qt5/include/QtCore/qobject_impl.h \
-		/usr/local/qt5/include/QtCore/qmargins.h \
-		/usr/local/qt5/include/QtCore/qrect.h \
-		/usr/local/qt5/include/QtCore/qsize.h \
-		/usr/local/qt5/include/QtCore/qpoint.h \
-		/usr/local/qt5/include/QtGui/qpaintdevice.h \
-		/usr/local/qt5/include/QtGui/qpalette.h \
-		/usr/local/qt5/include/QtGui/qcolor.h \
-		/usr/local/qt5/include/QtGui/qrgb.h \
-		/usr/local/qt5/include/QtCore/qstringlist.h \
-		/usr/local/qt5/include/QtCore/qdatastream.h \
-		/usr/local/qt5/include/QtCore/qiodevice.h \
-		/usr/local/qt5/include/QtCore/qpair.h \
-		/usr/local/qt5/include/QtCore/qregexp.h \
-		/usr/local/qt5/include/QtCore/qstringmatcher.h \
-		/usr/local/qt5/include/QtGui/qbrush.h \
-		/usr/local/qt5/include/QtCore/qvector.h \
-		/usr/local/qt5/include/QtGui/qmatrix.h \
-		/usr/local/qt5/include/QtGui/qpolygon.h \
-		/usr/local/qt5/include/QtGui/qregion.h \
-		/usr/local/qt5/include/QtCore/qline.h \
-		/usr/local/qt5/include/QtGui/qtransform.h \
-		/usr/local/qt5/include/QtGui/qpainterpath.h \
-		/usr/local/qt5/include/QtGui/qimage.h \
-		/usr/local/qt5/include/QtGui/qpixmap.h \
-		/usr/local/qt5/include/QtCore/qsharedpointer.h \
-		/usr/local/qt5/include/QtCore/qshareddata.h \
-		/usr/local/qt5/include/QtCore/qsharedpointer_impl.h \
-		/usr/local/qt5/include/QtCore/qhash.h \
-		/usr/local/qt5/include/QtGui/qfont.h \
-		/usr/local/qt5/include/QtGui/qfontmetrics.h \
-		/usr/local/qt5/include/QtGui/qfontinfo.h \
-		/usr/local/qt5/include/QtWidgets/qsizepolicy.h \
-		/usr/local/qt5/include/QtGui/qcursor.h \
-		/usr/local/qt5/include/QtGui/qkeysequence.h \
-		/usr/local/qt5/include/QtGui/qevent.h \
-		/usr/local/qt5/include/QtCore/qvariant.h \
-		/usr/local/qt5/include/QtCore/qmap.h \
-		/usr/local/qt5/include/QtCore/qdebug.h \
-		/usr/local/qt5/include/QtCore/qtextstream.h \
-		/usr/local/qt5/include/QtCore/qlocale.h \
-		/usr/local/qt5/include/QtCore/qset.h \
-		/usr/local/qt5/include/QtCore/qcontiguouscache.h \
-		/usr/local/qt5/include/QtCore/qurl.h \
-		/usr/local/qt5/include/QtCore/qurlquery.h \
-		/usr/local/qt5/include/QtCore/qfile.h \
-		/usr/local/qt5/include/QtCore/qfiledevice.h \
-		/usr/local/qt5/include/QtGui/qvector2d.h \
-		/usr/local/qt5/include/QtGui/qtouchdevice.h \
-		src/widgets/courseWidget.h
-	/usr/local/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/widgets/courseWidget.h -o moc/moc_courseWidget.cpp
 
 moc/moc_dependenciesWidget.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
 		/usr/local/qt5/include/QtWidgets/qwidget.h \
@@ -1646,10 +1616,234 @@ moc/moc_expandingFactWidget.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
 		/usr/local/qt5/include/QtCore/qfiledevice.h \
 		/usr/local/qt5/include/QtGui/qvector2d.h \
 		/usr/local/qt5/include/QtGui/qtouchdevice.h \
-		/usr/local/qt5/include/QtCore/QString \
 		/usr/local/qt5/include/QtGui/QPixmap \
+		src/database/structures.h \
 		src/widgets/expandingFactWidget.h
 	/usr/local/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/widgets/expandingFactWidget.h -o moc/moc_expandingFactWidget.cpp
+
+moc/moc_factList.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
+		/usr/local/qt5/include/QtWidgets/qwidget.h \
+		/usr/local/qt5/include/QtGui/qwindowdefs.h \
+		/usr/local/qt5/include/QtCore/qglobal.h \
+		/usr/local/qt5/include/QtCore/qconfig.h \
+		/usr/local/qt5/include/QtCore/qfeatures.h \
+		/usr/local/qt5/include/QtCore/qsystemdetection.h \
+		/usr/local/qt5/include/QtCore/qprocessordetection.h \
+		/usr/local/qt5/include/QtCore/qcompilerdetection.h \
+		/usr/local/qt5/include/QtCore/qglobalstatic.h \
+		/usr/local/qt5/include/QtCore/qatomic.h \
+		/usr/local/qt5/include/QtCore/qbasicatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_bootstrap.h \
+		/usr/local/qt5/include/QtCore/qgenericatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_msvc.h \
+		/usr/local/qt5/include/QtCore/qatomic_integrity.h \
+		/usr/local/qt5/include/QtCore/qoldbasicatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_vxworks.h \
+		/usr/local/qt5/include/QtCore/qatomic_power.h \
+		/usr/local/qt5/include/QtCore/qatomic_alpha.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv7.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv6.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv5.h \
+		/usr/local/qt5/include/QtCore/qatomic_bfin.h \
+		/usr/local/qt5/include/QtCore/qatomic_ia64.h \
+		/usr/local/qt5/include/QtCore/qatomic_mips.h \
+		/usr/local/qt5/include/QtCore/qatomic_s390.h \
+		/usr/local/qt5/include/QtCore/qatomic_sh4a.h \
+		/usr/local/qt5/include/QtCore/qatomic_sparc.h \
+		/usr/local/qt5/include/QtCore/qatomic_x86.h \
+		/usr/local/qt5/include/QtCore/qatomic_cxx11.h \
+		/usr/local/qt5/include/QtCore/qatomic_gcc.h \
+		/usr/local/qt5/include/QtCore/qatomic_unix.h \
+		/usr/local/qt5/include/QtCore/qmutex.h \
+		/usr/local/qt5/include/QtCore/qlogging.h \
+		/usr/local/qt5/include/QtCore/qflags.h \
+		/usr/local/qt5/include/QtCore/qtypeinfo.h \
+		/usr/local/qt5/include/QtCore/qtypetraits.h \
+		/usr/local/qt5/include/QtCore/qsysinfo.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs.h \
+		/usr/local/qt5/include/QtCore/qnamespace.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs_impl.h \
+		/usr/local/qt5/include/QtGui/qwindowdefs_win.h \
+		/usr/local/qt5/include/QtCore/qobject.h \
+		/usr/local/qt5/include/QtCore/qstring.h \
+		/usr/local/qt5/include/QtCore/qchar.h \
+		/usr/local/qt5/include/QtCore/qbytearray.h \
+		/usr/local/qt5/include/QtCore/qrefcount.h \
+		/usr/local/qt5/include/QtCore/qarraydata.h \
+		/usr/local/qt5/include/QtCore/qstringbuilder.h \
+		/usr/local/qt5/include/QtCore/qlist.h \
+		/usr/local/qt5/include/QtCore/qalgorithms.h \
+		/usr/local/qt5/include/QtCore/qiterator.h \
+		/usr/local/qt5/include/QtCore/qcoreevent.h \
+		/usr/local/qt5/include/QtCore/qscopedpointer.h \
+		/usr/local/qt5/include/QtCore/qmetatype.h \
+		/usr/local/qt5/include/QtCore/qvarlengtharray.h \
+		/usr/local/qt5/include/QtCore/qcontainerfwd.h \
+		/usr/local/qt5/include/QtCore/qisenum.h \
+		/usr/local/qt5/include/QtCore/qobject_impl.h \
+		/usr/local/qt5/include/QtCore/qmargins.h \
+		/usr/local/qt5/include/QtCore/qrect.h \
+		/usr/local/qt5/include/QtCore/qsize.h \
+		/usr/local/qt5/include/QtCore/qpoint.h \
+		/usr/local/qt5/include/QtGui/qpaintdevice.h \
+		/usr/local/qt5/include/QtGui/qpalette.h \
+		/usr/local/qt5/include/QtGui/qcolor.h \
+		/usr/local/qt5/include/QtGui/qrgb.h \
+		/usr/local/qt5/include/QtCore/qstringlist.h \
+		/usr/local/qt5/include/QtCore/qdatastream.h \
+		/usr/local/qt5/include/QtCore/qiodevice.h \
+		/usr/local/qt5/include/QtCore/qpair.h \
+		/usr/local/qt5/include/QtCore/qregexp.h \
+		/usr/local/qt5/include/QtCore/qstringmatcher.h \
+		/usr/local/qt5/include/QtGui/qbrush.h \
+		/usr/local/qt5/include/QtCore/qvector.h \
+		/usr/local/qt5/include/QtGui/qmatrix.h \
+		/usr/local/qt5/include/QtGui/qpolygon.h \
+		/usr/local/qt5/include/QtGui/qregion.h \
+		/usr/local/qt5/include/QtCore/qline.h \
+		/usr/local/qt5/include/QtGui/qtransform.h \
+		/usr/local/qt5/include/QtGui/qpainterpath.h \
+		/usr/local/qt5/include/QtGui/qimage.h \
+		/usr/local/qt5/include/QtGui/qpixmap.h \
+		/usr/local/qt5/include/QtCore/qsharedpointer.h \
+		/usr/local/qt5/include/QtCore/qshareddata.h \
+		/usr/local/qt5/include/QtCore/qsharedpointer_impl.h \
+		/usr/local/qt5/include/QtCore/qhash.h \
+		/usr/local/qt5/include/QtGui/qfont.h \
+		/usr/local/qt5/include/QtGui/qfontmetrics.h \
+		/usr/local/qt5/include/QtGui/qfontinfo.h \
+		/usr/local/qt5/include/QtWidgets/qsizepolicy.h \
+		/usr/local/qt5/include/QtGui/qcursor.h \
+		/usr/local/qt5/include/QtGui/qkeysequence.h \
+		/usr/local/qt5/include/QtGui/qevent.h \
+		/usr/local/qt5/include/QtCore/qvariant.h \
+		/usr/local/qt5/include/QtCore/qmap.h \
+		/usr/local/qt5/include/QtCore/qdebug.h \
+		/usr/local/qt5/include/QtCore/qtextstream.h \
+		/usr/local/qt5/include/QtCore/qlocale.h \
+		/usr/local/qt5/include/QtCore/qset.h \
+		/usr/local/qt5/include/QtCore/qcontiguouscache.h \
+		/usr/local/qt5/include/QtCore/qurl.h \
+		/usr/local/qt5/include/QtCore/qurlquery.h \
+		/usr/local/qt5/include/QtCore/qfile.h \
+		/usr/local/qt5/include/QtCore/qfiledevice.h \
+		/usr/local/qt5/include/QtGui/qvector2d.h \
+		/usr/local/qt5/include/QtGui/qtouchdevice.h \
+		src/database/structures.h \
+		src/widgets/factList.h
+	/usr/local/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/widgets/factList.h -o moc/moc_factList.cpp
+
+moc/moc_factListView.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
+		/usr/local/qt5/include/QtWidgets/qwidget.h \
+		/usr/local/qt5/include/QtGui/qwindowdefs.h \
+		/usr/local/qt5/include/QtCore/qglobal.h \
+		/usr/local/qt5/include/QtCore/qconfig.h \
+		/usr/local/qt5/include/QtCore/qfeatures.h \
+		/usr/local/qt5/include/QtCore/qsystemdetection.h \
+		/usr/local/qt5/include/QtCore/qprocessordetection.h \
+		/usr/local/qt5/include/QtCore/qcompilerdetection.h \
+		/usr/local/qt5/include/QtCore/qglobalstatic.h \
+		/usr/local/qt5/include/QtCore/qatomic.h \
+		/usr/local/qt5/include/QtCore/qbasicatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_bootstrap.h \
+		/usr/local/qt5/include/QtCore/qgenericatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_msvc.h \
+		/usr/local/qt5/include/QtCore/qatomic_integrity.h \
+		/usr/local/qt5/include/QtCore/qoldbasicatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_vxworks.h \
+		/usr/local/qt5/include/QtCore/qatomic_power.h \
+		/usr/local/qt5/include/QtCore/qatomic_alpha.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv7.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv6.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv5.h \
+		/usr/local/qt5/include/QtCore/qatomic_bfin.h \
+		/usr/local/qt5/include/QtCore/qatomic_ia64.h \
+		/usr/local/qt5/include/QtCore/qatomic_mips.h \
+		/usr/local/qt5/include/QtCore/qatomic_s390.h \
+		/usr/local/qt5/include/QtCore/qatomic_sh4a.h \
+		/usr/local/qt5/include/QtCore/qatomic_sparc.h \
+		/usr/local/qt5/include/QtCore/qatomic_x86.h \
+		/usr/local/qt5/include/QtCore/qatomic_cxx11.h \
+		/usr/local/qt5/include/QtCore/qatomic_gcc.h \
+		/usr/local/qt5/include/QtCore/qatomic_unix.h \
+		/usr/local/qt5/include/QtCore/qmutex.h \
+		/usr/local/qt5/include/QtCore/qlogging.h \
+		/usr/local/qt5/include/QtCore/qflags.h \
+		/usr/local/qt5/include/QtCore/qtypeinfo.h \
+		/usr/local/qt5/include/QtCore/qtypetraits.h \
+		/usr/local/qt5/include/QtCore/qsysinfo.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs.h \
+		/usr/local/qt5/include/QtCore/qnamespace.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs_impl.h \
+		/usr/local/qt5/include/QtGui/qwindowdefs_win.h \
+		/usr/local/qt5/include/QtCore/qobject.h \
+		/usr/local/qt5/include/QtCore/qstring.h \
+		/usr/local/qt5/include/QtCore/qchar.h \
+		/usr/local/qt5/include/QtCore/qbytearray.h \
+		/usr/local/qt5/include/QtCore/qrefcount.h \
+		/usr/local/qt5/include/QtCore/qarraydata.h \
+		/usr/local/qt5/include/QtCore/qstringbuilder.h \
+		/usr/local/qt5/include/QtCore/qlist.h \
+		/usr/local/qt5/include/QtCore/qalgorithms.h \
+		/usr/local/qt5/include/QtCore/qiterator.h \
+		/usr/local/qt5/include/QtCore/qcoreevent.h \
+		/usr/local/qt5/include/QtCore/qscopedpointer.h \
+		/usr/local/qt5/include/QtCore/qmetatype.h \
+		/usr/local/qt5/include/QtCore/qvarlengtharray.h \
+		/usr/local/qt5/include/QtCore/qcontainerfwd.h \
+		/usr/local/qt5/include/QtCore/qisenum.h \
+		/usr/local/qt5/include/QtCore/qobject_impl.h \
+		/usr/local/qt5/include/QtCore/qmargins.h \
+		/usr/local/qt5/include/QtCore/qrect.h \
+		/usr/local/qt5/include/QtCore/qsize.h \
+		/usr/local/qt5/include/QtCore/qpoint.h \
+		/usr/local/qt5/include/QtGui/qpaintdevice.h \
+		/usr/local/qt5/include/QtGui/qpalette.h \
+		/usr/local/qt5/include/QtGui/qcolor.h \
+		/usr/local/qt5/include/QtGui/qrgb.h \
+		/usr/local/qt5/include/QtCore/qstringlist.h \
+		/usr/local/qt5/include/QtCore/qdatastream.h \
+		/usr/local/qt5/include/QtCore/qiodevice.h \
+		/usr/local/qt5/include/QtCore/qpair.h \
+		/usr/local/qt5/include/QtCore/qregexp.h \
+		/usr/local/qt5/include/QtCore/qstringmatcher.h \
+		/usr/local/qt5/include/QtGui/qbrush.h \
+		/usr/local/qt5/include/QtCore/qvector.h \
+		/usr/local/qt5/include/QtGui/qmatrix.h \
+		/usr/local/qt5/include/QtGui/qpolygon.h \
+		/usr/local/qt5/include/QtGui/qregion.h \
+		/usr/local/qt5/include/QtCore/qline.h \
+		/usr/local/qt5/include/QtGui/qtransform.h \
+		/usr/local/qt5/include/QtGui/qpainterpath.h \
+		/usr/local/qt5/include/QtGui/qimage.h \
+		/usr/local/qt5/include/QtGui/qpixmap.h \
+		/usr/local/qt5/include/QtCore/qsharedpointer.h \
+		/usr/local/qt5/include/QtCore/qshareddata.h \
+		/usr/local/qt5/include/QtCore/qsharedpointer_impl.h \
+		/usr/local/qt5/include/QtCore/qhash.h \
+		/usr/local/qt5/include/QtGui/qfont.h \
+		/usr/local/qt5/include/QtGui/qfontmetrics.h \
+		/usr/local/qt5/include/QtGui/qfontinfo.h \
+		/usr/local/qt5/include/QtWidgets/qsizepolicy.h \
+		/usr/local/qt5/include/QtGui/qcursor.h \
+		/usr/local/qt5/include/QtGui/qkeysequence.h \
+		/usr/local/qt5/include/QtGui/qevent.h \
+		/usr/local/qt5/include/QtCore/qvariant.h \
+		/usr/local/qt5/include/QtCore/qmap.h \
+		/usr/local/qt5/include/QtCore/qdebug.h \
+		/usr/local/qt5/include/QtCore/qtextstream.h \
+		/usr/local/qt5/include/QtCore/qlocale.h \
+		/usr/local/qt5/include/QtCore/qset.h \
+		/usr/local/qt5/include/QtCore/qcontiguouscache.h \
+		/usr/local/qt5/include/QtCore/qurl.h \
+		/usr/local/qt5/include/QtCore/qurlquery.h \
+		/usr/local/qt5/include/QtCore/qfile.h \
+		/usr/local/qt5/include/QtCore/qfiledevice.h \
+		/usr/local/qt5/include/QtGui/qvector2d.h \
+		/usr/local/qt5/include/QtGui/qtouchdevice.h \
+		src/database/structures.h \
+		src/widgets/factListView.h
+	/usr/local/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/widgets/factListView.h -o moc/moc_factListView.cpp
 
 moc/moc_horizontalSeperator.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
 		/usr/local/qt5/include/QtWidgets/qwidget.h \
@@ -2111,7 +2305,8 @@ moc/moc_resizableStackedWidget.cpp: /usr/local/qt5/include/QtWidgets/QStackedWid
 		src/widgets/resizableStackedWidget.h
 	/usr/local/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/widgets/resizableStackedWidget.h -o moc/moc_resizableStackedWidget.cpp
 
-moc/moc_sectionPickerWidget.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
+moc/moc_sectionPickerWidget.cpp: src/database/structures.h \
+		/usr/local/qt5/include/QtWidgets/QWidget \
 		/usr/local/qt5/include/QtWidgets/qwidget.h \
 		/usr/local/qt5/include/QtGui/qwindowdefs.h \
 		/usr/local/qt5/include/QtCore/qglobal.h \
@@ -2219,121 +2414,8 @@ moc/moc_sectionPickerWidget.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
 		/usr/local/qt5/include/QtCore/qfiledevice.h \
 		/usr/local/qt5/include/QtGui/qvector2d.h \
 		/usr/local/qt5/include/QtGui/qtouchdevice.h \
-		/usr/local/qt5/include/QtCore/QString \
 		src/widgets/sectionPickerWidget.h
 	/usr/local/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/widgets/sectionPickerWidget.h -o moc/moc_sectionPickerWidget.cpp
-
-moc/moc_sectionWidget.cpp: /usr/local/qt5/include/QtWidgets/QWidget \
-		/usr/local/qt5/include/QtWidgets/qwidget.h \
-		/usr/local/qt5/include/QtGui/qwindowdefs.h \
-		/usr/local/qt5/include/QtCore/qglobal.h \
-		/usr/local/qt5/include/QtCore/qconfig.h \
-		/usr/local/qt5/include/QtCore/qfeatures.h \
-		/usr/local/qt5/include/QtCore/qsystemdetection.h \
-		/usr/local/qt5/include/QtCore/qprocessordetection.h \
-		/usr/local/qt5/include/QtCore/qcompilerdetection.h \
-		/usr/local/qt5/include/QtCore/qglobalstatic.h \
-		/usr/local/qt5/include/QtCore/qatomic.h \
-		/usr/local/qt5/include/QtCore/qbasicatomic.h \
-		/usr/local/qt5/include/QtCore/qatomic_bootstrap.h \
-		/usr/local/qt5/include/QtCore/qgenericatomic.h \
-		/usr/local/qt5/include/QtCore/qatomic_msvc.h \
-		/usr/local/qt5/include/QtCore/qatomic_integrity.h \
-		/usr/local/qt5/include/QtCore/qoldbasicatomic.h \
-		/usr/local/qt5/include/QtCore/qatomic_vxworks.h \
-		/usr/local/qt5/include/QtCore/qatomic_power.h \
-		/usr/local/qt5/include/QtCore/qatomic_alpha.h \
-		/usr/local/qt5/include/QtCore/qatomic_armv7.h \
-		/usr/local/qt5/include/QtCore/qatomic_armv6.h \
-		/usr/local/qt5/include/QtCore/qatomic_armv5.h \
-		/usr/local/qt5/include/QtCore/qatomic_bfin.h \
-		/usr/local/qt5/include/QtCore/qatomic_ia64.h \
-		/usr/local/qt5/include/QtCore/qatomic_mips.h \
-		/usr/local/qt5/include/QtCore/qatomic_s390.h \
-		/usr/local/qt5/include/QtCore/qatomic_sh4a.h \
-		/usr/local/qt5/include/QtCore/qatomic_sparc.h \
-		/usr/local/qt5/include/QtCore/qatomic_x86.h \
-		/usr/local/qt5/include/QtCore/qatomic_cxx11.h \
-		/usr/local/qt5/include/QtCore/qatomic_gcc.h \
-		/usr/local/qt5/include/QtCore/qatomic_unix.h \
-		/usr/local/qt5/include/QtCore/qmutex.h \
-		/usr/local/qt5/include/QtCore/qlogging.h \
-		/usr/local/qt5/include/QtCore/qflags.h \
-		/usr/local/qt5/include/QtCore/qtypeinfo.h \
-		/usr/local/qt5/include/QtCore/qtypetraits.h \
-		/usr/local/qt5/include/QtCore/qsysinfo.h \
-		/usr/local/qt5/include/QtCore/qobjectdefs.h \
-		/usr/local/qt5/include/QtCore/qnamespace.h \
-		/usr/local/qt5/include/QtCore/qobjectdefs_impl.h \
-		/usr/local/qt5/include/QtGui/qwindowdefs_win.h \
-		/usr/local/qt5/include/QtCore/qobject.h \
-		/usr/local/qt5/include/QtCore/qstring.h \
-		/usr/local/qt5/include/QtCore/qchar.h \
-		/usr/local/qt5/include/QtCore/qbytearray.h \
-		/usr/local/qt5/include/QtCore/qrefcount.h \
-		/usr/local/qt5/include/QtCore/qarraydata.h \
-		/usr/local/qt5/include/QtCore/qstringbuilder.h \
-		/usr/local/qt5/include/QtCore/qlist.h \
-		/usr/local/qt5/include/QtCore/qalgorithms.h \
-		/usr/local/qt5/include/QtCore/qiterator.h \
-		/usr/local/qt5/include/QtCore/qcoreevent.h \
-		/usr/local/qt5/include/QtCore/qscopedpointer.h \
-		/usr/local/qt5/include/QtCore/qmetatype.h \
-		/usr/local/qt5/include/QtCore/qvarlengtharray.h \
-		/usr/local/qt5/include/QtCore/qcontainerfwd.h \
-		/usr/local/qt5/include/QtCore/qisenum.h \
-		/usr/local/qt5/include/QtCore/qobject_impl.h \
-		/usr/local/qt5/include/QtCore/qmargins.h \
-		/usr/local/qt5/include/QtCore/qrect.h \
-		/usr/local/qt5/include/QtCore/qsize.h \
-		/usr/local/qt5/include/QtCore/qpoint.h \
-		/usr/local/qt5/include/QtGui/qpaintdevice.h \
-		/usr/local/qt5/include/QtGui/qpalette.h \
-		/usr/local/qt5/include/QtGui/qcolor.h \
-		/usr/local/qt5/include/QtGui/qrgb.h \
-		/usr/local/qt5/include/QtCore/qstringlist.h \
-		/usr/local/qt5/include/QtCore/qdatastream.h \
-		/usr/local/qt5/include/QtCore/qiodevice.h \
-		/usr/local/qt5/include/QtCore/qpair.h \
-		/usr/local/qt5/include/QtCore/qregexp.h \
-		/usr/local/qt5/include/QtCore/qstringmatcher.h \
-		/usr/local/qt5/include/QtGui/qbrush.h \
-		/usr/local/qt5/include/QtCore/qvector.h \
-		/usr/local/qt5/include/QtGui/qmatrix.h \
-		/usr/local/qt5/include/QtGui/qpolygon.h \
-		/usr/local/qt5/include/QtGui/qregion.h \
-		/usr/local/qt5/include/QtCore/qline.h \
-		/usr/local/qt5/include/QtGui/qtransform.h \
-		/usr/local/qt5/include/QtGui/qpainterpath.h \
-		/usr/local/qt5/include/QtGui/qimage.h \
-		/usr/local/qt5/include/QtGui/qpixmap.h \
-		/usr/local/qt5/include/QtCore/qsharedpointer.h \
-		/usr/local/qt5/include/QtCore/qshareddata.h \
-		/usr/local/qt5/include/QtCore/qsharedpointer_impl.h \
-		/usr/local/qt5/include/QtCore/qhash.h \
-		/usr/local/qt5/include/QtGui/qfont.h \
-		/usr/local/qt5/include/QtGui/qfontmetrics.h \
-		/usr/local/qt5/include/QtGui/qfontinfo.h \
-		/usr/local/qt5/include/QtWidgets/qsizepolicy.h \
-		/usr/local/qt5/include/QtGui/qcursor.h \
-		/usr/local/qt5/include/QtGui/qkeysequence.h \
-		/usr/local/qt5/include/QtGui/qevent.h \
-		/usr/local/qt5/include/QtCore/qvariant.h \
-		/usr/local/qt5/include/QtCore/qmap.h \
-		/usr/local/qt5/include/QtCore/qdebug.h \
-		/usr/local/qt5/include/QtCore/qtextstream.h \
-		/usr/local/qt5/include/QtCore/qlocale.h \
-		/usr/local/qt5/include/QtCore/qset.h \
-		/usr/local/qt5/include/QtCore/qcontiguouscache.h \
-		/usr/local/qt5/include/QtCore/qurl.h \
-		/usr/local/qt5/include/QtCore/qurlquery.h \
-		/usr/local/qt5/include/QtCore/qfile.h \
-		/usr/local/qt5/include/QtCore/qfiledevice.h \
-		/usr/local/qt5/include/QtGui/qvector2d.h \
-		/usr/local/qt5/include/QtGui/qtouchdevice.h \
-		/usr/local/qt5/include/QtCore/QString \
-		src/widgets/sectionWidget.h
-	/usr/local/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/widgets/sectionWidget.h -o moc/moc_sectionWidget.cpp
 
 moc/moc_splitter.cpp: /usr/local/qt5/include/QtWidgets/QSplitter \
 		/usr/local/qt5/include/QtWidgets/qsplitter.h \
@@ -3138,6 +3220,67 @@ compiler_clean: compiler_rcc_clean compiler_moc_header_clean
 
 ####### Compile
 
+obj/model.o: src/model.cpp src/model.h \
+		/usr/local/qt5/include/QtCore/QObject \
+		/usr/local/qt5/include/QtCore/qobject.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs.h \
+		/usr/local/qt5/include/QtCore/qnamespace.h \
+		/usr/local/qt5/include/QtCore/qglobal.h \
+		/usr/local/qt5/include/QtCore/qconfig.h \
+		/usr/local/qt5/include/QtCore/qfeatures.h \
+		/usr/local/qt5/include/QtCore/qsystemdetection.h \
+		/usr/local/qt5/include/QtCore/qprocessordetection.h \
+		/usr/local/qt5/include/QtCore/qcompilerdetection.h \
+		/usr/local/qt5/include/QtCore/qglobalstatic.h \
+		/usr/local/qt5/include/QtCore/qatomic.h \
+		/usr/local/qt5/include/QtCore/qbasicatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_bootstrap.h \
+		/usr/local/qt5/include/QtCore/qgenericatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_msvc.h \
+		/usr/local/qt5/include/QtCore/qatomic_integrity.h \
+		/usr/local/qt5/include/QtCore/qoldbasicatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_vxworks.h \
+		/usr/local/qt5/include/QtCore/qatomic_power.h \
+		/usr/local/qt5/include/QtCore/qatomic_alpha.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv7.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv6.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv5.h \
+		/usr/local/qt5/include/QtCore/qatomic_bfin.h \
+		/usr/local/qt5/include/QtCore/qatomic_ia64.h \
+		/usr/local/qt5/include/QtCore/qatomic_mips.h \
+		/usr/local/qt5/include/QtCore/qatomic_s390.h \
+		/usr/local/qt5/include/QtCore/qatomic_sh4a.h \
+		/usr/local/qt5/include/QtCore/qatomic_sparc.h \
+		/usr/local/qt5/include/QtCore/qatomic_x86.h \
+		/usr/local/qt5/include/QtCore/qatomic_cxx11.h \
+		/usr/local/qt5/include/QtCore/qatomic_gcc.h \
+		/usr/local/qt5/include/QtCore/qatomic_unix.h \
+		/usr/local/qt5/include/QtCore/qmutex.h \
+		/usr/local/qt5/include/QtCore/qlogging.h \
+		/usr/local/qt5/include/QtCore/qflags.h \
+		/usr/local/qt5/include/QtCore/qtypeinfo.h \
+		/usr/local/qt5/include/QtCore/qtypetraits.h \
+		/usr/local/qt5/include/QtCore/qsysinfo.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs_impl.h \
+		/usr/local/qt5/include/QtCore/qstring.h \
+		/usr/local/qt5/include/QtCore/qchar.h \
+		/usr/local/qt5/include/QtCore/qbytearray.h \
+		/usr/local/qt5/include/QtCore/qrefcount.h \
+		/usr/local/qt5/include/QtCore/qarraydata.h \
+		/usr/local/qt5/include/QtCore/qstringbuilder.h \
+		/usr/local/qt5/include/QtCore/qlist.h \
+		/usr/local/qt5/include/QtCore/qalgorithms.h \
+		/usr/local/qt5/include/QtCore/qiterator.h \
+		/usr/local/qt5/include/QtCore/qcoreevent.h \
+		/usr/local/qt5/include/QtCore/qscopedpointer.h \
+		/usr/local/qt5/include/QtCore/qmetatype.h \
+		/usr/local/qt5/include/QtCore/qvarlengtharray.h \
+		/usr/local/qt5/include/QtCore/qcontainerfwd.h \
+		/usr/local/qt5/include/QtCore/qisenum.h \
+		/usr/local/qt5/include/QtCore/qobject_impl.h \
+		src/database/structures.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/model.o src/model.cpp
+
 obj/StudyAid.o: src/StudyAid.cpp /usr/local/qt5/include/QtWidgets/QApplication \
 		/usr/local/qt5/include/QtWidgets/qapplication.h \
 		/usr/local/qt5/include/QtCore/qcoreapplication.h \
@@ -3259,6 +3402,9 @@ obj/StudyAid.o: src/StudyAid.cpp /usr/local/qt5/include/QtWidgets/QApplication \
 		/usr/local/qt5/include/QtWidgets/qlayoutitem.h \
 		/usr/local/qt5/include/QtWidgets/qgridlayout.h \
 		/usr/local/qt5/include/QtGui/QFont \
+		src/model.h \
+		/usr/local/qt5/include/QtCore/QObject \
+		src/database/structures.h \
 		src/database/setup.h \
 		/usr/include/mysql++/mysql++.h \
 		/usr/include/mysql++/connection.h \
@@ -3440,6 +3586,10 @@ obj/coursePage.o: src/pages/coursePage.cpp /usr/local/qt5/include/QtWidgets/QHBo
 		/usr/local/qt5/include/QtWidgets/QScrollArea \
 		/usr/local/qt5/include/QtWidgets/qscrollarea.h \
 		/usr/local/qt5/include/QtWidgets/qabstractscrollarea.h \
+		src/model.h \
+		/usr/local/qt5/include/QtCore/QObject \
+		src/database/structures.h \
+		src/database/methods.h \
 		src/widgets/resizableStackedWidget.h \
 		/usr/local/qt5/include/QtWidgets/QStackedWidget \
 		/usr/local/qt5/include/QtWidgets/qstackedwidget.h \
@@ -3455,9 +3605,8 @@ obj/coursePage.o: src/pages/coursePage.cpp /usr/local/qt5/include/QtWidgets/QHBo
 		/usr/local/qt5/include/QtGui/qpainter.h \
 		/usr/local/qt5/include/QtGui/qtextoption.h \
 		src/widgets/clickableQLabel.h \
-		src/widgets/courseWidget.h \
+		src/widgets/factListView.h \
 		src/widgets/sectionPickerWidget.h \
-		/usr/local/qt5/include/QtCore/QString \
 		src/widgets/splitter.h \
 		/usr/local/qt5/include/QtWidgets/QSplitter \
 		/usr/local/qt5/include/QtWidgets/qsplitter.h \
@@ -3465,6 +3614,7 @@ obj/coursePage.o: src/pages/coursePage.cpp /usr/local/qt5/include/QtWidgets/QHBo
 		src/dialogs/deleteDialog.h \
 		/usr/local/qt5/include/QtWidgets/QDialog \
 		/usr/local/qt5/include/QtWidgets/qdialog.h \
+		/usr/local/qt5/include/QtCore/QString \
 		src/dialogs/formDialog.h \
 		src/forms/form.h \
 		src/forms/courseForm.h \
@@ -3604,6 +3754,10 @@ obj/factPage.o: src/pages/factPage.cpp /usr/local/qt5/include/QtWidgets/QHBoxLay
 		/usr/local/qt5/include/QtGui/qtextcursor.h \
 		/usr/local/qt5/include/QtGui/qtextformat.h \
 		/usr/local/qt5/include/QtGui/qpen.h \
+		src/model.h \
+		/usr/local/qt5/include/QtCore/QObject \
+		src/database/structures.h \
+		src/database/methods.h \
 		src/widgets/resizableStackedWidget.h \
 		/usr/local/qt5/include/QtWidgets/QStackedWidget \
 		/usr/local/qt5/include/QtWidgets/qstackedwidget.h \
@@ -3765,6 +3919,9 @@ obj/proofPage.o: src/pages/proofPage.cpp /usr/local/qt5/include/QtWidgets/QHBoxL
 		/usr/local/qt5/include/QtGui/qtextcursor.h \
 		/usr/local/qt5/include/QtGui/qtextformat.h \
 		/usr/local/qt5/include/QtGui/qpen.h \
+		src/model.h \
+		/usr/local/qt5/include/QtCore/QObject \
+		src/database/structures.h \
 		src/widgets/resizableStackedWidget.h \
 		/usr/local/qt5/include/QtWidgets/QStackedWidget \
 		/usr/local/qt5/include/QtWidgets/qstackedwidget.h \
@@ -3920,7 +4077,10 @@ obj/rootPage.o: src/pages/rootPage.cpp /usr/local/qt5/include/QtWidgets/QVBoxLay
 		/usr/local/qt5/include/QtWidgets/QScrollArea \
 		/usr/local/qt5/include/QtWidgets/qscrollarea.h \
 		/usr/local/qt5/include/QtWidgets/qabstractscrollarea.h \
-		/usr/local/qt5/include/QtCore/QString \
+		src/model.h \
+		/usr/local/qt5/include/QtCore/QObject \
+		src/database/structures.h \
+		src/database/methods.h \
 		src/widgets/courseTitleWidget.h \
 		/usr/local/qt5/include/QtWidgets/QWidget \
 		/usr/local/qt5/include/QtGui/QPixmap \
@@ -3937,10 +4097,60 @@ obj/rootPage.o: src/pages/rootPage.cpp /usr/local/qt5/include/QtWidgets/QVBoxLay
 		src/dialogs/formDialog.h \
 		/usr/local/qt5/include/QtWidgets/QDialog \
 		/usr/local/qt5/include/QtWidgets/qdialog.h \
+		/usr/local/qt5/include/QtCore/QString \
 		src/forms/form.h \
 		src/forms/courseForm.h \
 		src/pages/rootPage.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/rootPage.o src/pages/rootPage.cpp
+
+obj/methods.o: src/database/methods.cpp src/database/setup.h \
+		/usr/include/mysql++/mysql++.h \
+		/usr/include/mysql++/connection.h \
+		/usr/include/mysql++/common.h \
+		/usr/include/mysql/mysql_version.h \
+		/usr/include/mysql/mysql.h \
+		/usr/include/mysql/mysql_com.h \
+		/usr/include/mysql/mysql_time.h \
+		/usr/include/mysql/my_list.h \
+		/usr/include/mysql/typelib.h \
+		/usr/include/mysql/my_alloc.h \
+		/usr/include/mysql++/noexceptions.h \
+		/usr/include/mysql++/options.h \
+		/usr/include/mysql++/tcp_connection.h \
+		/usr/include/mysql++/uds_connection.h \
+		/usr/include/mysql++/wnp_connection.h \
+		/usr/include/mysql++/cpool.h \
+		/usr/include/mysql++/beemutex.h \
+		/usr/include/mysql++/exceptions.h \
+		/usr/include/mysql++/query.h \
+		/usr/include/mysql++/qparms.h \
+		/usr/include/mysql++/stadapter.h \
+		/usr/include/mysql++/datetime.h \
+		/usr/include/mysql++/comparable.h \
+		/usr/include/mysql++/null.h \
+		/usr/include/mysql++/sql_buffer.h \
+		/usr/include/mysql++/refcounted.h \
+		/usr/include/mysql++/type_info.h \
+		/usr/include/mysql++/tiny_int.h \
+		/usr/include/mysql++/querydef.h \
+		/usr/include/mysql++/result.h \
+		/usr/include/mysql++/field.h \
+		/usr/include/mysql++/field_names.h \
+		/usr/include/mysql++/field_types.h \
+		/usr/include/mysql++/row.h \
+		/usr/include/mysql++/mystring.h \
+		/usr/include/mysql++/vallist.h \
+		/usr/include/mysql++/manip.h \
+		/usr/include/mysql++/myset.h \
+		/usr/include/mysql++/stream2string.h \
+		/usr/include/mysql++/sqlstream.h \
+		/usr/include/mysql++/transaction.h \
+		/usr/include/mysql++/insertpolicy.h \
+		/usr/include/mysql++/scopedconnection.h \
+		/usr/include/mysql++/sql_types.h \
+		src/database/methods.h \
+		src/database/structures.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/methods.o src/database/methods.cpp
 
 obj/setup.o: src/database/setup.cpp /usr/include/mysql++/mysql++.h \
 		/usr/include/mysql++/connection.h \
@@ -4234,131 +4444,8 @@ obj/courseTitleWidget.o: src/widgets/courseTitleWidget.cpp /usr/local/qt5/includ
 		/usr/local/qt5/include/QtGui/QBrush \
 		src/widgets/courseTitleWidget.h \
 		/usr/local/qt5/include/QtWidgets/QWidget \
-		/usr/local/qt5/include/QtCore/QString
+		src/database/structures.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/courseTitleWidget.o src/widgets/courseTitleWidget.cpp
-
-obj/courseWidget.o: src/widgets/courseWidget.cpp /usr/local/qt5/include/QtWidgets/QVBoxLayout \
-		/usr/local/qt5/include/QtWidgets/qboxlayout.h \
-		/usr/local/qt5/include/QtWidgets/qlayout.h \
-		/usr/local/qt5/include/QtCore/qobject.h \
-		/usr/local/qt5/include/QtCore/qobjectdefs.h \
-		/usr/local/qt5/include/QtCore/qnamespace.h \
-		/usr/local/qt5/include/QtCore/qglobal.h \
-		/usr/local/qt5/include/QtCore/qconfig.h \
-		/usr/local/qt5/include/QtCore/qfeatures.h \
-		/usr/local/qt5/include/QtCore/qsystemdetection.h \
-		/usr/local/qt5/include/QtCore/qprocessordetection.h \
-		/usr/local/qt5/include/QtCore/qcompilerdetection.h \
-		/usr/local/qt5/include/QtCore/qglobalstatic.h \
-		/usr/local/qt5/include/QtCore/qatomic.h \
-		/usr/local/qt5/include/QtCore/qbasicatomic.h \
-		/usr/local/qt5/include/QtCore/qatomic_bootstrap.h \
-		/usr/local/qt5/include/QtCore/qgenericatomic.h \
-		/usr/local/qt5/include/QtCore/qatomic_msvc.h \
-		/usr/local/qt5/include/QtCore/qatomic_integrity.h \
-		/usr/local/qt5/include/QtCore/qoldbasicatomic.h \
-		/usr/local/qt5/include/QtCore/qatomic_vxworks.h \
-		/usr/local/qt5/include/QtCore/qatomic_power.h \
-		/usr/local/qt5/include/QtCore/qatomic_alpha.h \
-		/usr/local/qt5/include/QtCore/qatomic_armv7.h \
-		/usr/local/qt5/include/QtCore/qatomic_armv6.h \
-		/usr/local/qt5/include/QtCore/qatomic_armv5.h \
-		/usr/local/qt5/include/QtCore/qatomic_bfin.h \
-		/usr/local/qt5/include/QtCore/qatomic_ia64.h \
-		/usr/local/qt5/include/QtCore/qatomic_mips.h \
-		/usr/local/qt5/include/QtCore/qatomic_s390.h \
-		/usr/local/qt5/include/QtCore/qatomic_sh4a.h \
-		/usr/local/qt5/include/QtCore/qatomic_sparc.h \
-		/usr/local/qt5/include/QtCore/qatomic_x86.h \
-		/usr/local/qt5/include/QtCore/qatomic_cxx11.h \
-		/usr/local/qt5/include/QtCore/qatomic_gcc.h \
-		/usr/local/qt5/include/QtCore/qatomic_unix.h \
-		/usr/local/qt5/include/QtCore/qmutex.h \
-		/usr/local/qt5/include/QtCore/qlogging.h \
-		/usr/local/qt5/include/QtCore/qflags.h \
-		/usr/local/qt5/include/QtCore/qtypeinfo.h \
-		/usr/local/qt5/include/QtCore/qtypetraits.h \
-		/usr/local/qt5/include/QtCore/qsysinfo.h \
-		/usr/local/qt5/include/QtCore/qobjectdefs_impl.h \
-		/usr/local/qt5/include/QtCore/qstring.h \
-		/usr/local/qt5/include/QtCore/qchar.h \
-		/usr/local/qt5/include/QtCore/qbytearray.h \
-		/usr/local/qt5/include/QtCore/qrefcount.h \
-		/usr/local/qt5/include/QtCore/qarraydata.h \
-		/usr/local/qt5/include/QtCore/qstringbuilder.h \
-		/usr/local/qt5/include/QtCore/qlist.h \
-		/usr/local/qt5/include/QtCore/qalgorithms.h \
-		/usr/local/qt5/include/QtCore/qiterator.h \
-		/usr/local/qt5/include/QtCore/qcoreevent.h \
-		/usr/local/qt5/include/QtCore/qscopedpointer.h \
-		/usr/local/qt5/include/QtCore/qmetatype.h \
-		/usr/local/qt5/include/QtCore/qvarlengtharray.h \
-		/usr/local/qt5/include/QtCore/qcontainerfwd.h \
-		/usr/local/qt5/include/QtCore/qisenum.h \
-		/usr/local/qt5/include/QtCore/qobject_impl.h \
-		/usr/local/qt5/include/QtWidgets/qlayoutitem.h \
-		/usr/local/qt5/include/QtWidgets/qsizepolicy.h \
-		/usr/local/qt5/include/QtCore/qrect.h \
-		/usr/local/qt5/include/QtCore/qsize.h \
-		/usr/local/qt5/include/QtCore/qpoint.h \
-		/usr/local/qt5/include/QtCore/qmargins.h \
-		/usr/local/qt5/include/QtWidgets/qgridlayout.h \
-		/usr/local/qt5/include/QtWidgets/qwidget.h \
-		/usr/local/qt5/include/QtGui/qwindowdefs.h \
-		/usr/local/qt5/include/QtGui/qwindowdefs_win.h \
-		/usr/local/qt5/include/QtGui/qpaintdevice.h \
-		/usr/local/qt5/include/QtGui/qpalette.h \
-		/usr/local/qt5/include/QtGui/qcolor.h \
-		/usr/local/qt5/include/QtGui/qrgb.h \
-		/usr/local/qt5/include/QtCore/qstringlist.h \
-		/usr/local/qt5/include/QtCore/qdatastream.h \
-		/usr/local/qt5/include/QtCore/qiodevice.h \
-		/usr/local/qt5/include/QtCore/qpair.h \
-		/usr/local/qt5/include/QtCore/qregexp.h \
-		/usr/local/qt5/include/QtCore/qstringmatcher.h \
-		/usr/local/qt5/include/QtGui/qbrush.h \
-		/usr/local/qt5/include/QtCore/qvector.h \
-		/usr/local/qt5/include/QtGui/qmatrix.h \
-		/usr/local/qt5/include/QtGui/qpolygon.h \
-		/usr/local/qt5/include/QtGui/qregion.h \
-		/usr/local/qt5/include/QtCore/qline.h \
-		/usr/local/qt5/include/QtGui/qtransform.h \
-		/usr/local/qt5/include/QtGui/qpainterpath.h \
-		/usr/local/qt5/include/QtGui/qimage.h \
-		/usr/local/qt5/include/QtGui/qpixmap.h \
-		/usr/local/qt5/include/QtCore/qsharedpointer.h \
-		/usr/local/qt5/include/QtCore/qshareddata.h \
-		/usr/local/qt5/include/QtCore/qsharedpointer_impl.h \
-		/usr/local/qt5/include/QtCore/qhash.h \
-		/usr/local/qt5/include/QtGui/qfont.h \
-		/usr/local/qt5/include/QtGui/qfontmetrics.h \
-		/usr/local/qt5/include/QtGui/qfontinfo.h \
-		/usr/local/qt5/include/QtGui/qcursor.h \
-		/usr/local/qt5/include/QtGui/qkeysequence.h \
-		/usr/local/qt5/include/QtGui/qevent.h \
-		/usr/local/qt5/include/QtCore/qvariant.h \
-		/usr/local/qt5/include/QtCore/qmap.h \
-		/usr/local/qt5/include/QtCore/qdebug.h \
-		/usr/local/qt5/include/QtCore/qtextstream.h \
-		/usr/local/qt5/include/QtCore/qlocale.h \
-		/usr/local/qt5/include/QtCore/qset.h \
-		/usr/local/qt5/include/QtCore/qcontiguouscache.h \
-		/usr/local/qt5/include/QtCore/qurl.h \
-		/usr/local/qt5/include/QtCore/qurlquery.h \
-		/usr/local/qt5/include/QtCore/qfile.h \
-		/usr/local/qt5/include/QtCore/qfiledevice.h \
-		/usr/local/qt5/include/QtGui/qvector2d.h \
-		/usr/local/qt5/include/QtGui/qtouchdevice.h \
-		/usr/local/qt5/include/QtWidgets/QLabel \
-		/usr/local/qt5/include/QtWidgets/qlabel.h \
-		/usr/local/qt5/include/QtWidgets/qframe.h \
-		src/widgets/expandingFactWidget.h \
-		/usr/local/qt5/include/QtWidgets/QWidget \
-		/usr/local/qt5/include/QtCore/QString \
-		/usr/local/qt5/include/QtGui/QPixmap \
-		src/widgets/sectionWidget.h \
-		src/widgets/courseWidget.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/courseWidget.o src/widgets/courseWidget.cpp
 
 obj/dependenciesWidget.o: src/widgets/dependenciesWidget.cpp /usr/local/qt5/include/QtWidgets/QVBoxLayout \
 		/usr/local/qt5/include/QtWidgets/qboxlayout.h \
@@ -4620,6 +4707,9 @@ obj/expandingFactWidget.o: src/widgets/expandingFactWidget.cpp /usr/local/qt5/in
 		/usr/local/qt5/include/QtCore/qvariantanimation.h \
 		/usr/local/qt5/include/QtCore/qeasingcurve.h \
 		/usr/local/qt5/include/QtCore/qabstractanimation.h \
+		src/model.h \
+		/usr/local/qt5/include/QtCore/QObject \
+		src/database/structures.h \
 		src/widgets/imageButton.h \
 		/usr/local/qt5/include/QtWidgets/QPushButton \
 		/usr/local/qt5/include/QtWidgets/qpushbutton.h \
@@ -4631,9 +4721,266 @@ obj/expandingFactWidget.o: src/widgets/expandingFactWidget.cpp /usr/local/qt5/in
 		/usr/local/qt5/include/QtGui/QBrush \
 		src/widgets/resizableImage.h \
 		/usr/local/qt5/include/QtWidgets/QWidget \
-		src/widgets/expandingFactWidget.h \
-		/usr/local/qt5/include/QtCore/QString
+		src/widgets/resizableStackedWidget.h \
+		/usr/local/qt5/include/QtWidgets/QStackedWidget \
+		/usr/local/qt5/include/QtWidgets/qstackedwidget.h \
+		src/widgets/expandingFactWidget.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/expandingFactWidget.o src/widgets/expandingFactWidget.cpp
+
+obj/factList.o: src/widgets/factList.cpp /usr/local/qt5/include/QtWidgets/QVBoxLayout \
+		/usr/local/qt5/include/QtWidgets/qboxlayout.h \
+		/usr/local/qt5/include/QtWidgets/qlayout.h \
+		/usr/local/qt5/include/QtCore/qobject.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs.h \
+		/usr/local/qt5/include/QtCore/qnamespace.h \
+		/usr/local/qt5/include/QtCore/qglobal.h \
+		/usr/local/qt5/include/QtCore/qconfig.h \
+		/usr/local/qt5/include/QtCore/qfeatures.h \
+		/usr/local/qt5/include/QtCore/qsystemdetection.h \
+		/usr/local/qt5/include/QtCore/qprocessordetection.h \
+		/usr/local/qt5/include/QtCore/qcompilerdetection.h \
+		/usr/local/qt5/include/QtCore/qglobalstatic.h \
+		/usr/local/qt5/include/QtCore/qatomic.h \
+		/usr/local/qt5/include/QtCore/qbasicatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_bootstrap.h \
+		/usr/local/qt5/include/QtCore/qgenericatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_msvc.h \
+		/usr/local/qt5/include/QtCore/qatomic_integrity.h \
+		/usr/local/qt5/include/QtCore/qoldbasicatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_vxworks.h \
+		/usr/local/qt5/include/QtCore/qatomic_power.h \
+		/usr/local/qt5/include/QtCore/qatomic_alpha.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv7.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv6.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv5.h \
+		/usr/local/qt5/include/QtCore/qatomic_bfin.h \
+		/usr/local/qt5/include/QtCore/qatomic_ia64.h \
+		/usr/local/qt5/include/QtCore/qatomic_mips.h \
+		/usr/local/qt5/include/QtCore/qatomic_s390.h \
+		/usr/local/qt5/include/QtCore/qatomic_sh4a.h \
+		/usr/local/qt5/include/QtCore/qatomic_sparc.h \
+		/usr/local/qt5/include/QtCore/qatomic_x86.h \
+		/usr/local/qt5/include/QtCore/qatomic_cxx11.h \
+		/usr/local/qt5/include/QtCore/qatomic_gcc.h \
+		/usr/local/qt5/include/QtCore/qatomic_unix.h \
+		/usr/local/qt5/include/QtCore/qmutex.h \
+		/usr/local/qt5/include/QtCore/qlogging.h \
+		/usr/local/qt5/include/QtCore/qflags.h \
+		/usr/local/qt5/include/QtCore/qtypeinfo.h \
+		/usr/local/qt5/include/QtCore/qtypetraits.h \
+		/usr/local/qt5/include/QtCore/qsysinfo.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs_impl.h \
+		/usr/local/qt5/include/QtCore/qstring.h \
+		/usr/local/qt5/include/QtCore/qchar.h \
+		/usr/local/qt5/include/QtCore/qbytearray.h \
+		/usr/local/qt5/include/QtCore/qrefcount.h \
+		/usr/local/qt5/include/QtCore/qarraydata.h \
+		/usr/local/qt5/include/QtCore/qstringbuilder.h \
+		/usr/local/qt5/include/QtCore/qlist.h \
+		/usr/local/qt5/include/QtCore/qalgorithms.h \
+		/usr/local/qt5/include/QtCore/qiterator.h \
+		/usr/local/qt5/include/QtCore/qcoreevent.h \
+		/usr/local/qt5/include/QtCore/qscopedpointer.h \
+		/usr/local/qt5/include/QtCore/qmetatype.h \
+		/usr/local/qt5/include/QtCore/qvarlengtharray.h \
+		/usr/local/qt5/include/QtCore/qcontainerfwd.h \
+		/usr/local/qt5/include/QtCore/qisenum.h \
+		/usr/local/qt5/include/QtCore/qobject_impl.h \
+		/usr/local/qt5/include/QtWidgets/qlayoutitem.h \
+		/usr/local/qt5/include/QtWidgets/qsizepolicy.h \
+		/usr/local/qt5/include/QtCore/qrect.h \
+		/usr/local/qt5/include/QtCore/qsize.h \
+		/usr/local/qt5/include/QtCore/qpoint.h \
+		/usr/local/qt5/include/QtCore/qmargins.h \
+		/usr/local/qt5/include/QtWidgets/qgridlayout.h \
+		/usr/local/qt5/include/QtWidgets/qwidget.h \
+		/usr/local/qt5/include/QtGui/qwindowdefs.h \
+		/usr/local/qt5/include/QtGui/qwindowdefs_win.h \
+		/usr/local/qt5/include/QtGui/qpaintdevice.h \
+		/usr/local/qt5/include/QtGui/qpalette.h \
+		/usr/local/qt5/include/QtGui/qcolor.h \
+		/usr/local/qt5/include/QtGui/qrgb.h \
+		/usr/local/qt5/include/QtCore/qstringlist.h \
+		/usr/local/qt5/include/QtCore/qdatastream.h \
+		/usr/local/qt5/include/QtCore/qiodevice.h \
+		/usr/local/qt5/include/QtCore/qpair.h \
+		/usr/local/qt5/include/QtCore/qregexp.h \
+		/usr/local/qt5/include/QtCore/qstringmatcher.h \
+		/usr/local/qt5/include/QtGui/qbrush.h \
+		/usr/local/qt5/include/QtCore/qvector.h \
+		/usr/local/qt5/include/QtGui/qmatrix.h \
+		/usr/local/qt5/include/QtGui/qpolygon.h \
+		/usr/local/qt5/include/QtGui/qregion.h \
+		/usr/local/qt5/include/QtCore/qline.h \
+		/usr/local/qt5/include/QtGui/qtransform.h \
+		/usr/local/qt5/include/QtGui/qpainterpath.h \
+		/usr/local/qt5/include/QtGui/qimage.h \
+		/usr/local/qt5/include/QtGui/qpixmap.h \
+		/usr/local/qt5/include/QtCore/qsharedpointer.h \
+		/usr/local/qt5/include/QtCore/qshareddata.h \
+		/usr/local/qt5/include/QtCore/qsharedpointer_impl.h \
+		/usr/local/qt5/include/QtCore/qhash.h \
+		/usr/local/qt5/include/QtGui/qfont.h \
+		/usr/local/qt5/include/QtGui/qfontmetrics.h \
+		/usr/local/qt5/include/QtGui/qfontinfo.h \
+		/usr/local/qt5/include/QtGui/qcursor.h \
+		/usr/local/qt5/include/QtGui/qkeysequence.h \
+		/usr/local/qt5/include/QtGui/qevent.h \
+		/usr/local/qt5/include/QtCore/qvariant.h \
+		/usr/local/qt5/include/QtCore/qmap.h \
+		/usr/local/qt5/include/QtCore/qdebug.h \
+		/usr/local/qt5/include/QtCore/qtextstream.h \
+		/usr/local/qt5/include/QtCore/qlocale.h \
+		/usr/local/qt5/include/QtCore/qset.h \
+		/usr/local/qt5/include/QtCore/qcontiguouscache.h \
+		/usr/local/qt5/include/QtCore/qurl.h \
+		/usr/local/qt5/include/QtCore/qurlquery.h \
+		/usr/local/qt5/include/QtCore/qfile.h \
+		/usr/local/qt5/include/QtCore/qfiledevice.h \
+		/usr/local/qt5/include/QtGui/qvector2d.h \
+		/usr/local/qt5/include/QtGui/qtouchdevice.h \
+		/usr/local/qt5/include/QtWidgets/QLabel \
+		/usr/local/qt5/include/QtWidgets/qlabel.h \
+		/usr/local/qt5/include/QtWidgets/qframe.h \
+		/usr/local/qt5/include/QtGui/QPainter \
+		/usr/local/qt5/include/QtGui/qpainter.h \
+		/usr/local/qt5/include/QtGui/qtextoption.h \
+		/usr/local/qt5/include/QtGui/qpen.h \
+		src/model.h \
+		/usr/local/qt5/include/QtCore/QObject \
+		src/database/structures.h \
+		src/database/methods.h \
+		src/widgets/expandingFactWidget.h \
+		/usr/local/qt5/include/QtWidgets/QWidget \
+		/usr/local/qt5/include/QtGui/QPixmap \
+		src/widgets/resizableStackedWidget.h \
+		/usr/local/qt5/include/QtWidgets/QStackedWidget \
+		/usr/local/qt5/include/QtWidgets/qstackedwidget.h \
+		src/widgets/factList.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/factList.o src/widgets/factList.cpp
+
+obj/factListView.o: src/widgets/factListView.cpp /usr/local/qt5/include/QtWidgets/QHBoxLayout \
+		/usr/local/qt5/include/QtWidgets/qboxlayout.h \
+		/usr/local/qt5/include/QtWidgets/qlayout.h \
+		/usr/local/qt5/include/QtCore/qobject.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs.h \
+		/usr/local/qt5/include/QtCore/qnamespace.h \
+		/usr/local/qt5/include/QtCore/qglobal.h \
+		/usr/local/qt5/include/QtCore/qconfig.h \
+		/usr/local/qt5/include/QtCore/qfeatures.h \
+		/usr/local/qt5/include/QtCore/qsystemdetection.h \
+		/usr/local/qt5/include/QtCore/qprocessordetection.h \
+		/usr/local/qt5/include/QtCore/qcompilerdetection.h \
+		/usr/local/qt5/include/QtCore/qglobalstatic.h \
+		/usr/local/qt5/include/QtCore/qatomic.h \
+		/usr/local/qt5/include/QtCore/qbasicatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_bootstrap.h \
+		/usr/local/qt5/include/QtCore/qgenericatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_msvc.h \
+		/usr/local/qt5/include/QtCore/qatomic_integrity.h \
+		/usr/local/qt5/include/QtCore/qoldbasicatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_vxworks.h \
+		/usr/local/qt5/include/QtCore/qatomic_power.h \
+		/usr/local/qt5/include/QtCore/qatomic_alpha.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv7.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv6.h \
+		/usr/local/qt5/include/QtCore/qatomic_armv5.h \
+		/usr/local/qt5/include/QtCore/qatomic_bfin.h \
+		/usr/local/qt5/include/QtCore/qatomic_ia64.h \
+		/usr/local/qt5/include/QtCore/qatomic_mips.h \
+		/usr/local/qt5/include/QtCore/qatomic_s390.h \
+		/usr/local/qt5/include/QtCore/qatomic_sh4a.h \
+		/usr/local/qt5/include/QtCore/qatomic_sparc.h \
+		/usr/local/qt5/include/QtCore/qatomic_x86.h \
+		/usr/local/qt5/include/QtCore/qatomic_cxx11.h \
+		/usr/local/qt5/include/QtCore/qatomic_gcc.h \
+		/usr/local/qt5/include/QtCore/qatomic_unix.h \
+		/usr/local/qt5/include/QtCore/qmutex.h \
+		/usr/local/qt5/include/QtCore/qlogging.h \
+		/usr/local/qt5/include/QtCore/qflags.h \
+		/usr/local/qt5/include/QtCore/qtypeinfo.h \
+		/usr/local/qt5/include/QtCore/qtypetraits.h \
+		/usr/local/qt5/include/QtCore/qsysinfo.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs_impl.h \
+		/usr/local/qt5/include/QtCore/qstring.h \
+		/usr/local/qt5/include/QtCore/qchar.h \
+		/usr/local/qt5/include/QtCore/qbytearray.h \
+		/usr/local/qt5/include/QtCore/qrefcount.h \
+		/usr/local/qt5/include/QtCore/qarraydata.h \
+		/usr/local/qt5/include/QtCore/qstringbuilder.h \
+		/usr/local/qt5/include/QtCore/qlist.h \
+		/usr/local/qt5/include/QtCore/qalgorithms.h \
+		/usr/local/qt5/include/QtCore/qiterator.h \
+		/usr/local/qt5/include/QtCore/qcoreevent.h \
+		/usr/local/qt5/include/QtCore/qscopedpointer.h \
+		/usr/local/qt5/include/QtCore/qmetatype.h \
+		/usr/local/qt5/include/QtCore/qvarlengtharray.h \
+		/usr/local/qt5/include/QtCore/qcontainerfwd.h \
+		/usr/local/qt5/include/QtCore/qisenum.h \
+		/usr/local/qt5/include/QtCore/qobject_impl.h \
+		/usr/local/qt5/include/QtWidgets/qlayoutitem.h \
+		/usr/local/qt5/include/QtWidgets/qsizepolicy.h \
+		/usr/local/qt5/include/QtCore/qrect.h \
+		/usr/local/qt5/include/QtCore/qsize.h \
+		/usr/local/qt5/include/QtCore/qpoint.h \
+		/usr/local/qt5/include/QtCore/qmargins.h \
+		/usr/local/qt5/include/QtWidgets/qgridlayout.h \
+		/usr/local/qt5/include/QtWidgets/qwidget.h \
+		/usr/local/qt5/include/QtGui/qwindowdefs.h \
+		/usr/local/qt5/include/QtGui/qwindowdefs_win.h \
+		/usr/local/qt5/include/QtGui/qpaintdevice.h \
+		/usr/local/qt5/include/QtGui/qpalette.h \
+		/usr/local/qt5/include/QtGui/qcolor.h \
+		/usr/local/qt5/include/QtGui/qrgb.h \
+		/usr/local/qt5/include/QtCore/qstringlist.h \
+		/usr/local/qt5/include/QtCore/qdatastream.h \
+		/usr/local/qt5/include/QtCore/qiodevice.h \
+		/usr/local/qt5/include/QtCore/qpair.h \
+		/usr/local/qt5/include/QtCore/qregexp.h \
+		/usr/local/qt5/include/QtCore/qstringmatcher.h \
+		/usr/local/qt5/include/QtGui/qbrush.h \
+		/usr/local/qt5/include/QtCore/qvector.h \
+		/usr/local/qt5/include/QtGui/qmatrix.h \
+		/usr/local/qt5/include/QtGui/qpolygon.h \
+		/usr/local/qt5/include/QtGui/qregion.h \
+		/usr/local/qt5/include/QtCore/qline.h \
+		/usr/local/qt5/include/QtGui/qtransform.h \
+		/usr/local/qt5/include/QtGui/qpainterpath.h \
+		/usr/local/qt5/include/QtGui/qimage.h \
+		/usr/local/qt5/include/QtGui/qpixmap.h \
+		/usr/local/qt5/include/QtCore/qsharedpointer.h \
+		/usr/local/qt5/include/QtCore/qshareddata.h \
+		/usr/local/qt5/include/QtCore/qsharedpointer_impl.h \
+		/usr/local/qt5/include/QtCore/qhash.h \
+		/usr/local/qt5/include/QtGui/qfont.h \
+		/usr/local/qt5/include/QtGui/qfontmetrics.h \
+		/usr/local/qt5/include/QtGui/qfontinfo.h \
+		/usr/local/qt5/include/QtGui/qcursor.h \
+		/usr/local/qt5/include/QtGui/qkeysequence.h \
+		/usr/local/qt5/include/QtGui/qevent.h \
+		/usr/local/qt5/include/QtCore/qvariant.h \
+		/usr/local/qt5/include/QtCore/qmap.h \
+		/usr/local/qt5/include/QtCore/qdebug.h \
+		/usr/local/qt5/include/QtCore/qtextstream.h \
+		/usr/local/qt5/include/QtCore/qlocale.h \
+		/usr/local/qt5/include/QtCore/qset.h \
+		/usr/local/qt5/include/QtCore/qcontiguouscache.h \
+		/usr/local/qt5/include/QtCore/qurl.h \
+		/usr/local/qt5/include/QtCore/qurlquery.h \
+		/usr/local/qt5/include/QtCore/qfile.h \
+		/usr/local/qt5/include/QtCore/qfiledevice.h \
+		/usr/local/qt5/include/QtGui/qvector2d.h \
+		/usr/local/qt5/include/QtGui/qtouchdevice.h \
+		src/model.h \
+		/usr/local/qt5/include/QtCore/QObject \
+		src/database/structures.h \
+		src/widgets/resizableStackedWidget.h \
+		/usr/local/qt5/include/QtWidgets/QStackedWidget \
+		/usr/local/qt5/include/QtWidgets/qstackedwidget.h \
+		/usr/local/qt5/include/QtWidgets/qframe.h \
+		src/widgets/factListView.h \
+		/usr/local/qt5/include/QtWidgets/QWidget
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/factListView.o src/widgets/factListView.cpp
 
 obj/imageButton.o: src/widgets/imageButton.cpp /usr/local/qt5/include/QtGui/QPainter \
 		/usr/local/qt5/include/QtGui/qpainter.h \
@@ -5107,11 +5454,17 @@ obj/sectionPickerWidget.o: src/widgets/sectionPickerWidget.cpp /usr/local/qt5/in
 		/usr/local/qt5/include/QtGui/qvector2d.h \
 		/usr/local/qt5/include/QtGui/qtouchdevice.h \
 		/usr/local/qt5/include/QtWidgets/QVBoxLayout \
-		/usr/local/qt5/include/QtCore/QString \
+		src/model.h \
+		/usr/local/qt5/include/QtCore/QObject \
+		src/database/structures.h \
+		src/database/methods.h \
 		src/widgets/clickableQLabel.h \
 		/usr/local/qt5/include/QtWidgets/QLabel \
 		/usr/local/qt5/include/QtWidgets/qlabel.h \
 		/usr/local/qt5/include/QtWidgets/qframe.h \
+		src/widgets/resizableStackedWidget.h \
+		/usr/local/qt5/include/QtWidgets/QStackedWidget \
+		/usr/local/qt5/include/QtWidgets/qstackedwidget.h \
 		src/widgets/imageButton.h \
 		/usr/local/qt5/include/QtWidgets/QPushButton \
 		/usr/local/qt5/include/QtWidgets/qpushbutton.h \
@@ -5125,136 +5478,12 @@ obj/sectionPickerWidget.o: src/widgets/sectionPickerWidget.cpp /usr/local/qt5/in
 		src/dialogs/formDialog.h \
 		/usr/local/qt5/include/QtWidgets/QDialog \
 		/usr/local/qt5/include/QtWidgets/qdialog.h \
+		/usr/local/qt5/include/QtCore/QString \
 		src/forms/form.h \
 		/usr/local/qt5/include/QtWidgets/QWidget \
+		src/forms/factForm.h \
 		src/widgets/sectionPickerWidget.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/sectionPickerWidget.o src/widgets/sectionPickerWidget.cpp
-
-obj/sectionWidget.o: src/widgets/sectionWidget.cpp /usr/local/qt5/include/QtWidgets/QVBoxLayout \
-		/usr/local/qt5/include/QtWidgets/qboxlayout.h \
-		/usr/local/qt5/include/QtWidgets/qlayout.h \
-		/usr/local/qt5/include/QtCore/qobject.h \
-		/usr/local/qt5/include/QtCore/qobjectdefs.h \
-		/usr/local/qt5/include/QtCore/qnamespace.h \
-		/usr/local/qt5/include/QtCore/qglobal.h \
-		/usr/local/qt5/include/QtCore/qconfig.h \
-		/usr/local/qt5/include/QtCore/qfeatures.h \
-		/usr/local/qt5/include/QtCore/qsystemdetection.h \
-		/usr/local/qt5/include/QtCore/qprocessordetection.h \
-		/usr/local/qt5/include/QtCore/qcompilerdetection.h \
-		/usr/local/qt5/include/QtCore/qglobalstatic.h \
-		/usr/local/qt5/include/QtCore/qatomic.h \
-		/usr/local/qt5/include/QtCore/qbasicatomic.h \
-		/usr/local/qt5/include/QtCore/qatomic_bootstrap.h \
-		/usr/local/qt5/include/QtCore/qgenericatomic.h \
-		/usr/local/qt5/include/QtCore/qatomic_msvc.h \
-		/usr/local/qt5/include/QtCore/qatomic_integrity.h \
-		/usr/local/qt5/include/QtCore/qoldbasicatomic.h \
-		/usr/local/qt5/include/QtCore/qatomic_vxworks.h \
-		/usr/local/qt5/include/QtCore/qatomic_power.h \
-		/usr/local/qt5/include/QtCore/qatomic_alpha.h \
-		/usr/local/qt5/include/QtCore/qatomic_armv7.h \
-		/usr/local/qt5/include/QtCore/qatomic_armv6.h \
-		/usr/local/qt5/include/QtCore/qatomic_armv5.h \
-		/usr/local/qt5/include/QtCore/qatomic_bfin.h \
-		/usr/local/qt5/include/QtCore/qatomic_ia64.h \
-		/usr/local/qt5/include/QtCore/qatomic_mips.h \
-		/usr/local/qt5/include/QtCore/qatomic_s390.h \
-		/usr/local/qt5/include/QtCore/qatomic_sh4a.h \
-		/usr/local/qt5/include/QtCore/qatomic_sparc.h \
-		/usr/local/qt5/include/QtCore/qatomic_x86.h \
-		/usr/local/qt5/include/QtCore/qatomic_cxx11.h \
-		/usr/local/qt5/include/QtCore/qatomic_gcc.h \
-		/usr/local/qt5/include/QtCore/qatomic_unix.h \
-		/usr/local/qt5/include/QtCore/qmutex.h \
-		/usr/local/qt5/include/QtCore/qlogging.h \
-		/usr/local/qt5/include/QtCore/qflags.h \
-		/usr/local/qt5/include/QtCore/qtypeinfo.h \
-		/usr/local/qt5/include/QtCore/qtypetraits.h \
-		/usr/local/qt5/include/QtCore/qsysinfo.h \
-		/usr/local/qt5/include/QtCore/qobjectdefs_impl.h \
-		/usr/local/qt5/include/QtCore/qstring.h \
-		/usr/local/qt5/include/QtCore/qchar.h \
-		/usr/local/qt5/include/QtCore/qbytearray.h \
-		/usr/local/qt5/include/QtCore/qrefcount.h \
-		/usr/local/qt5/include/QtCore/qarraydata.h \
-		/usr/local/qt5/include/QtCore/qstringbuilder.h \
-		/usr/local/qt5/include/QtCore/qlist.h \
-		/usr/local/qt5/include/QtCore/qalgorithms.h \
-		/usr/local/qt5/include/QtCore/qiterator.h \
-		/usr/local/qt5/include/QtCore/qcoreevent.h \
-		/usr/local/qt5/include/QtCore/qscopedpointer.h \
-		/usr/local/qt5/include/QtCore/qmetatype.h \
-		/usr/local/qt5/include/QtCore/qvarlengtharray.h \
-		/usr/local/qt5/include/QtCore/qcontainerfwd.h \
-		/usr/local/qt5/include/QtCore/qisenum.h \
-		/usr/local/qt5/include/QtCore/qobject_impl.h \
-		/usr/local/qt5/include/QtWidgets/qlayoutitem.h \
-		/usr/local/qt5/include/QtWidgets/qsizepolicy.h \
-		/usr/local/qt5/include/QtCore/qrect.h \
-		/usr/local/qt5/include/QtCore/qsize.h \
-		/usr/local/qt5/include/QtCore/qpoint.h \
-		/usr/local/qt5/include/QtCore/qmargins.h \
-		/usr/local/qt5/include/QtWidgets/qgridlayout.h \
-		/usr/local/qt5/include/QtWidgets/qwidget.h \
-		/usr/local/qt5/include/QtGui/qwindowdefs.h \
-		/usr/local/qt5/include/QtGui/qwindowdefs_win.h \
-		/usr/local/qt5/include/QtGui/qpaintdevice.h \
-		/usr/local/qt5/include/QtGui/qpalette.h \
-		/usr/local/qt5/include/QtGui/qcolor.h \
-		/usr/local/qt5/include/QtGui/qrgb.h \
-		/usr/local/qt5/include/QtCore/qstringlist.h \
-		/usr/local/qt5/include/QtCore/qdatastream.h \
-		/usr/local/qt5/include/QtCore/qiodevice.h \
-		/usr/local/qt5/include/QtCore/qpair.h \
-		/usr/local/qt5/include/QtCore/qregexp.h \
-		/usr/local/qt5/include/QtCore/qstringmatcher.h \
-		/usr/local/qt5/include/QtGui/qbrush.h \
-		/usr/local/qt5/include/QtCore/qvector.h \
-		/usr/local/qt5/include/QtGui/qmatrix.h \
-		/usr/local/qt5/include/QtGui/qpolygon.h \
-		/usr/local/qt5/include/QtGui/qregion.h \
-		/usr/local/qt5/include/QtCore/qline.h \
-		/usr/local/qt5/include/QtGui/qtransform.h \
-		/usr/local/qt5/include/QtGui/qpainterpath.h \
-		/usr/local/qt5/include/QtGui/qimage.h \
-		/usr/local/qt5/include/QtGui/qpixmap.h \
-		/usr/local/qt5/include/QtCore/qsharedpointer.h \
-		/usr/local/qt5/include/QtCore/qshareddata.h \
-		/usr/local/qt5/include/QtCore/qsharedpointer_impl.h \
-		/usr/local/qt5/include/QtCore/qhash.h \
-		/usr/local/qt5/include/QtGui/qfont.h \
-		/usr/local/qt5/include/QtGui/qfontmetrics.h \
-		/usr/local/qt5/include/QtGui/qfontinfo.h \
-		/usr/local/qt5/include/QtGui/qcursor.h \
-		/usr/local/qt5/include/QtGui/qkeysequence.h \
-		/usr/local/qt5/include/QtGui/qevent.h \
-		/usr/local/qt5/include/QtCore/qvariant.h \
-		/usr/local/qt5/include/QtCore/qmap.h \
-		/usr/local/qt5/include/QtCore/qdebug.h \
-		/usr/local/qt5/include/QtCore/qtextstream.h \
-		/usr/local/qt5/include/QtCore/qlocale.h \
-		/usr/local/qt5/include/QtCore/qset.h \
-		/usr/local/qt5/include/QtCore/qcontiguouscache.h \
-		/usr/local/qt5/include/QtCore/qurl.h \
-		/usr/local/qt5/include/QtCore/qurlquery.h \
-		/usr/local/qt5/include/QtCore/qfile.h \
-		/usr/local/qt5/include/QtCore/qfiledevice.h \
-		/usr/local/qt5/include/QtGui/qvector2d.h \
-		/usr/local/qt5/include/QtGui/qtouchdevice.h \
-		/usr/local/qt5/include/QtWidgets/QLabel \
-		/usr/local/qt5/include/QtWidgets/qlabel.h \
-		/usr/local/qt5/include/QtWidgets/qframe.h \
-		/usr/local/qt5/include/QtGui/QPainter \
-		/usr/local/qt5/include/QtGui/qpainter.h \
-		/usr/local/qt5/include/QtGui/qtextoption.h \
-		/usr/local/qt5/include/QtGui/qpen.h \
-		src/widgets/expandingFactWidget.h \
-		/usr/local/qt5/include/QtWidgets/QWidget \
-		/usr/local/qt5/include/QtCore/QString \
-		/usr/local/qt5/include/QtGui/QPixmap \
-		src/widgets/sectionWidget.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/sectionWidget.o src/widgets/sectionWidget.cpp
 
 obj/splitter.o: src/widgets/splitter.cpp /usr/local/qt5/include/QtGui/QPainter \
 		/usr/local/qt5/include/QtGui/qpainter.h \
@@ -6052,6 +6281,9 @@ obj/formDialog.o: src/dialogs/formDialog.cpp /usr/local/qt5/include/QtWidgets/QH
 obj/qrc_resources.o: qrc_resources.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/qrc_resources.o qrc_resources.cpp
 
+obj/moc_model.o: moc/moc_model.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_model.o moc/moc_model.cpp
+
 obj/moc_StudyAid.o: moc/moc_StudyAid.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_StudyAid.o moc/moc_StudyAid.cpp
 
@@ -6073,14 +6305,17 @@ obj/moc_clickableQLabel.o: moc/moc_clickableQLabel.cpp
 obj/moc_courseTitleWidget.o: moc/moc_courseTitleWidget.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_courseTitleWidget.o moc/moc_courseTitleWidget.cpp
 
-obj/moc_courseWidget.o: moc/moc_courseWidget.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_courseWidget.o moc/moc_courseWidget.cpp
-
 obj/moc_dependenciesWidget.o: moc/moc_dependenciesWidget.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_dependenciesWidget.o moc/moc_dependenciesWidget.cpp
 
 obj/moc_expandingFactWidget.o: moc/moc_expandingFactWidget.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_expandingFactWidget.o moc/moc_expandingFactWidget.cpp
+
+obj/moc_factList.o: moc/moc_factList.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_factList.o moc/moc_factList.cpp
+
+obj/moc_factListView.o: moc/moc_factListView.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_factListView.o moc/moc_factListView.cpp
 
 obj/moc_horizontalSeperator.o: moc/moc_horizontalSeperator.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_horizontalSeperator.o moc/moc_horizontalSeperator.cpp
@@ -6096,9 +6331,6 @@ obj/moc_resizableStackedWidget.o: moc/moc_resizableStackedWidget.cpp
 
 obj/moc_sectionPickerWidget.o: moc/moc_sectionPickerWidget.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_sectionPickerWidget.o moc/moc_sectionPickerWidget.cpp
-
-obj/moc_sectionWidget.o: moc/moc_sectionWidget.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_sectionWidget.o moc/moc_sectionWidget.cpp
 
 obj/moc_splitter.o: moc/moc_splitter.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_splitter.o moc/moc_splitter.cpp
@@ -6123,9 +6355,19 @@ obj/moc_formDialog.o: moc/moc_formDialog.cpp
 
 ####### Install
 
-install:   FORCE
+install_target: first FORCE
+	@test -d $(INSTALL_ROOT)/usr/local/qt5/tests/StudyAid || mkdir -p $(INSTALL_ROOT)/usr/local/qt5/tests/StudyAid
+	-$(INSTALL_PROGRAM) "$(QMAKE_TARGET)" "$(INSTALL_ROOT)/usr/local/qt5/tests/StudyAid/$(QMAKE_TARGET)"
+	-$(STRIP) "$(INSTALL_ROOT)/usr/local/qt5/tests/StudyAid/$(QMAKE_TARGET)"
 
-uninstall:   FORCE
+uninstall_target: FORCE
+	-$(DEL_FILE) "$(INSTALL_ROOT)/usr/local/qt5/tests/StudyAid/$(QMAKE_TARGET)"
+	-$(DEL_DIR) $(INSTALL_ROOT)/usr/local/qt5/tests/StudyAid/ 
+
+
+install:  install_target  FORCE
+
+uninstall: uninstall_target   FORCE
 
 FORCE:
 

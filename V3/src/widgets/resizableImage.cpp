@@ -5,11 +5,11 @@
 
 #include "widgets/resizableImage.h"
 
-ResizableImage::ResizableImage(QString filename, QWidget *parent)
+ResizableImage::ResizableImage(std::string filename, QWidget *parent)
     : QWidget(parent)
 {
     this->filename = filename;
-    image = QPixmap(filename);
+    image = QPixmap(QString::fromStdString(filename));
     setWidth(image.size().width());
 
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
@@ -17,7 +17,7 @@ ResizableImage::ResizableImage(QString filename, QWidget *parent)
 
 void ResizableImage::reloadImage()
 {
-    image = QPixmap(filename);
+    image = QPixmap(QString::fromStdString(filename));
     scaledImage = image.scaledToWidth(imageSize.width(), Qt::SmoothTransformation);
 }
 

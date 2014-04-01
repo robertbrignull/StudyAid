@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 #include <QLabel>
 
 class ClickableQLabel : public QLabel
@@ -7,7 +9,7 @@ class ClickableQLabel : public QLabel
     Q_OBJECT
 
 public:
-    ClickableQLabel(QString text, QWidget *parent = 0);
+    ClickableQLabel(std::string text, QWidget *parent = 0);
 
     void enterEvent(QEvent *);
     void leaveEvent(QEvent *);

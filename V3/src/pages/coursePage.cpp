@@ -9,11 +9,13 @@
 #include <QPalette>
 #include <QScrollArea>
 
+#include "model.h"
+#include "database/methods.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/imageButton.h"
 #include "widgets/horizontalSeperator.h"
 #include "widgets/clickableQLabel.h"
-#include "widgets/courseWidget.h"
+#include "widgets/factListView.h"
 #include "widgets/sectionPickerWidget.h"
 #include "widgets/splitter.h"
 #include "dialogs/deleteDialog.h"
@@ -23,21 +25,36 @@
 
 #include "pages/coursePage.h"
 
-CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
+CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget *parent)
     : QWidget(parent)
 {
-    CourseForm *courseEditForm = new CourseForm();
-    FormDialog *courseEditDialog = new FormDialog(this, courseEditForm, QString("Edit the course..."), QString("Change"));
+    this->model = model;
+    this->pageStack = pageStack;
 
-    DeleteDialog *courseDeleteDialog = new DeleteDialog(this, "Are you sure you want to delete this course?");
 
-    FormDialog *factAddDialog = new FormDialog(this, new FactForm(), QString("Add a new fact..."), QString("Add"));
+
+    courseEditForm = new CourseForm();
+    courseEditDialog = new FormDialog(this, courseEditForm, "Edit the course...", "Change");
+
+    courseDeleteDialog = new DeleteDialog(this, "Are you sure you want to delete this course?");
 
 
 
     QVBoxLayout *outerLayout = new QVBoxLayout(this);
 
 
+
+    //  ##   ## #######   ###   #####   ####### #####
+    //  ##   ## ##       ## ##  ##  ##  ##      ##  ##
+    //  ##   ## ##      ##   ## ##   ## ##      ##   ##
+    //  ####### #####   ##   ## ##   ## #####   ##  ##
+    //  ##   ## ##      ####### ##   ## ##      #####
+    //  ##   ## ##      ##   ## ##  ##  ##      ##  ##
+    //  ##   ## ####### ##   ## #####   ####### ##   ##
+
+    // The breadcrumbs show the current course and provide
+    // a way to go back to the courses screen.
+    // It is presented like a filepath.
 
     QHBoxLayout *crumbBorderLayout = new QHBoxLayout();
 
@@ -47,7 +64,8 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
     crumbLayout->setContentsMargins(0, 0, 0, 0);
 
     ClickableQLabel *coursesLabel = new ClickableQLabel("Courses");
-    QLabel *currentCourseLabel = new QLabel(" / Linear Algebra");
+    QLabel *sepLabel = new QLabel(" / ");
+    currentCourseLabel = new QLabel();
 
     QFont font = coursesLabel->font();
     font.setPointSize(14);
@@ -62,9 +80,11 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
 
     palette.setColor(QPalette::WindowText, Qt::gray);
     palette.setColor(QPalette::Text, Qt::gray);
+    sepLabel->setPalette(palette);
     currentCourseLabel->setPalette(palette);
 
     crumbLayout->addWidget(coursesLabel);
+    crumbLayout->addWidget(sepLabel);
     crumbLayout->addWidget(currentCourseLabel);
     crumbLayout->addStretch(1);
 
@@ -76,6 +96,9 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
 
 
 
+    // Now show the name of the current course and some buttons to
+    // edit or delete it.
+
     QHBoxLayout *topBorderLayout = new QHBoxLayout();
 
     QWidget *topWidget = new QWidget();
@@ -83,7 +106,7 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
     QHBoxLayout *topLayout = new QHBoxLayout(topWidget);
     topLayout->setContentsMargins(0, 0, 0, 0);
 
-    QLabel *courseLabel = new QLabel("Linear Algebra");
+    courseLabel = new QLabel();
     QFont courseFont = courseLabel->font();
     courseFont.setPointSize(38);
     courseLabel->setFont(courseFont);
@@ -116,11 +139,24 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
 
 
 
-    Splitter *splitter = new Splitter(Qt::Horizontal);
+    //  #######   ###    #####  ########  #####
+    //  ##       ## ##  ##   ##    ##    ##   ##
+    //  ##      ##   ## ##         ##     ##
+    //  #####   ##   ## ##         ##      ###
+    //  ##      ####### ##         ##        ##
+    //  ##      ##   ## ##   ##    ##    ##   ##
+    //  ##      ##   ##  #####     ##     #####
+
+    // Use a horizontal splitter to divide the two areas dynamically
+
+    splitter = new Splitter(Qt::Horizontal);
     outerLayout->addWidget(splitter);
     splitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 
+
+    // The section picker controls which section is shown
+    // on the other view.
 
     QScrollArea *pickerScrollArea = new QScrollArea();
     pickerScrollArea->setWidgetResizable(true);
@@ -128,14 +164,15 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
     splitter->addWidget(pickerScrollArea);
 
     QWidget *pickerScrollWidget = new QWidget();
-    QVBoxLayout *pickerScrollLayout = new QVBoxLayout(pickerScrollWidget);
+    pickerScrollLayout = new QVBoxLayout(pickerScrollWidget);
     pickerScrollArea->setWidget(pickerScrollWidget);
 
-    SectionPickerWidget *sectionPicker = new SectionPickerWidget(0, "Linear Algebra", factAddDialog);
-    pickerScrollLayout->addWidget(sectionPicker);
     pickerScrollLayout->addStretch(1);
 
 
+
+    // This is a list of facts which on click will either expand
+    // or change to the fact page.
 
     QScrollArea *courseScrollArea = new QScrollArea();
     courseScrollArea->setWidgetResizable(true);
@@ -143,70 +180,116 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, QWidget *parent)
     splitter->addWidget(courseScrollArea);
 
     QWidget *courseScrollWidget = new QWidget();
-    QVBoxLayout *courseScrollLayout = new QVBoxLayout(courseScrollWidget);
+    courseScrollLayout = new QVBoxLayout(courseScrollWidget);
     courseScrollArea->setWidget(courseScrollWidget);
 
-    CourseWidget *courseWidget = new CourseWidget();
-    courseScrollLayout->addWidget(courseWidget);
-    courseScrollLayout->addStretch(1);
+
+
+    splitter->setSizes(QList<int>({0, 1}));
 
 
 
-    splitter->setStretchFactor(0, 1);
-    splitter->setStretchFactor(1, 4);
-
-
+    //  #####  ####  #####  ##   ##   ###   ##       #####
+    // ##   ##  ##  ##   ## ###  ##  ## ##  ##      ##   ##
+    //  ##      ##  ##      ###  ## ##   ## ##       ##
+    //   ###    ##  ##      ####### ##   ## ##        ###
+    //     ##   ##  ##  ### ##  ### ####### ##          ##
+    // ##   ##  ##  ##   ## ##  ### ##   ## ##      ##   ##
+    //  #####  ####  #####  ##   ## ##   ## #######  #####
 
     connect(coursesLabel, &ClickableQLabel::clicked, [=](){
         pageStack->setCurrentIndex(0);
     });
 
+    connect(editCourseButton, SIGNAL(clicked()), this, SLOT(courseEditButtonClicked()));
 
+    connect(courseEditDialog, SIGNAL(cancelled()), courseEditDialog, SLOT(close()));
+    connect(courseEditDialog, SIGNAL(completed(std::map<std::string, std::string>)), this, SLOT(courseEditDialogCompleted(std::map<std::string, std::string>)));
 
-    connect(editCourseButton, &ImageButton::clicked, [=](){
-        std::map<QString, QString> data;
-        data.insert(std::pair<QString, QString>(QString("name"), QString("Linear Algebra")));
-        courseEditForm->setData(data);
-        courseEditDialog->show();
-    });
+    connect(deleteCourseButton, SIGNAL(clicked()), courseDeleteDialog, SLOT(show()));
 
-    connect(courseEditDialog, &FormDialog::cancelled, [=](){
-        courseEditDialog->close();
-    });
+    connect(courseDeleteDialog, SIGNAL(accepted()), this, SLOT(courseDeleteFormAccepted()));
+    connect(courseDeleteDialog, SIGNAL(cancelled()), courseDeleteDialog, SLOT(close()));
 
-    connect(courseEditDialog, &FormDialog::completed, [=](std::map<QString, QString> data){
-        std::cout << "Change course name to: " << data[QString("name")].toStdString() << std::endl;
-        courseEditDialog->close();
-    });
+    connect(model, SIGNAL(courseSelectedChanged(Course)), this, SLOT(courseSelectedChangedSlot(Course)));
+    connect(model, SIGNAL(courseEdited(Course)), this, SLOT(courseEditedSlot(Course)));
+}
 
-    connect(deleteCourseButton, &ImageButton::clicked, [=](){
-        courseDeleteDialog->show();
-    });
+//   #####  ##       #####  ########  #####
+//  ##   ## ##      ##   ##    ##    ##   ##
+//   ##     ##      ##   ##    ##     ##
+//    ###   ##      ##   ##    ##      ###
+//      ##  ##      ##   ##    ##        ##
+//  ##   ## ##      ##   ##    ##    ##   ##
+//   #####  #######  #####     ##     #####
 
-    connect(courseDeleteDialog, &DeleteDialog::accepted, [=](){
-        std::cout << "Deleted course" << std::endl;
-        courseDeleteDialog->close();
-        pageStack->setCurrentIndex(0);
-    });
+void CoursePage::courseEditButtonClicked()
+{
+    std::map<std::string, std::string> data;
+    data.insert(std::pair<std::string, std::string>("name", model->getCourseSelected().name));
+    courseEditForm->setData(data);
 
-    connect(courseDeleteDialog, &DeleteDialog::cancelled, [=](){
-        courseDeleteDialog->close();
-    });
+    courseEditDialog->show();
+}
 
-    connect(courseWidget, &CourseWidget::viewButtonClicked, [=](int id){
-        std::cout << "Fact view button clicked: " << id << std::endl;
-        pageStack->setCurrentIndex(2);
-    });
+void CoursePage::courseEditDialogCompleted(std::map<std::string, std::string> data)
+{
+    Course course = model->getCourseSelected();
+    course.name = data.at("name");
+    editCourse(course);
 
+    model->editCourse(course);
 
+    courseEditDialog->close();
+}
 
-    connect(factAddDialog, &FormDialog::completed, [=](std::map<QString, QString> data){
-        std::cout << "Fact added: " << data[QString("type")].toStdString() << ", " << data[QString("name")].toStdString() << std::endl;
-        factAddDialog->close();
-        pageStack->setCurrentIndex(2);
-    });
+void CoursePage::courseDeleteFormAccepted()
+{
+    deleteCourse(model->getCourseSelected().id);
 
-    connect(factAddDialog, &FormDialog::cancelled, [=](){
-        factAddDialog->close();
-    });
+    model->deleteCourse(model->getCourseSelected().id);
+
+    courseDeleteDialog->close();
+    pageStack->setCurrentIndex(0);
+}
+
+void CoursePage::courseSelectedChangedSlot(Course course)
+{
+    // Update the labels with the name of the course
+    currentCourseLabel->setText(QString::fromStdString(course.name));
+    courseLabel->setText(QString::fromStdString(course.name));
+
+    // Rebuild the section picker
+    while (pickerScrollLayout->count() > 0) {
+        delete pickerScrollLayout->takeAt(0)->widget();
+    }
+    SectionPickerWidget *sectionPicker = new SectionPickerWidget(findFact(course.root_fact), model, pageStack);
+    pickerScrollLayout->addWidget(sectionPicker);
+    pickerScrollLayout->addStretch(1);
+
+    // Rebuild the fact list
+    while (courseScrollLayout->count() > 0) {
+        delete courseScrollLayout->takeAt(0)->widget();
+    }
+    FactListView *factListView = new FactListView(course, model, pageStack);
+    courseScrollLayout->addWidget(factListView);
+    courseScrollLayout->addStretch(1);
+
+    // Connect the two together
+    connect(sectionPicker, SIGNAL(sectionSelected(int)), factListView, SLOT(selectSection(int)));
+
+    // Set the starting view to everything
+    factListView->selectSection(course.root_fact);
+
+    // Adjust the size of the splitter panes
+    splitter->setSizes(QList<int>({pickerScrollLayout->sizeHint().width() + 50, splitter->width() - pickerScrollLayout->sizeHint().width() - 50}));
+}
+
+void CoursePage::courseEditedSlot(Course course)
+{
+    if (model->isCourseSelected() && model->getCourseSelected().id == course.id) {
+        // Update the labels with the name of the course
+        currentCourseLabel->setText(QString::fromStdString(course.name));
+        courseLabel->setText(QString::fromStdString(course.name));
+    }
 }

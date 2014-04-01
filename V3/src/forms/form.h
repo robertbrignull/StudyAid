@@ -1,5 +1,8 @@
 #pragma once
 
+#include <iostream>
+#include <map>
+
 #include <QWidget>
 
 class Form : public QWidget
@@ -9,6 +12,6 @@ class Form : public QWidget
 public:
     Form(QWidget *parent = 0) : QWidget(parent) { }
 
-    virtual void setData(std::map<QString, QString> data) = 0;
-    virtual std::map<QString, QString> getData() = 0;
+    virtual void setData(std::map<std::string, std::string> data) = 0;
+    virtual std::map<std::string, std::string> getData() = 0;
 };

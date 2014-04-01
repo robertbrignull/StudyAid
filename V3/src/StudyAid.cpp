@@ -5,6 +5,7 @@
 #include <QHBoxLayout>
 #include <QFont>
 
+#include "model.h"
 #include "database/setup.h"
 #include "pages/rootPage.h"
 #include "pages/coursePage.h"
@@ -17,29 +18,32 @@
 StudyAid::StudyAid(QWidget *parent)
     : QWidget(parent)
 {
-    if (!connectToDatabase()) {
-        QCoreApplication::exit();
-        exit(1);
-    }
-
-
-
     QHBoxLayout *layout = new QHBoxLayout(this);
 
     ResizableStackedWidget *stack = new ResizableStackedWidget();
+    model = new Model();
 
     layout->addWidget(stack);
 
-    stack->addWidget(new RootPage(stack));
-    stack->addWidget(new CoursePage(stack));
-    stack->addWidget(new FactPage(stack));
-    stack->addWidget(new ProofPage(stack));
+    stack->addWidget(new RootPage(stack, model));
+    stack->addWidget(new CoursePage(stack, model));
+    stack->addWidget(new FactPage(stack, model));
+    stack->addWidget(new ProofPage(stack, model));
 
     showMaximized();
 }
 
+StudyAid::~StudyAid()
+{
+    delete model;
+}
+
 int main(int argc, char **argv)
 {
+    bool testMode = (argc >= 2 && strncmp(argv[1], "test", 4) != 0);
+
+    initialiseDatabase(testMode);
+
     QApplication app(argc, argv);
 
     QFont font;

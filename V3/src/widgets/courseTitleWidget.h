@@ -1,25 +1,29 @@
 #pragma once
 
+#include <iostream>
+
 #include <QWidget>
-#include <QString>
 #include <QPixmap>
+
+#include "database/structures.h"
 
 class CourseTitleWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    CourseTitleWidget(int id, QString name, QWidget *parent = 0);
+    CourseTitleWidget(Course course, QWidget *parent = 0);
 
     void paintEvent(QPaintEvent *);
 
 signals:
-    void viewButtonClicked();
+    void viewButtonClicked(Course course);
+
+public slots:
+    void viewButtonClickedSlot();
 
 private:
-    int id;
-    QString name;
-
+    Course course;
     int radius;
     QColor headColor, borderColor;
 };

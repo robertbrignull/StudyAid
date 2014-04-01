@@ -9,6 +9,8 @@
 #include <QScrollArea>
 #include <QTextEdit>
 
+#include "model.h"
+#include "database/methods.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/imageButton.h"
 #include "widgets/horizontalSeperator.h"
@@ -22,15 +24,15 @@
 
 #include "pages/factPage.h"
 
-FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
+FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *parent)
     : QWidget(parent)
 {
     FactForm *factEditForm = new FactForm();
-    FormDialog *factEditDialog = new FormDialog(this, factEditForm, QString("Edit the fact..."), QString("Change"));
+    FormDialog *factEditDialog = new FormDialog(this, factEditForm, "Edit the fact...", "Change");
 
     DeleteDialog *factDeleteDialog = new DeleteDialog(this, "Are you sure you want to delete this fact?");
 
-    FormDialog *proofAddDialog = new FormDialog(this, new ProofForm(), QString("Add a new proof..."), QString("Add"));
+    FormDialog *proofAddDialog = new FormDialog(this, new ProofForm(), "Add a new proof...", "Add");
 
 
 
@@ -46,9 +48,10 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
     crumbLayout->setContentsMargins(0, 0, 0, 0);
 
     ClickableQLabel *coursesLabel = new ClickableQLabel("Courses");
-    ClickableQLabel *factsLabel = new ClickableQLabel("Linear Algebra");
-    QLabel *currentFactLabel = new QLabel(" / Vector Space");
+    factsLabel = new ClickableQLabel("");
+    currentFactLabel = new QLabel();
     QLabel *sep1Label = new QLabel(" / ");
+    QLabel *sep2Label = new QLabel(" / ");
 
     QFont font = coursesLabel->font();
     font.setPointSize(14);
@@ -56,6 +59,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
     factsLabel->setFont(font);
     currentFactLabel->setFont(font);
     sep1Label->setFont(font);
+    sep2Label->setFont(font);
 
     QPalette palette = coursesLabel->palette();
 
@@ -68,10 +72,12 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
     palette.setColor(QPalette::Text, Qt::gray);
     currentFactLabel->setPalette(palette);
     sep1Label->setPalette(palette);
+    sep2Label->setPalette(palette);
 
     crumbLayout->addWidget(coursesLabel);
     crumbLayout->addWidget(sep1Label);
     crumbLayout->addWidget(factsLabel);
+    crumbLayout->addWidget(sep2Label);
     crumbLayout->addWidget(currentFactLabel);
     crumbLayout->addStretch(1);
 
@@ -90,7 +96,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
     QHBoxLayout *topLayout = new QHBoxLayout(topWidget);
     topLayout->setContentsMargins(0, 0, 0, 0);
 
-    QLabel *factLabel = new QLabel("Linear Algebra");
+    factLabel = new QLabel();
     QFont factFont = factLabel->font();
     factFont.setPointSize(38);
     factLabel->setFont(factFont);
@@ -137,11 +143,10 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
 
 
 
-    QTextEdit *statementTextEdit = new QTextEdit();
+    statementTextEdit = new QTextEdit();
     font = statementTextEdit->font();
     font.setPointSize(12);
     statementTextEdit->setFont(font);
-    statementTextEdit->setText("Let $X,Y,Z$ be sets with strict total orders\n\\begin{enumerate}\n\\item If $f:X\\to Y$ is an order-isomorphism, then so is its inverse\n\\item If $f:X\\to Y$, $g:Y\\to Z$ are order-isomorphisms, then so if $g\\circ f:X\\to Z$\n\\item If $X$ is well-ordered, then any subset $Z\\subseteq X$ is well-ordered by restriction\n\\end{enumerate}");
     splitter->addWidget(statementTextEdit);
 
 
@@ -222,8 +227,8 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
         proofAddDialog->show();
     });
 
-    connect(proofAddDialog, &FormDialog::completed, [=](std::map<QString, QString> data){
-        std::cout << "Proof added: " << data[QString("name")].toStdString() << std::endl;
+    connect(proofAddDialog, &FormDialog::completed, [=](std::map<std::string, std::string> data){
+        std::cout << "Proof added: " << data.at("name") << std::endl;
         proofAddDialog->close();
         pageStack->setCurrentIndex(3);
     });
@@ -241,10 +246,11 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
 
 
     connect(editFactButton, &ImageButton::clicked, [=](){
-        std::map<QString, QString> data;
-        data.insert(std::pair<QString, QString>(QString("type"), QString("Definition")));
-        data.insert(std::pair<QString, QString>(QString("name"), QString("Vector space")));
+        std::map<std::string, std::string> data;
+        data.insert(std::pair<std::string, std::string>("type", model->getFactSelected().type));
+        data.insert(std::pair<std::string, std::string>("name", model->getFactSelected().name));
         factEditForm->setData(data);
+
         factEditDialog->show();
     });
 
@@ -252,8 +258,14 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
         factEditDialog->close();
     });
 
-    connect(factEditDialog, &FormDialog::completed, [=](std::map<QString, QString> data){
-        std::cout << "Change fact to: " << data[QString("type")].toStdString() << ", " << data[QString("name")].toStdString() << std::endl;
+    connect(factEditDialog, &FormDialog::completed, [=](std::map<std::string, std::string> data){
+        Fact fact = model->getFactSelected();
+        fact.type = data.at("type");
+        fact.name = data.at("name");
+        editFact(fact);
+
+        model->editFact(fact);
+
         factEditDialog->close();
     });
 
@@ -262,12 +274,35 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, QWidget *parent)
     });
 
     connect(factDeleteDialog, &DeleteDialog::accepted, [=](){
-        std::cout << "Deleted fact" << std::endl;
+        deleteFact(model->getFactSelected().id);
+
+        model->deleteFact(model->getFactSelected().id);
+
         factDeleteDialog->close();
         pageStack->setCurrentIndex(1);
     });
 
     connect(factDeleteDialog, &DeleteDialog::cancelled, [=](){
         factDeleteDialog->close();
+    });
+
+
+
+    connect(model, &Model::courseSelectedChanged, [=](Course course){
+        factsLabel->setText(QString::fromStdString(course.name));
+    });
+
+    connect(model, &Model::factSelectedChanged, [=](Fact fact){
+        currentFactLabel->setText(QString::fromStdString(fact.name));
+        factLabel->setText(QString::fromStdString(fact.name));
+
+        statementTextEdit->setText(QString::fromStdString(fact.statement));
+    });
+
+    connect(model, &Model::factEdited, [=](Fact fact){
+        currentFactLabel->setText(QString::fromStdString(fact.name));
+        factLabel->setText(QString::fromStdString(fact.name));
+
+        statementTextEdit->setText(QString::fromStdString(fact.statement));
     });
 }

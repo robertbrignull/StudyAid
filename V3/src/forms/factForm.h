@@ -1,6 +1,7 @@
 #pragma once
 
-#include "map"
+#include <iostream>
+#include <map>
 
 #include "forms/form.h"
 
@@ -14,8 +15,8 @@ class FactForm : public Form
 public:
     FactForm(QWidget *parent = 0);
 
-    void setData(std::map<QString, QString> data);
-    std::map<QString, QString> getData();
+    void setData(std::map<std::string, std::string> data);
+    std::map<std::string, std::string> getData();
 
 private:
     QLineEdit *nameInput;

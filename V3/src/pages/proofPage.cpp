@@ -9,6 +9,7 @@
 #include <QScrollArea>
 #include <QTextEdit>
 
+#include "model.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/imageButton.h"
 #include "widgets/horizontalSeperator.h"
@@ -22,11 +23,11 @@
 
 #include "pages/proofPage.h"
 
-ProofPage::ProofPage(ResizableStackedWidget *pageStack, QWidget *parent)
+ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *, QWidget *parent)
     : QWidget(parent)
 {
     ProofForm *proofEditForm = new ProofForm();
-    FormDialog *proofEditDialog = new FormDialog(this, proofEditForm, QString("Edit the proof..."), QString("Change"));
+    FormDialog *proofEditDialog = new FormDialog(this, proofEditForm, "Edit the proof...", "Change");
 
     DeleteDialog *proofDeleteDialog = new DeleteDialog(this, "Are you sure you want to delete this proof?");
 
@@ -196,8 +197,8 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, QWidget *parent)
 
 
     connect(editProofButton, &ImageButton::clicked, [=](){
-        std::map<QString, QString> data;
-        data.insert(std::pair<QString, QString>(QString("name"), QString("Vector space proof")));
+        std::map<std::string, std::string> data;
+        data.insert(std::pair<std::string, std::string>("name", "Vector space proof"));
         proofEditForm->setData(data);
         proofEditDialog->show();
     });
@@ -206,8 +207,8 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, QWidget *parent)
         proofEditDialog->close();
     });
 
-    connect(proofEditDialog, &FormDialog::completed, [=](std::map<QString, QString> data){
-        std::cout << "Change proof to: " << data[QString("name")].toStdString() << std::endl;
+    connect(proofEditDialog, &FormDialog::completed, [=](std::map<std::string, std::string> data){
+        std::cout << "Change proof to: " << data.at("name") << std::endl;
         proofEditDialog->close();
     });
 

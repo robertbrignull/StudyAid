@@ -1,6 +1,6 @@
 #include <iostream>
-
 #include <map>
+#include <algorithm>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -9,8 +9,9 @@
 #include <QPushButton>
 #include <QStackedWidget>
 #include <QScrollArea>
-#include <QString>
 
+#include "model.h"
+#include "database/methods.h"
 #include "widgets/courseTitleWidget.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/horizontalSeperator.h"
@@ -20,10 +21,15 @@
 
 #include "pages/rootPage.h"
 
-RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
+RootPage::RootPage(ResizableStackedWidget *pageStack, Model *model, QWidget *parent)
     : QWidget(parent)
 {
-    FormDialog *courseAddDialog = new FormDialog(this, new CourseForm(), QString("Add a new course..."), QString("Add"));
+    this->model = model;
+    this->pageStack = pageStack;
+
+
+
+    courseAddDialog = new FormDialog(this, new CourseForm(), "Add a new course...", "Add");
 
 
 
@@ -39,6 +45,15 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
 
 
 
+    //  ##   ## #######   ###   #####   ####### #####
+    //  ##   ## ##       ## ##  ##  ##  ##      ##  ##
+    //  ##   ## ##      ##   ## ##   ## ##      ##   ##
+    //  ####### #####   ##   ## ##   ## #####   ##  ##
+    //  ##   ## ##      ####### ##   ## ##      #####
+    //  ##   ## ##      ##   ## ##  ##  ##      ##  ##
+    //  ##   ## ####### ##   ## #####   ####### ##   ##
+
+    // The title at the top of the page
     QLabel *titleLabel = new QLabel("Study Aid");
     QFont titleFont = titleLabel->font();
     titleFont.setPointSize(64);
@@ -49,17 +64,19 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
     innerLayout->addWidget(titleLabel);
 
 
-
+    // The label that says "Courses..."
     QLabel *coursesLabel = new QLabel("Courses...");
     QFont coursesFont = coursesLabel->font();
     coursesFont.setPointSize(38);
     coursesLabel->setFont(coursesFont);
 
+    // The button for adding a new course
     ImageButton *newCourseButton = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(32, 32));
     QVBoxLayout *newCourseVLayout = new QVBoxLayout();
     newCourseVLayout->addSpacing(16);
     newCourseVLayout->addWidget(newCourseButton);
 
+    // Add them together into a QHBoxLayout
     QHBoxLayout *newCourseHLayout = new QHBoxLayout();
     newCourseHLayout->addSpacing(10);
     newCourseHLayout->addWidget(coursesLabel);
@@ -71,49 +88,120 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, QWidget *parent)
 
 
 
+    // The blue coloured horizontal seperator
     innerLayout->addSpacing(20);
     innerLayout->addWidget(new HorizontalSeperator(QColor(66, 139, 202), 2));
     innerLayout->addSpacing(20);
 
 
 
+    //  #####   #####  ##   ## #####    #####  #######  #####
+    // ##   ## ##   ## ##   ## ##  ##  ##   ## ##      ##   ##
+    // ##      ##   ## ##   ## ##   ##  ##     ##       ##    
+    // ##      ##   ## ##   ## ##  ##    ###   #####     ###
+    // ##      ##   ## ##   ## #####       ##  ##          ## 
+    // ##   ## ##   ## ##   ## ##  ##  ##   ## ##      ##   ##
+    //  #####   #####   #####  ##   ##  #####  #######  ##### 
+
+    // The courses list is contained within a scroll area
     QScrollArea *scrollArea = new QScrollArea();
     scrollArea->setWidgetResizable(true);
     scrollArea->setFrameShape(QFrame::NoFrame);
 
+    // The scroll area needs a single widget as it's contents
     QWidget *scrollWidget = new QWidget();
-    QVBoxLayout *scrollLayout = new QVBoxLayout(scrollWidget);
-    
+    scrollLayout = new QVBoxLayout(scrollWidget);
+
     scrollArea->setWidget(scrollWidget);
     innerLayout->addWidget(scrollArea);
 
-    CourseTitleWidget *courseTitleWidget1 = new CourseTitleWidget(0, "Part A: Linear Algebra");
-    connect(courseTitleWidget1, &CourseTitleWidget::viewButtonClicked, [=](){ pageStack->setCurrentIndex(1); });
-    scrollLayout->addWidget(courseTitleWidget1);
 
-    CourseTitleWidget *courseTitleWidget2 = new CourseTitleWidget(0, "Part A: Complex Analysis");
-    connect(courseTitleWidget2, &CourseTitleWidget::viewButtonClicked, [=](){ pageStack->setCurrentIndex(1); });
-    scrollLayout->addWidget(courseTitleWidget2);
 
-    CourseTitleWidget *courseTitleWidget3 = new CourseTitleWidget(0, "Part B: Set Theory");
-    connect(courseTitleWidget3, &CourseTitleWidget::viewButtonClicked, [=](){ pageStack->setCurrentIndex(1); });
-    scrollLayout->addWidget(courseTitleWidget3);
+    // Load every course from the database and build up idCourseMap
+    std::vector<Course> courses = findAllCourses();
+    idCourseMap = std::map<int, std::pair<Course, CourseTitleWidget*> >();
+
+    for (size_t i = 0; i < courses.size(); ++i) {
+        courseAddedSlot(courses[i]);
+    }
 
     scrollLayout->addStretch(1);
 
 
 
-    connect(newCourseButton, &QPushButton::clicked, [=](){
-        courseAddDialog->show();
-    });
+    //  #####  ####  #####  ##   ##   ###   ##       #####
+    // ##   ##  ##  ##   ## ###  ##  ## ##  ##      ##   ##
+    //  ##      ##  ##      ###  ## ##   ## ##       ##
+    //   ###    ##  ##      ####### ##   ## ##        ###
+    //     ##   ##  ##  ### ##  ### ####### ##          ##
+    // ##   ##  ##  ##   ## ##  ### ##   ## ##      ##   ##
+    //  #####  ####  #####  ##   ## ##   ## #######  #####
 
-    connect(courseAddDialog, &FormDialog::completed, [=](std::map<QString, QString> data){
-        std::cout << "Added course: " << data[QString("name")].toStdString() << std::endl;
-        courseAddDialog->close();
-        pageStack->setCurrentIndex(1);
-    });
+    connect(newCourseButton, SIGNAL(clicked()), courseAddDialog, SLOT(show()));
 
-    connect(courseAddDialog, &FormDialog::cancelled, [=](){
-        courseAddDialog->close();
-    });
+    connect(courseAddDialog, SIGNAL(completed(std::map<std::string, std::string>)), this, SLOT(courseAddDialogCompleted(std::map<std::string, std::string>)));
+    connect(courseAddDialog, SIGNAL(cancelled()), courseAddDialog, SLOT(close()));
+
+    connect(model, SIGNAL(courseAdded(Course)), this, SLOT(courseAddedSlot(Course)));
+    connect(model, SIGNAL(courseEdited(Course)), this, SLOT(courseEditedSlot(Course)));
+    connect(model, SIGNAL(courseDeleted(int)), this, SLOT(courseDeletedSlot(int)));
+}
+
+//   #####  ##       #####  ########  #####
+//  ##   ## ##      ##   ##    ##    ##   ##
+//   ##     ##      ##   ##    ##     ##
+//    ###   ##      ##   ##    ##      ###
+//      ##  ##      ##   ##    ##        ##
+//  ##   ## ##      ##   ##    ##    ##   ##
+//   #####  #######  #####     ##     #####
+
+void RootPage::courseViewButtonClicked(Course course)
+{
+    model->setCourseSelected(course);
+    pageStack->setCurrentIndex(1);
+}
+
+void RootPage::courseAddDialogCompleted(std::map<std::string, std::string> data)
+{
+    Course course = findCourse(addCourse(data.at("name")));
+        
+    model->addCourse(course);
+    model->setCourseSelected(course);
+
+    courseAddDialog->close();
+    pageStack->setCurrentIndex(1);
+}
+
+void RootPage::courseAddedSlot(Course course)
+{
+    int position = idCourseMap.size();
+
+    for (auto it = idCourseMap.begin(); it != idCourseMap.end(); it++) {
+        if (it->second.first.ordering > course.ordering) {
+            position = std::min(position, scrollLayout->indexOf(it->second.second));
+        }
+    }
+
+    CourseTitleWidget *courseTitleWidget = new CourseTitleWidget(course);
+    scrollLayout->insertWidget(position, courseTitleWidget);
+
+    idCourseMap.insert(std::pair<int, std::pair<Course, CourseTitleWidget*> >(course.id, std::pair<Course, CourseTitleWidget*>(course, courseTitleWidget)));
+
+    connect(courseTitleWidget, SIGNAL(viewButtonClicked(Course)), this, SLOT(courseViewButtonClicked(Course)));
+}
+
+void RootPage::courseEditedSlot(Course course)
+{
+    courseDeletedSlot(course.id);
+    courseAddedSlot(course);
+}
+
+void RootPage::courseDeletedSlot(int id)
+{
+    auto pair = idCourseMap.at(id);
+
+    scrollLayout->removeWidget(pair.second);
+    delete pair.second;
+
+    idCourseMap.erase(id);
 }
