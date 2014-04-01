@@ -30,9 +30,6 @@ public slots:
 
     void proofAddDialogCompleted(std::map<std::string, std::string> data);
 
-    void courseSelectedChangedSlot(Course course);
-    void courseEditedSlot(Course course);
-
     void factSelectedChangedSlot(Fact fact);
     void factEditedSlot(Fact fact);
 
@@ -54,11 +51,8 @@ private:
     // Dialog for adding a proof
     FormDialog *proofAddDialog;
 
-    // Contains the name of the current course
-    ClickableQLabel *factsLabel;
-
     // Contains the name of the current fact
-    QLabel *currentFactLabel, *factLabel;
+    QLabel *factLabel;
 
     // Contains the current fact's statement
     QTextEdit *statementTextEdit;

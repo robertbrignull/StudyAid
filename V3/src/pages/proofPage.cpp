@@ -17,13 +17,14 @@
 #include "widgets/splitter.h"
 #include "widgets/resizableImage.h"
 #include "widgets/dependenciesWidget.h"
+#include "widgets/breadCrumbs.h"
 #include "dialogs/deleteDialog.h"
 #include "dialogs/formDialog.h"
 #include "forms/proofForm.h"
 
 #include "pages/proofPage.h"
 
-ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *, QWidget *parent)
+ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *parent)
     : QWidget(parent)
 {
     ProofForm *proofEditForm = new ProofForm();
@@ -39,51 +40,11 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *, QWidget *parent
 
     QHBoxLayout *crumbBorderLayout = new QHBoxLayout();
 
-    QWidget *crumbWidget = new QWidget();
-    crumbWidget->setFixedWidth(700);
-    QHBoxLayout *crumbLayout = new QHBoxLayout(crumbWidget);
-    crumbLayout->setContentsMargins(0, 0, 0, 0);
-
-    ClickableQLabel *coursesLabel = new ClickableQLabel("Courses");
-    ClickableQLabel *factsLabel = new ClickableQLabel("Linear Algebra");
-    ClickableQLabel *proofsLabel = new ClickableQLabel("Vector space");
-    QLabel *currentFactLabel = new QLabel(" / Proof");
-    QLabel *sep1Label = new QLabel(" / ");
-    QLabel *sep2Label = new QLabel(" / ");
-
-    QFont font = coursesLabel->font();
-    font.setPointSize(14);
-    coursesLabel->setFont(font);
-    factsLabel->setFont(font);
-    proofsLabel->setFont(font);
-    currentFactLabel->setFont(font);
-    sep1Label->setFont(font);
-    sep2Label->setFont(font);
-
-    QPalette palette = coursesLabel->palette();
-
-    palette.setColor(QPalette::WindowText, Qt::blue);
-    palette.setColor(QPalette::Text, Qt::blue);
-    coursesLabel->setPalette(palette);
-    factsLabel->setPalette(palette);
-    proofsLabel->setPalette(palette);
-
-    palette.setColor(QPalette::WindowText, Qt::gray);
-    palette.setColor(QPalette::Text, Qt::gray);
-    currentFactLabel->setPalette(palette);
-    sep1Label->setPalette(palette);
-    sep2Label->setPalette(palette);
-
-    crumbLayout->addWidget(coursesLabel);
-    crumbLayout->addWidget(sep1Label);
-    crumbLayout->addWidget(factsLabel);
-    crumbLayout->addWidget(sep2Label);
-    crumbLayout->addWidget(proofsLabel);
-    crumbLayout->addWidget(currentFactLabel);
-    crumbLayout->addStretch(1);
+    BreadCrumbs *breadCrumbs = new BreadCrumbs(3, model, pageStack);
+    breadCrumbs->setFixedWidth(700);
 
     crumbBorderLayout->addStretch(1);
-    crumbBorderLayout->addWidget(crumbWidget);
+    crumbBorderLayout->addWidget(breadCrumbs);
     crumbBorderLayout->addStretch(1);
 
     outerLayout->addLayout(crumbBorderLayout);
@@ -138,7 +99,7 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *, QWidget *parent
 
 
     QTextEdit *bodyTextEdit = new QTextEdit();
-    font = bodyTextEdit->font();
+    QFont font = bodyTextEdit->font();
     font.setPointSize(12);
     bodyTextEdit->setFont(font);
     bodyTextEdit->setText("Let $X,Y,Z$ be sets with strict total orders\n\\begin{enumerate}\n\\item If $f:X\\to Y$ is an order-isomorphism, then so is its inverse\n\\item If $f:X\\to Y$, $g:Y\\to Z$ are order-isomorphisms, then so if $g\\circ f:X\\to Z$\n\\item If $X$ is well-ordered, then any subset $Z\\subseteq X$ is well-ordered by restriction\n\\end{enumerate}");
@@ -152,7 +113,7 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *, QWidget *parent
 
     QWidget *bodyWidget = new QWidget();
 
-    palette = bodyWidget->palette();
+    QPalette palette = bodyWidget->palette();
     palette.setColor(QPalette::Background, Qt::white);
     bodyWidget->setPalette(palette);
     bodyWidget->setAutoFillBackground(true);
@@ -179,20 +140,6 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *, QWidget *parent
     DependenciesWidget *depsWidget = new DependenciesWidget();
     depsScrollArea->setWidget(depsWidget);
     splitter->addWidget(depsScrollArea);
-
-    
-
-    connect(coursesLabel, &ClickableQLabel::clicked, [=](){
-        pageStack->setCurrentIndex(0);
-    });
-
-    connect(factsLabel, &ClickableQLabel::clicked, [=](){
-        pageStack->setCurrentIndex(1);
-    });
-
-    connect(proofsLabel, &ClickableQLabel::clicked, [=](){
-        pageStack->setCurrentIndex(2);
-    });
 
 
 

@@ -41,7 +41,7 @@ private:
     DeleteDialog *courseDeleteDialog;
 
     // Both labels that hold the name of the current course
-    QLabel *currentCourseLabel, *courseLabel;
+    QLabel *courseLabel;
 
     // THe splitter contains the SectionPicker and FactListView
     Splitter *splitter;

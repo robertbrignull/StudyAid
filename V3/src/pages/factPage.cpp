@@ -17,6 +17,7 @@
 #include "widgets/clickableQLabel.h"
 #include "widgets/splitter.h"
 #include "widgets/resizableImage.h"
+#include "widgets/breadCrumbs.h"
 #include "dialogs/deleteDialog.h"
 #include "dialogs/formDialog.h"
 #include "forms/factForm.h"
@@ -59,47 +60,11 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
     QHBoxLayout *crumbBorderLayout = new QHBoxLayout();
 
-    QWidget *crumbWidget = new QWidget();
-    crumbWidget->setFixedWidth(700);
-    QHBoxLayout *crumbLayout = new QHBoxLayout(crumbWidget);
-    crumbLayout->setContentsMargins(0, 0, 0, 0);
-
-    ClickableQLabel *coursesLabel = new ClickableQLabel("Courses");
-    factsLabel = new ClickableQLabel("");
-    currentFactLabel = new QLabel();
-    QLabel *sep1Label = new QLabel(" / ");
-    QLabel *sep2Label = new QLabel(" / ");
-
-    QFont font = coursesLabel->font();
-    font.setPointSize(14);
-    coursesLabel->setFont(font);
-    factsLabel->setFont(font);
-    currentFactLabel->setFont(font);
-    sep1Label->setFont(font);
-    sep2Label->setFont(font);
-
-    QPalette palette = coursesLabel->palette();
-
-    palette.setColor(QPalette::WindowText, Qt::blue);
-    palette.setColor(QPalette::Text, Qt::blue);
-    coursesLabel->setPalette(palette);
-    factsLabel->setPalette(palette);
-
-    palette.setColor(QPalette::WindowText, Qt::gray);
-    palette.setColor(QPalette::Text, Qt::gray);
-    currentFactLabel->setPalette(palette);
-    sep1Label->setPalette(palette);
-    sep2Label->setPalette(palette);
-
-    crumbLayout->addWidget(coursesLabel);
-    crumbLayout->addWidget(sep1Label);
-    crumbLayout->addWidget(factsLabel);
-    crumbLayout->addWidget(sep2Label);
-    crumbLayout->addWidget(currentFactLabel);
-    crumbLayout->addStretch(1);
+    BreadCrumbs *breadCrumbs = new BreadCrumbs(2, model, pageStack);
+    breadCrumbs->setFixedWidth(700);
 
     crumbBorderLayout->addStretch(1);
-    crumbBorderLayout->addWidget(crumbWidget);
+    crumbBorderLayout->addWidget(breadCrumbs);
     crumbBorderLayout->addStretch(1);
 
     outerLayout->addLayout(crumbBorderLayout);
@@ -178,7 +143,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     // The QTextEdit does its own scrolling.
 
     statementTextEdit = new QTextEdit();
-    font = statementTextEdit->font();
+    QFont font = statementTextEdit->font();
     font.setPointSize(12);
     statementTextEdit->setFont(font);
     splitter->addWidget(statementTextEdit);
@@ -193,7 +158,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
     QWidget *statementWidget = new QWidget();
 
-    palette = statementWidget->palette();
+    QPalette palette = statementWidget->palette();
     palette.setColor(QPalette::Background, Qt::white);
     statementWidget->setPalette(palette);
     statementWidget->setAutoFillBackground(true);
@@ -261,14 +226,6 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     // ##   ##  ##  ##   ## ##  ### ##   ## ##      ##   ##
     //  #####  ####  #####  ##   ## ##   ## #######  #####
 
-    connect(coursesLabel, &ClickableQLabel::clicked, [=](){
-        pageStack->setCurrentIndex(0);
-    });
-
-    connect(factsLabel, &ClickableQLabel::clicked, [=](){
-        pageStack->setCurrentIndex(1);
-    });
-
     connect(addProofButton, SIGNAL(clicked()), proofAddDialog, SLOT(show()));
 
     connect(proofAddDialog, SIGNAL(cancelled()), proofAddDialog, SLOT(close()));
@@ -284,7 +241,6 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     connect(factDeleteDialog, SIGNAL(cancelled()), factDeleteDialog, SLOT(close()));
     connect(factDeleteDialog, SIGNAL(accepted()), this, SLOT(factDeleteDialogAccepted()));
 
-    connect(model, SIGNAL(courseSelectedChanged(Course)), this, SLOT(courseSelectedChangedSlot(Course)));
     connect(model, SIGNAL(factSelectedChanged(Fact)), this, SLOT(factSelectedChangedSlot(Fact)));
     connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
     connect(model, SIGNAL(proofAdded(Proof)), this, SLOT(proofAddedSlot(Proof)));
@@ -338,22 +294,9 @@ void FactPage::proofAddDialogCompleted(std::map<std::string, std::string>)
     pageStack->setCurrentIndex(3);
 }
 
-void FactPage::courseSelectedChangedSlot(Course course)
-{
-    factsLabel->setText(QString::fromStdString(course.name));
-}
-
-void FactPage::courseEditedSlot(Course course)
-{
-    if (course.id == model->getCourseSelected().id) {
-        factsLabel->setText(QString::fromStdString(course.name));
-    }
-}
-
 void FactPage::factSelectedChangedSlot(Fact fact)
 {
     // Set labels with the name and statement
-    currentFactLabel->setText(QString::fromStdString(fact.name));
     factLabel->setText(QString::fromStdString(fact.name));
 
     statementTextEdit->setText(QString::fromStdString(fact.statement));
