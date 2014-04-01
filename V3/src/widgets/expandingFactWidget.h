@@ -11,6 +11,7 @@ class Model;
 class ResizableStackedWidget;
 class QMouseEvent;
 class ResizableImage;
+class QLabel;
 
 class ExpandingFactWidget : public QWidget
 {
@@ -23,6 +24,9 @@ public:
     void mousePressEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *);
 
+public slots:
+    void factEditedSlot(Fact fact);
+
 private:
     void setExpanded(bool expanded);
 
@@ -31,12 +35,15 @@ private:
     Model *model;
     ResizableStackedWidget *pageStack;
 
+    Fact fact;
+
     bool expanded;
     double currentHeight;
     ResizableImage *image;
 
     QWidget *headWidget;
     int headWidgetHeight;
+    QLabel *nameLabel;
 
     int radius, border;
     QColor headColor, bodyColor, borderColor;

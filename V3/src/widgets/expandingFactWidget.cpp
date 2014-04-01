@@ -19,6 +19,7 @@ ExpandingFactWidget::ExpandingFactWidget(Fact fact, Model *model, ResizableStack
 {
     this->model = model;
     this->pageStack = pageStack;
+    this->fact = fact;
 
     headColor = QColor(66, 139, 202);
     bodyColor = Qt::white;
@@ -35,21 +36,21 @@ ExpandingFactWidget::ExpandingFactWidget(Fact fact, Model *model, ResizableStack
     QHBoxLayout *headLayout = new QHBoxLayout(headWidget);
     headLayout->setContentsMargins(16, 8, 16, 8);
 
-    QLabel *label = new QLabel(QString::fromStdString(fact.name));
-    label->setWordWrap(true);
+    nameLabel = new QLabel(QString::fromStdString(fact.name));
+    nameLabel->setWordWrap(true);
 
-    QFont font = label->font();
+    QFont font = nameLabel->font();
     font.setPointSize(18);
-    label->setFont(font);
+    nameLabel->setFont(font);
 
-    QPalette pal = label->palette();
+    QPalette pal = nameLabel->palette();
     pal.setColor(QPalette::WindowText, Qt::white);
     pal.setColor(QPalette::Text, Qt::white);
-    label->setPalette(pal);
+    nameLabel->setPalette(pal);
 
     ImageButton *viewButton = new ImageButton(QPixmap(":/images/arrow_right_white.png"), QSize(24, 24));
 
-    headLayout->addWidget(label);
+    headLayout->addWidget(nameLabel);
     headLayout->addStretch(1);
     headLayout->addWidget(viewButton);
 
@@ -73,6 +74,8 @@ ExpandingFactWidget::ExpandingFactWidget(Fact fact, Model *model, ResizableStack
         model->setFactSelected(fact);
         pageStack->setCurrentIndex(2);
     });
+
+    connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
 }
 
 void ExpandingFactWidget::setExpanded(bool expanded)
@@ -129,4 +132,12 @@ void ExpandingFactWidget::paintEvent(QPaintEvent *)
     painter.setPen(QPen(QBrush(borderColor), 1));
     painter.setBrush(QBrush(headColor));
     painter.drawRoundedRect(1, 1, totalSize.width()-2, headSize.height()-2, radius, radius);
+}
+
+void ExpandingFactWidget::factEditedSlot(Fact fact)
+{
+    if (fact.id == this->fact.id) {
+        this->fact = fact;
+        nameLabel->setText(QString::fromStdString(fact.name));
+    }
 }

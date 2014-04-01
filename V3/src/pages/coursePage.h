@@ -10,8 +10,8 @@ class CourseForm;
 class FormDialog;
 class DeleteDialog;
 class QLabel;
+class Splitter;
 class QVBoxLayout;
-class QScrollLayout;
 
 class CoursePage : public QWidget
 {
@@ -42,6 +42,9 @@ private:
 
     // Both labels that hold the name of the current course
     QLabel *currentCourseLabel, *courseLabel;
+
+    // THe splitter contains the SectionPicker and FactListView
+    Splitter *splitter;
 
     // The layouts for the two sides of the splitter
     QVBoxLayout *pickerScrollLayout, *courseScrollLayout;

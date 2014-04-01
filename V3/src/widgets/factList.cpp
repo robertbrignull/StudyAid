@@ -62,42 +62,36 @@ void FactList::paintEvent(QPaintEvent *)
 void FactList::factAddedSlot(Fact fact)
 {
     if (fact.parent == this->fact.id) {
-        int position = idChildMap.size() + 1;
-
-        for (auto it = idChildMap.begin(); it != idChildMap.end(); it++) {
-            if (it->second.first.ordering > fact.ordering) {
-                position = std::min(position, layout->indexOf(it->second.second));
-            }
-        }
+        QWidget *factWidget;
 
         if (fact.type == "Section") {
-            FactList *factList = new FactList(fact, model, pageStack, idFactListMap);
-            layout->insertWidget(position, factList);
-            idChildMap.insert(std::pair<int, std::pair<Fact, QWidget*> >(fact.id, std::pair<Fact, QWidget*>(fact, factList)));
+            factWidget = new FactList(fact, model, pageStack, idFactListMap);
         }
         else {
-            ExpandingFactWidget *factWidget = new ExpandingFactWidget(fact, model, pageStack);
-            layout->insertWidget(position, factWidget);
-            idChildMap.insert(std::pair<int, std::pair<Fact, QWidget*> >(fact.id, std::pair<Fact, QWidget*>(fact, factWidget)));
+            factWidget = new ExpandingFactWidget(fact, model, pageStack);
         }
+
+        insertFactWidget(fact, factWidget);
     }
 }
 
 void FactList::factEditedSlot(Fact fact)
 {
     if (fact.id == this->fact.id) {
+        // Possibly just change the name shown
         sectionNameLabel->setText(QString::fromStdString(fact.name));
     }
-    else if (fact.type != "Section" && fact.parent == this->fact.id) {
-        auto item = idChildMap.at(fact.id);
-        int i = layout->indexOf(item.second);
+    else if (fact.parent == this->fact.id) {
+        // Or possibly have to move widgets around because
+        // the order might have changed
 
-        delete layout->takeAt(i)->widget();
+        auto item = idChildMap.at(fact.id);
+        int position = layout->indexOf(item.second);
+
+        layout->takeAt(position)->widget();
         idChildMap.erase(fact.id);
 
-        ExpandingFactWidget *factWidget = new ExpandingFactWidget(fact, model, pageStack);
-        layout->insertWidget(i, factWidget);
-        idChildMap.insert(std::pair<int, std::pair<Fact, QWidget*> >(fact.id, std::pair<Fact, QWidget*>(fact, factWidget)));
+        insertFactWidget(fact, item.second);
     }
 }
 
@@ -109,4 +103,18 @@ void FactList::factDeletedSlot(int id)
         delete item.second;
         idChildMap.erase(id);
     }
+}
+
+void FactList::insertFactWidget(Fact fact, QWidget *factWidget)
+{
+    int position = idChildMap.size() + 1;
+
+    for (auto it = idChildMap.begin(); it != idChildMap.end(); it++) {
+        if (it->second.first.ordering > fact.ordering) {
+            position = std::min(position, layout->indexOf(it->second.second));
+        }
+    }
+
+    layout->insertWidget(position, factWidget);
+    idChildMap.insert(std::pair<int, std::pair<Fact, QWidget*> >(fact.id, std::pair<Fact, QWidget*>(fact, factWidget)));
 }

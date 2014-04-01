@@ -27,6 +27,10 @@ public slots:
     void factDeletedSlot(int id);
 
 private:
+    void insertFactWidget(Fact fact, QWidget *widget);
+
+
+
     Fact fact;
     Model *model;
     ResizableStackedWidget *pageStack;

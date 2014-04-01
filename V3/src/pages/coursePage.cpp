@@ -52,6 +52,10 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
     //  ##   ## ##      ##   ## ##  ##  ##      ##  ##
     //  ##   ## ####### ##   ## #####   ####### ##   ##
 
+    // The breadcrumbs show the current course and provide
+    // a way to go back to the courses screen.
+    // It is presented like a filepath.
+
     QHBoxLayout *crumbBorderLayout = new QHBoxLayout();
 
     QWidget *crumbWidget = new QWidget();
@@ -91,6 +95,9 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
     outerLayout->addLayout(crumbBorderLayout);
 
 
+
+    // Now show the name of the current course and some buttons to
+    // edit or delete it.
 
     QHBoxLayout *topBorderLayout = new QHBoxLayout();
 
@@ -140,11 +147,16 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
     //  ##      ##   ## ##   ##    ##    ##   ##
     //  ##      ##   ##  #####     ##     #####
 
-    Splitter *splitter = new Splitter(Qt::Horizontal);
+    // Use a horizontal splitter to divide the two areas dynamically
+
+    splitter = new Splitter(Qt::Horizontal);
     outerLayout->addWidget(splitter);
     splitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 
+
+    // The section picker controls which section is shown
+    // on the other view.
 
     QScrollArea *pickerScrollArea = new QScrollArea();
     pickerScrollArea->setWidgetResizable(true);
@@ -158,6 +170,9 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
     pickerScrollLayout->addStretch(1);
 
 
+
+    // This is a list of facts which on click will either expand
+    // or change to the fact page.
 
     QScrollArea *courseScrollArea = new QScrollArea();
     courseScrollArea->setWidgetResizable(true);
@@ -265,6 +280,9 @@ void CoursePage::courseSelectedChangedSlot(Course course)
 
     // Set the starting view to everything
     factListView->selectSection(course.root_fact);
+
+    // Adjust the size of the splitter panes
+    splitter->setSizes(QList<int>({pickerScrollLayout->sizeHint().width() + 50, splitter->width() - pickerScrollLayout->sizeHint().width() - 50}));
 }
 
 void CoursePage::courseEditedSlot(Course course)
