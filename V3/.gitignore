@@ -26,6 +26,7 @@
 StudyAid
 
 # Qt compiled files
+Makefile
 /moc
 /obj
 qrc_resources.cpp
