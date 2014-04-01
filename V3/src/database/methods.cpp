@@ -2,6 +2,14 @@
 
 #include "database/methods.h"
 
+//  ##       #####     ##    #####   ###### ##    ##  #####
+//  ##      ##   ##   ####   ##  ###   ##   ###   ## ##   ##
+//  ##      ##   ##  ##  ##  ##   ##   ##   ####  ## ##
+//  ##      ##   ## ##    ## ##   ##   ##   ## ## ## ##  ###
+//  ##      ##   ## ######## ##   ##   ##   ##  #### ##   ##
+//  ##      ##   ## ##    ## ##  ###   ##   ##   ### ##   ##
+//  #######  #####  ##    ## #####   ###### ##    ##  #####
+
 Course loadCourse(mysqlpp::Row row)
 {
     Course course;
@@ -23,6 +31,22 @@ Fact loadFact(mysqlpp::Row row)
     fact.ordering = row["fact_ordering"];
     return fact;
 }
+
+FactType loadFactType(mysqlpp::Row row)
+{
+    FactType factType;
+    factType.fact_type = std::string(row["fact_type"].c_str());
+    factType.can_have_proof = row["fact_type_can_have_proof"];
+    return factType;
+}
+
+//   #####   #####  ##   ## ######   #####  #######
+//  ##   ## ##   ## ##   ## ##   ## ##   ## ##
+//  ##      ##   ## ##   ## ##   ##  ##     ##
+//  ##      ##   ## ##   ## ##  ###   ###   #####
+//  ##      ##   ## ##   ## #####       ##  ##
+//  ##   ## ##   ## ##   ## ##  ##  ##   ## ##
+//   #####   #####   #####  ##   ##  #####  #######
 
 int addCourse(std::string name)
 {
@@ -106,7 +130,15 @@ void deleteCourse(int id)
     query.execute(id);
 }
 
-int addFact(int parent, std::string name, FactType type)
+//  #######    ##     #####  ########
+//  ##        ####   ##   ##    ##
+//  ##       ##  ##  ##         ##
+//  #####   ##    ## ##         ##
+//  ##      ######## ##         ##
+//  ##      ##    ## ##   ##    ##
+//  ##      ##    ##  #####     ##
+
+int addFact(int parent, std::string name, std::string type)
 {
     mysqlpp::Connection *conn = getConn();
     mysqlpp::Query query(conn, true);
@@ -202,4 +234,46 @@ void deleteFact(int id)
     query.parse();
 
     query.execute(id);
+}
+
+//  #######    ##     #####  ########         ######## ##    ## ######  #######
+//  ##        ####   ##   ##    ##               ##     ##  ##  ##   ## ##
+//  ##       ##  ##  ##         ##               ##      ####   ##   ## ##
+//  #####   ##    ## ##         ##               ##       ##    ######  #####
+//  ##      ######## ##         ##               ##       ##    ##      ##
+//  ##      ##    ## ##   ##    ##               ##       ##    ##      ##
+//  ##      ##    ##  #####     ##               ##       ##    ##      #######
+
+FactType findFactType(std::string factType)
+{
+    mysqlpp::Connection *conn = getConn();
+
+    mysqlpp::Query query(conn, true, "SELECT * FROM factType WHERE factType = %0q");
+    query.parse();
+
+    mysqlpp::StoreQueryResult result = query.store(factType);
+
+    if (result.num_rows() != 1) {
+        throw new NotFoundException();
+    }
+
+    return loadFactType(result[0]);
+}
+
+std::vector<FactType> findAllFactTypes()
+{
+    mysqlpp::Connection *conn = getConn();
+
+    mysqlpp::Query query(conn, true, "SELECT * FROM factType");
+    query.parse();
+
+    mysqlpp::StoreQueryResult result = query.store();
+
+    std::vector<FactType> factTypes;
+
+    for (size_t i = 0; i < result.num_rows(); ++i) {
+        factTypes.push_back(loadFactType(result[i]));
+    }
+
+    return factTypes;
 }

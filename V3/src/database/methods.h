@@ -32,7 +32,7 @@ void deleteCourse(int id);
 
 /* Adds a new fact and returns its id.
  */
-int addFact(int parent, std::string name, FactType type);
+int addFact(int parent, std::string name, std::string type);
 
 /* Returns the fact with the given id.
  */
@@ -54,3 +54,13 @@ void editFact(Fact fact);
 /* Deletes the fact with the given id.
  */
 void deleteFact(int id);
+
+
+
+/* Returns a fact type by its name
+ */
+FactType findFactType(std::string factType);
+
+/* Returns all fact types.
+ */
+std::vector<FactType> findAllFactTypes();
