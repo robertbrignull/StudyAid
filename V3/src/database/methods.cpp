@@ -248,7 +248,7 @@ FactType findFactType(std::string factType)
 {
     mysqlpp::Connection *conn = getConn();
 
-    mysqlpp::Query query(conn, true, "SELECT * FROM factType WHERE factType = %0q");
+    mysqlpp::Query query(conn, true, "SELECT * FROM fact_type WHERE fact_type = %0q");
     query.parse();
 
     mysqlpp::StoreQueryResult result = query.store(factType);
@@ -264,7 +264,7 @@ std::vector<FactType> findAllFactTypes()
 {
     mysqlpp::Connection *conn = getConn();
 
-    mysqlpp::Query query(conn, true, "SELECT * FROM factType");
+    mysqlpp::Query query(conn, true, "SELECT * FROM fact_type");
     query.parse();
 
     mysqlpp::StoreQueryResult result = query.store();

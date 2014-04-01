@@ -352,10 +352,19 @@ void FactPage::courseEditedSlot(Course course)
 
 void FactPage::factSelectedChangedSlot(Fact fact)
 {
+    // Set labels with the name and statement
     currentFactLabel->setText(QString::fromStdString(fact.name));
     factLabel->setText(QString::fromStdString(fact.name));
 
     statementTextEdit->setText(QString::fromStdString(fact.statement));
+
+    // Show or hide the proof section depending on fact type
+    if (findFactType(fact.type).can_have_proof) {
+        proofsScrollArea->show();
+    }
+    else {
+        proofsScrollArea->hide();
+    }
 }
 
 void FactPage::factEditedSlot(Fact fact)

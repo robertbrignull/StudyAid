@@ -11,6 +11,7 @@ class FormDialog;
 class DeleteDialog;
 class ClickableQLabel;
 class QLabel;
+class Splitter;
 class QTextEdit;
 class QScrollArea;
 
