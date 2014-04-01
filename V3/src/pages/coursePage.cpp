@@ -139,13 +139,13 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
 
 
 
-    //  #######   ###    #####  ########  #####
-    //  ##       ## ##  ##   ##    ##    ##   ##
-    //  ##      ##   ## ##         ##     ##
-    //  #####   ##   ## ##         ##      ###
-    //  ##      ####### ##         ##        ##
-    //  ##      ##   ## ##   ##    ##    ##   ##
-    //  ##      ##   ##  #####     ##     #####
+    //  ######   #####  #####   ##    ##
+    //  ##   ## ##   ## ##  ###  ##  ##
+    //  ##   ## ##   ## ##   ##   ####
+    //  ######  ##   ## ##   ##    ##
+    //  ##   ## ##   ## ##   ##    ##
+    //  ##   ## ##   ## ##  ###    ##
+    //  ######   #####  #####      ##
 
     // Use a horizontal splitter to divide the two areas dynamically
 
@@ -208,7 +208,7 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
 
     connect(deleteCourseButton, SIGNAL(clicked()), courseDeleteDialog, SLOT(show()));
 
-    connect(courseDeleteDialog, SIGNAL(accepted()), this, SLOT(courseDeleteFormAccepted()));
+    connect(courseDeleteDialog, SIGNAL(accepted()), this, SLOT(courseDeleteDialogAccepted()));
     connect(courseDeleteDialog, SIGNAL(cancelled()), courseDeleteDialog, SLOT(close()));
 
     connect(model, SIGNAL(courseSelectedChanged(Course)), this, SLOT(courseSelectedChangedSlot(Course)));
@@ -243,7 +243,7 @@ void CoursePage::courseEditDialogCompleted(std::map<std::string, std::string> da
     courseEditDialog->close();
 }
 
-void CoursePage::courseDeleteFormAccepted()
+void CoursePage::courseDeleteDialogAccepted()
 {
     deleteCourse(model->getCourseSelected().id);
 

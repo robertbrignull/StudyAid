@@ -24,7 +24,7 @@ public slots:
     void courseEditButtonClicked();
     void courseEditDialogCompleted(std::map<std::string, std::string> data);
 
-    void courseDeleteFormAccepted();
+    void courseDeleteDialogAccepted();
 
     void courseSelectedChangedSlot(Course course);
     void courseEditedSlot(Course course);

@@ -70,11 +70,7 @@ ExpandingFactWidget::ExpandingFactWidget(Fact fact, Model *model, ResizableStack
 
 
 
-    connect(viewButton, &ImageButton::clicked, [=](){
-        model->setFactSelected(fact);
-        pageStack->setCurrentIndex(2);
-    });
-
+    connect(viewButton, SIGNAL(clicked()), this, SLOT(viewButtonClicked()));
     connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
 }
 
@@ -132,6 +128,12 @@ void ExpandingFactWidget::paintEvent(QPaintEvent *)
     painter.setPen(QPen(QBrush(borderColor), 1));
     painter.setBrush(QBrush(headColor));
     painter.drawRoundedRect(1, 1, totalSize.width()-2, headSize.height()-2, radius, radius);
+}
+
+void ExpandingFactWidget::viewButtonClicked()
+{
+    model->setFactSelected(fact);
+    pageStack->setCurrentIndex(2);
 }
 
 void ExpandingFactWidget::factEditedSlot(Fact fact)
