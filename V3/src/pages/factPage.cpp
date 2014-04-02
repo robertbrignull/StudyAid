@@ -12,6 +12,7 @@
 
 #include "model.h"
 #include "database/methods.h"
+#include "latex/latex.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/imageButton.h"
 #include "widgets/horizontalSeperator.h"
@@ -151,7 +152,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
     QTimer *statementSaveTimer = new QTimer(this);
     statementSaveTimer->setSingleShot(true);
-    statementSaveTimer->setInterval(1000);
+    statementSaveTimer->setInterval(200);
 
     connect(statementTextEdit, SIGNAL(textChanged()), statementSaveTimer, SLOT(start()));
     connect(statementSaveTimer, SIGNAL(timeout()), this, SLOT(saveStatement()));
@@ -160,7 +161,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
     // The second area contains the rendered statement.
 
-    QScrollArea *statementScrollArea = new QScrollArea();
+    statementScrollArea = new QScrollArea();
     statementScrollArea->setWidgetResizable(true);
     statementScrollArea->setFrameShape(QFrame::NoFrame);
 
@@ -171,9 +172,11 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     statementWidget->setPalette(palette);
     statementWidget->setAutoFillBackground(true);
 
+    statementImage = new ResizableImage(":/images/default_image.png");
+
     QHBoxLayout *statementHLayout = new QHBoxLayout();
     statementHLayout->addStretch(1);
-    statementHLayout->addWidget(new ResizableImage("images/latex/test.png"));
+    statementHLayout->addWidget(statementImage);
     statementHLayout->addStretch(1);
 
     QVBoxLayout *statementVLayout = new QVBoxLayout();
@@ -291,6 +294,9 @@ void FactPage::saveStatement()
     Fact fact = model->getFactSelected();
     fact.statement = statementTextEdit->toPlainText().toStdString();
 
+    renderFact(fact);
+    statementImage->setImage(getFactImageFilename(fact));
+
     editFact(fact);
     model->editFact(fact);
 }
@@ -318,6 +324,10 @@ void FactPage::factSelectedChangedSlot(Fact fact)
 
     if (statementTextEdit->toPlainText() != QString::fromStdString(fact.statement)) {
         statementTextEdit->setPlainText(QString::fromStdString(fact.statement));
+
+        statementImage->setImage(getFactImageFilename(fact));
+
+        statementScrollArea->adjustSize();
     }
 
     // Show or hide the proof section depending on fact type

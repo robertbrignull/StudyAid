@@ -9,29 +9,33 @@ ResizableImage::ResizableImage(std::string filename, QWidget *parent)
     : QWidget(parent)
 {
     this->filename = filename;
+
     image = QPixmap(QString::fromStdString(filename));
+
+    imageLoaded = (image.width() != 0);
+
     setWidth(image.size().width());
 
-    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-}
-
-void ResizableImage::reloadImage()
-{
-    image = QPixmap(QString::fromStdString(filename));
-    scaledImage = image.scaledToWidth(imageSize.width(), Qt::SmoothTransformation);
+    setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
 }
 
 void ResizableImage::setWidth(int width)
 {
-    if (width > 1000) { width = 1000; }
+    if (imageLoaded) {
+        if (width > 1000) { width = 1000; }
 
-    scaledImage = image.scaledToWidth(width, Qt::SmoothTransformation);
-    imageSize = QSize(width, width * scaledImage.height() / scaledImage.width());
+        scaledImage = image.scaledToWidth(width, Qt::SmoothTransformation);
+    }
 }
 
 QSize ResizableImage::sizeHint() const
 {
-    return imageSize;
+    if (imageLoaded) {
+        return scaledImage.size();
+    }
+    else {
+        return QSize(0, 0);
+    }
 }
 
 void ResizableImage::resizeEvent(QResizeEvent *event)
@@ -41,7 +45,27 @@ void ResizableImage::resizeEvent(QResizeEvent *event)
 
 void ResizableImage::paintEvent(QPaintEvent *)
 {
-    QPainter painter(this);
+    if (imageLoaded) {
+        QPainter painter(this);
 
-    painter.drawPixmap(0, 0, scaledImage);
+        painter.drawPixmap(0, 0, scaledImage);
+    }
+}
+
+void ResizableImage::setImage(std::string filename)
+{
+    this->filename = filename;
+    reloadImage();
+}
+
+void ResizableImage::reloadImage()
+{
+    image = QPixmap(QString::fromStdString(filename));
+
+    imageLoaded = (image.width() != 0);
+
+    setWidth(1000);
+
+    updateGeometry();
+    repaint();
 }

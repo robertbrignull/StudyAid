@@ -17,15 +17,18 @@ public:
     ResizableImage(std::string filename, QWidget *parent = 0);
 
     void setWidth(int width);
-    void reloadImage();
 
     QSize sizeHint() const;
 
     void resizeEvent(QResizeEvent *event);
     void paintEvent(QPaintEvent *);
 
+public slots:
+    void setImage(std::string filename);
+    void reloadImage();
+
 private:
     std::string filename;
     QPixmap image, scaledImage;
-    QSize imageSize;
+    bool imageLoaded;
 };

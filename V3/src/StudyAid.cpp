@@ -7,6 +7,7 @@
 
 #include "model.h"
 #include "database/setup.h"
+#include "latex/latex.h"
 #include "pages/rootPage.h"
 #include "pages/coursePage.h"
 #include "pages/factPage.h"
@@ -43,6 +44,7 @@ int main(int argc, char **argv)
     bool testMode = (argc >= 2 && strncmp(argv[1], "test", 4) != 0);
 
     initialiseDatabase(testMode);
+    initialiseLatex();
 
     QApplication app(argc, argv);
 

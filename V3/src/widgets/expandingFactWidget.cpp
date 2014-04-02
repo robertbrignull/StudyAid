@@ -8,6 +8,7 @@
 #include <QVariantAnimation>
 
 #include "model.h"
+#include "latex/latex.h"
 #include "widgets/imageButton.h"
 #include "widgets/resizableImage.h"
 #include "widgets/resizableStackedWidget.h"
@@ -60,7 +61,7 @@ ExpandingFactWidget::ExpandingFactWidget(Fact fact, Model *model, ResizableStack
     headWidgetHeight = headWidget->sizeHint().height();
     headWidget->setGeometry(0, 0, size().width(), headWidgetHeight);
 
-    image = new ResizableImage("images/latex/test.png", this);
+    image = new ResizableImage(getFactImageFilename(fact), this);
     image->setWidth(size().width() - border*2);
     image->setGeometry((size().width() - image->sizeHint().width()) / 2, headWidgetHeight + border, image->sizeHint().width(), image->sizeHint().height());
 
@@ -141,5 +142,7 @@ void ExpandingFactWidget::factEditedSlot(Fact fact)
     if (fact.id == this->fact.id) {
         this->fact = fact;
         nameLabel->setText(QString::fromStdString(fact.name));
+        image->reloadImage();
+        adjustSize();
     }
 }

@@ -14,6 +14,7 @@ class QLabel;
 class Splitter;
 class QTextEdit;
 class QScrollArea;
+class ResizableImage;
 
 class FactPage : public QWidget
 {
@@ -58,6 +59,12 @@ private:
 
     // Contains the current fact's statement
     QTextEdit *statementTextEdit;
+
+    // Contains the rendered statement
+    QScrollArea *statementScrollArea;
+
+    // The rendered statement
+    ResizableImage *statementImage;
 
     // Contains the section on proofs
     QScrollArea *proofsScrollArea;
