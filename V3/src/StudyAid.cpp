@@ -5,6 +5,8 @@
 #include <QHBoxLayout>
 #include <QFont>
 
+#include <QtTest/QtTest>
+
 #include "model.h"
 #include "database/setup.h"
 #include "latex/latex.h"
@@ -13,6 +15,8 @@
 #include "pages/factPage.h"
 #include "pages/proofPage.h"
 #include "widgets/resizableStackedWidget.h"
+
+#include "test/test.h"
 
 #include "StudyAid.h"
 
@@ -41,7 +45,7 @@ StudyAid::~StudyAid()
 
 int main(int argc, char **argv)
 {
-    bool testMode = (argc >= 2 && strncmp(argv[1], "test", 4) != 0);
+    bool testMode = (argc >= 2 && strncmp(argv[1], "test", 4) == 0);
 
     initialiseDatabase(testMode);
     initialiseLatex();
@@ -53,10 +57,18 @@ int main(int argc, char **argv)
     font.setPointSize(18);
     app.setFont(font);
 
-    StudyAid window;
+    if (testMode) {
+        Test test;
+        QTest::qExec(&test);
 
-    window.setWindowTitle("StudyAid");
-    window.show();
+        return 0;
+    }
+    else {
+        StudyAid window;
 
-    return app.exec();
+        window.setWindowTitle("StudyAid");
+        window.show();
+
+        return app.exec();
+    }
 }
