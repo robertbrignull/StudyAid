@@ -26,6 +26,8 @@ public slots:
     void factEditButtonClicked();
     void factEditDialogCompleted(std::map<std::string, std::string> data);
 
+    void saveStatement();
+
     void factDeleteDialogAccepted();
 
     void proofAddDialogCompleted(std::map<std::string, std::string> data);

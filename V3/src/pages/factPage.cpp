@@ -8,6 +8,7 @@
 #include <QPalette>
 #include <QScrollArea>
 #include <QTextEdit>
+#include <QTimer>
 
 #include "model.h"
 #include "database/methods.h"
@@ -148,6 +149,13 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     statementTextEdit->setFont(font);
     splitter->addWidget(statementTextEdit);
 
+    QTimer *statementSaveTimer = new QTimer(this);
+    statementSaveTimer->setSingleShot(true);
+    statementSaveTimer->setInterval(1000);
+
+    connect(statementTextEdit, SIGNAL(textChanged()), statementSaveTimer, SLOT(start()));
+    connect(statementSaveTimer, SIGNAL(timeout()), this, SLOT(saveStatement()));
+
 
 
     // The second area contains the rendered statement.
@@ -278,6 +286,15 @@ void FactPage::factEditDialogCompleted(std::map<std::string, std::string> data)
     factEditDialog->close();
 }
 
+void FactPage::saveStatement()
+{
+    Fact fact = model->getFactSelected();
+    fact.statement = statementTextEdit->toPlainText().toStdString();
+
+    editFact(fact);
+    model->editFact(fact);
+}
+
 void FactPage::factDeleteDialogAccepted()
 {
     deleteFact(model->getFactSelected().id);
@@ -299,7 +316,9 @@ void FactPage::factSelectedChangedSlot(Fact fact)
     // Set labels with the name and statement
     factLabel->setText(QString::fromStdString(fact.name));
 
-    statementTextEdit->setText(QString::fromStdString(fact.statement));
+    if (statementTextEdit->toPlainText() != QString::fromStdString(fact.statement)) {
+        statementTextEdit->setPlainText(QString::fromStdString(fact.statement));
+    }
 
     // Show or hide the proof section depending on fact type
     if (findFactType(fact.type).can_have_proof) {
