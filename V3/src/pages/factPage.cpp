@@ -20,6 +20,7 @@
 #include "widgets/splitter.h"
 #include "widgets/resizableImage.h"
 #include "widgets/breadCrumbs.h"
+#include "widgets/trafficLight.h"
 #include "dialogs/deleteDialog.h"
 #include "dialogs/formDialog.h"
 #include "forms/factForm.h"
@@ -88,6 +89,12 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     factFont.setPointSize(38);
     factLabel->setFont(factFont);
 
+    trafficLight = new TrafficLight(TrafficLight::AMBER);
+    trafficLight->setFixedSize(QSize(32, 32));
+    QVBoxLayout *trafficLightVLayout = new QVBoxLayout();
+    trafficLightVLayout->addSpacing(16);
+    trafficLightVLayout->addWidget(trafficLight);
+
     ImageButton *addProofButton = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(32, 32));
     QVBoxLayout *addProofVLayout = new QVBoxLayout();
     addProofVLayout->addSpacing(16);
@@ -105,6 +112,8 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
     topLayout->addWidget(factLabel);
     topLayout->addStretch(1);
+    topLayout->addLayout(trafficLightVLayout);
+    topLayout->addSpacing(10);
     topLayout->addLayout(addProofVLayout);
     topLayout->addSpacing(10);
     topLayout->addLayout(editFactVLayout);
@@ -161,7 +170,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
     // The second area contains the rendered statement.
 
-    statementScrollArea = new QScrollArea();
+    QScrollArea *statementScrollArea = new QScrollArea();
     statementScrollArea->setWidgetResizable(true);
     statementScrollArea->setFrameShape(QFrame::NoFrame);
 
@@ -294,8 +303,15 @@ void FactPage::saveStatement()
     Fact fact = model->getFactSelected();
     fact.statement = statementTextEdit->toPlainText().toStdString();
 
-    renderFact(fact);
-    statementImage->setImage(getFactImageFilename(fact));
+    int result = renderFact(fact);
+
+    if (result == 0) {
+        statementImage->setImage(getFactImageFilename(fact));
+        trafficLight->setState(TrafficLight::GREEN);
+    }
+    else {
+        trafficLight->setState(TrafficLight::RED);
+    }
 
     editFact(fact);
     model->editFact(fact);
@@ -327,7 +343,7 @@ void FactPage::factSelectedChangedSlot(Fact fact)
 
         statementImage->setImage(getFactImageFilename(fact));
 
-        statementScrollArea->adjustSize();
+        trafficLight->setState(TrafficLight::AMBER);
     }
 
     // Show or hide the proof section depending on fact type

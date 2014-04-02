@@ -15,6 +15,7 @@ class Splitter;
 class QTextEdit;
 class QScrollArea;
 class ResizableImage;
+class TrafficLight;
 
 class FactPage : public QWidget
 {
@@ -60,11 +61,11 @@ private:
     // Contains the current fact's statement
     QTextEdit *statementTextEdit;
 
-    // Contains the rendered statement
-    QScrollArea *statementScrollArea;
-
     // The rendered statement
     ResizableImage *statementImage;
+
+    // Shows whether the statement rendered without errors
+    TrafficLight *trafficLight;
 
     // Contains the section on proofs
     QScrollArea *proofsScrollArea;
