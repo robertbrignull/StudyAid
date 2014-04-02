@@ -2,14 +2,18 @@
 
 #include <QObject>
 
+class StudyAid;
+
 class Test : public QObject
 {
     Q_OBJECT
 
 private slots:
-    void initTestCase();
-    void cleanupTestCase();
+    void init();
+    void cleanup();
 
     void testOne();
-    void testTwo();
+
+private:
+    StudyAid *window;
 };

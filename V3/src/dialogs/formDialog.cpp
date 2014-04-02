@@ -31,8 +31,8 @@ FormDialog::FormDialog(QWidget *parent, Form *form, std::string topText, std::st
     layout->addWidget(new HorizontalSeperator(QColor(200, 200, 200), 1));
     layout->addSpacing(15);
 
-    QPushButton *cancelButton = new QPushButton("Cancel");
-    QPushButton *completeButton = new QPushButton(QString::fromStdString(buttonText));
+    cancelButton = new QPushButton("Cancel");
+    completeButton = new QPushButton(QString::fromStdString(buttonText));
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     buttonLayout->addWidget(cancelButton);

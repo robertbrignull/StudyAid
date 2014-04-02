@@ -29,7 +29,8 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
 
 
-    courseAddDialog = new FormDialog(this, new CourseForm(), "Add a new course...", "Add");
+    courseAddForm = new CourseForm();
+    courseAddDialog = new FormDialog(this, courseAddForm, "Add a new course...", "Add");
 
 
 
@@ -71,7 +72,7 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     coursesLabel->setFont(coursesFont);
 
     // The button for adding a new course
-    ImageButton *newCourseButton = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(32, 32));
+    newCourseButton = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(32, 32));
     QVBoxLayout *newCourseVLayout = new QVBoxLayout();
     newCourseVLayout->addSpacing(16);
     newCourseVLayout->addWidget(newCourseButton);

@@ -25,15 +25,20 @@ StudyAid::StudyAid(QWidget *parent)
 {
     QHBoxLayout *layout = new QHBoxLayout(this);
 
-    ResizableStackedWidget *stack = new ResizableStackedWidget();
+    stack = new ResizableStackedWidget();
     model = new Model();
+
+    rootPage = new RootPage(stack, model);
+    coursePage = new CoursePage(stack, model);
+    factPage = new FactPage(stack, model);
+    proofPage = new ProofPage(stack, model);
 
     layout->addWidget(stack);
 
-    stack->addWidget(new RootPage(stack, model));
-    stack->addWidget(new CoursePage(stack, model));
-    stack->addWidget(new FactPage(stack, model));
-    stack->addWidget(new ProofPage(stack, model));
+    stack->addWidget(rootPage);
+    stack->addWidget(coursePage);
+    stack->addWidget(factPage);
+    stack->addWidget(proofPage);
 
     showMaximized();
 }

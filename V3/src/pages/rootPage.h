@@ -8,9 +8,11 @@
 
 class ResizableStackedWidget;
 class Model;
+class CourseForm;
 class FormDialog;
 class QVBoxLayout;
 class CourseTitleWidget;
+class ImageButton;
 
 class RootPage : public QWidget
 {
@@ -18,6 +20,22 @@ class RootPage : public QWidget
 
 public:
     RootPage(ResizableStackedWidget *pageStack, Model *model, QWidget *parent = 0);
+
+
+
+    Model *model;
+    ResizableStackedWidget *pageStack;
+
+    CourseForm *courseAddForm;
+    FormDialog *courseAddDialog;
+
+    ImageButton *newCourseButton;
+
+    // The layout that contains the courses
+    QVBoxLayout *scrollLayout;
+    
+    // Maps from ids to Courses and CourseTitleWidgets
+    std::map<int, std::pair<Course, CourseTitleWidget*> > idCourseMap;
 
 public slots:
     void courseViewButtonClicked(Course course);
@@ -27,17 +45,4 @@ public slots:
     void courseAddedSlot(Course course);
     void courseEditedSlot(Course course);
     void courseDeletedSlot(int id);
-
-private:
-    Model *model;
-    ResizableStackedWidget *pageStack;
-
-    // The dialog for adding a new course
-    FormDialog *courseAddDialog;
-
-    // The layout that contains the courses
-    QVBoxLayout *scrollLayout;
-    
-    // Maps from ids to Courses and CourseTitleWidgets
-    std::map<int, std::pair<Course, CourseTitleWidget*> > idCourseMap;
 };
