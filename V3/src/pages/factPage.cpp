@@ -1,4 +1,5 @@
 #include <iostream>
+#include <map>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -21,6 +22,7 @@
 #include "widgets/resizableImage.h"
 #include "widgets/breadCrumbs.h"
 #include "widgets/trafficLight.h"
+#include "widgets/proofViewWidget.h"
 #include "dialogs/deleteDialog.h"
 #include "dialogs/formDialog.h"
 #include "forms/factForm.h"
@@ -213,26 +215,11 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     proofsWidget->setPalette(palette);
     proofsWidget->setAutoFillBackground(true);
 
-    QVBoxLayout *proofsVLayout = new QVBoxLayout();
-    QHBoxLayout *proofsHLayout;
+    proofsScrollLayout = new QVBoxLayout();
 
-    ImageButton *viewProofButton = new ImageButton(QPixmap(":/images/arrow_right_black.png"), QSize(24, 24));
+    idProofViewWidgetMap = std::map<int, std::pair<Proof, ProofViewWidget*> >();
 
-    proofsHLayout = new QHBoxLayout();
-    proofsHLayout->addWidget(new QLabel("Proof"));
-    proofsHLayout->addStretch(1);
-    proofsHLayout->addWidget(viewProofButton);
-    proofsVLayout->addLayout(proofsHLayout);
-
-    proofsHLayout = new QHBoxLayout();
-    proofsHLayout->addStretch(1);
-    proofsHLayout->addWidget(new ResizableImage("images/latex/test.png"));
-    proofsHLayout->addStretch(1);
-    proofsVLayout->addLayout(proofsHLayout);
-
-    proofsVLayout->addStretch(1);
-
-    proofsWidget->setLayout(proofsVLayout);
+    proofsWidget->setLayout(proofsScrollLayout);
     proofsScrollArea->setWidget(proofsWidget);
     splitter->addWidget(proofsScrollArea);
 
@@ -355,11 +342,29 @@ void FactPage::factSelectedChangedSlot(Fact fact)
 
     // Show or hide the proof section depending on fact type
     if (findFactType(fact.type).can_have_proof) {
+        // Remove all old proofs
+        for (auto it = idProofViewWidgetMap.begin(); it != idProofViewWidgetMap.end(); it++) {
+            auto item = it->second;
+            proofsScrollLayout->removeWidget(item.second);
+            delete item.second;
+        }
+        idProofViewWidgetMap.clear();
+
+        // Add all proofs of this fact
+        std::vector<Proof> proofs = findProofsForFact(fact.id);
+
+        for (size_t i = 0 ; i < proofs.size(); ++i) {
+            proofAddedSlot(proofs[i]);
+        }
+
+        // Show the section
         proofsScrollArea->show();
     }
     else {
         proofsScrollArea->hide();
     }
+
+
 }
 
 void FactPage::factEditedSlot(Fact fact)
@@ -369,17 +374,41 @@ void FactPage::factEditedSlot(Fact fact)
     }
 }
 
-void FactPage::proofAddedSlot(Proof )
+void FactPage::proofAddedSlot(Proof proof)
 {
-
+    insertProofViewWidget(proof, new ProofViewWidget(proof, model, pageStack));
 }
 
-void FactPage::proofEditedSlot(Proof )
+void FactPage::proofEditedSlot(Proof proof)
 {
+    auto item = idProofViewWidgetMap.at(proof.id);
 
+    proofsScrollLayout->removeWidget(item.second);
+    idProofViewWidgetMap.erase(proof.id);
+
+    insertProofViewWidget(proof, item.second);
 }
 
-void FactPage::proofDeletedSlot(int )
+void FactPage::proofDeletedSlot(int id)
 {
+    auto item = idProofViewWidgetMap.at(id);
 
+    proofsScrollLayout->removeWidget(item.second);
+    idProofViewWidgetMap.erase(id);
+    delete item.second;
+}
+
+void FactPage::insertProofViewWidget(Proof proof, ProofViewWidget *proofViewWidget)
+{
+    int position = idProofViewWidgetMap.size();
+
+    for (auto it = idProofViewWidgetMap.begin(); it != idProofViewWidgetMap.end(); it++) {
+        if (it->second.first.ordering > proof.ordering) {
+            position = std::min(position, proofsScrollLayout->indexOf(it->second.second));
+        }
+    }
+
+    proofsScrollLayout->insertWidget(position, proofViewWidget);
+
+    idProofViewWidgetMap.insert(std::pair<int, std::pair<Proof, ProofViewWidget*> >(proof.id, std::pair<Proof, ProofViewWidget*>(proof, proofViewWidget)));
 }

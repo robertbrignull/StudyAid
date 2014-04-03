@@ -1,5 +1,8 @@
 #pragma once
 
+#include <iostream>
+#include <map>
+
 #include <QWidget>
 
 #include "database/structures.h"
@@ -13,9 +16,11 @@ class ClickableQLabel;
 class QLabel;
 class Splitter;
 class QTextEdit;
-class QScrollArea;
+class QVBoxLayout;
 class ResizableImage;
 class TrafficLight;
+class QScrollArea;
+class ProofViewWidget;
 
 class FactPage : public QWidget
 {
@@ -42,6 +47,10 @@ public slots:
     void proofDeletedSlot(int id);
 
 private:
+    void insertProofViewWidget(Proof proof, ProofViewWidget *proofViewWidget);
+
+
+
     Model *model;
     ResizableStackedWidget *pageStack;
 
@@ -69,4 +78,8 @@ private:
 
     // Contains the section on proofs
     QScrollArea *proofsScrollArea;
+    QVBoxLayout *proofsScrollLayout;
+
+    // A map from ids to ProofViewWidgets
+    std::map<int, std::pair<Proof, ProofViewWidget*> > idProofViewWidgetMap;
 };
