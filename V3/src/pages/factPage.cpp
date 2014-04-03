@@ -268,6 +268,8 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     connect(model, SIGNAL(proofDeleted(int)), this, SLOT(proofDeletedSlot(int)));
 }
 
+
+
 //   #####  ##       #####  ########  #####
 //  ##   ## ##      ##   ##    ##    ##   ##
 //   ##     ##      ##   ##    ##     ##
@@ -327,8 +329,13 @@ void FactPage::factDeleteDialogAccepted()
     pageStack->setCurrentIndex(1);
 }
 
-void FactPage::proofAddDialogCompleted(std::map<std::string, std::string>)
+void FactPage::proofAddDialogCompleted(std::map<std::string, std::string> data)
 {
+    Proof proof = findProof(addProof(model->getFactSelected().id, data.at("name")));
+
+    model->addProof(proof);
+    model->setProofSelected(proof);
+
     proofAddDialog->close();
     pageStack->setCurrentIndex(3);
 }

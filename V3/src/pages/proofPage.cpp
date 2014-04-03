@@ -8,6 +8,7 @@
 #include <QPalette>
 #include <QScrollArea>
 #include <QTextEdit>
+#include <QTimer>
 
 #include "model.h"
 #include "widgets/resizableStackedWidget.h"
@@ -38,6 +39,18 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
 
 
 
+    //  ##   ## #######   ###   #####   ####### #####
+    //  ##   ## ##       ## ##  ##  ##  ##      ##  ##
+    //  ##   ## ##      ##   ## ##   ## ##      ##   ##
+    //  ####### #####   ##   ## ##   ## #####   ##  ##
+    //  ##   ## ##      ####### ##   ## ##      #####
+    //  ##   ## ##      ##   ## ##  ##  ##      ##  ##
+    //  ##   ## ####### ##   ## #####   ####### ##   ##
+
+    // The breadcrumbs show the current course and provide
+    // a way to go back to the courses screen.
+    // It is presented like a filepath.
+
     QHBoxLayout *crumbBorderLayout = new QHBoxLayout();
 
     BreadCrumbs *breadCrumbs = new BreadCrumbs(3, model, pageStack);
@@ -50,6 +63,9 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
     outerLayout->addLayout(crumbBorderLayout);
 
 
+
+    // Now show the name of the current proof and some buttons to
+    // edit it, delete it or add a new dependency.
 
     QHBoxLayout *topBorderLayout = new QHBoxLayout();
 
@@ -92,20 +108,42 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
 
 
 
+    //  ######   #####  #####   ##    ##
+    //  ##   ## ##   ## ##  ###  ##  ##
+    //  ##   ## ##   ## ##   ##   ####
+    //  ######  ##   ## ##   ##    ##
+    //  ##   ## ##   ## ##   ##    ##
+    //  ##   ## ##   ## ##  ###    ##
+    //  ######   #####  #####      ##
+
+    // Use a vertical splitter to divide the areas.
+
     Splitter *splitter = new Splitter(Qt::Vertical);
     outerLayout->addWidget(splitter);
     splitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 
 
+    // The first area is a large text editing widget, this is
+    // used to edit the proof's body.
+    // The QTextEdit does its own scrolling.
+
     QTextEdit *bodyTextEdit = new QTextEdit();
     QFont font = bodyTextEdit->font();
     font.setPointSize(12);
     bodyTextEdit->setFont(font);
-    bodyTextEdit->setText("Let $X,Y,Z$ be sets with strict total orders\n\\begin{enumerate}\n\\item If $f:X\\to Y$ is an order-isomorphism, then so is its inverse\n\\item If $f:X\\to Y$, $g:Y\\to Z$ are order-isomorphisms, then so if $g\\circ f:X\\to Z$\n\\item If $X$ is well-ordered, then any subset $Z\\subseteq X$ is well-ordered by restriction\n\\end{enumerate}");
     splitter->addWidget(bodyTextEdit);
 
+    QTimer *bodySaveTimer = new QTimer(this);
+    bodySaveTimer->setSingleShot(true);
+    bodySaveTimer->setInterval(200);
 
+    connect(bodyTextEdit, SIGNAL(textChanged()), bodySaveTimer, SLOT(start()));
+    // connect(bodySaveTimer, SIGNAL(timeout()), this, SLOT(saveBody()));
+
+
+
+    // The second area contains the rendered statement.
 
     QScrollArea *bodyScrollArea = new QScrollArea();
     bodyScrollArea->setWidgetResizable(true);
@@ -118,9 +156,11 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
     bodyWidget->setPalette(palette);
     bodyWidget->setAutoFillBackground(true);
 
+    ResizableImage *bodyImage = new ResizableImage("images/latex/test.png");
+
     QHBoxLayout *bodyHLayout = new QHBoxLayout();
     bodyHLayout->addStretch(1);
-    bodyHLayout->addWidget(new ResizableImage("images/latex/test.png"));
+    bodyHLayout->addWidget(bodyImage);
     bodyHLayout->addStretch(1);
 
     QVBoxLayout *bodyVLayout = new QVBoxLayout();
@@ -133,6 +173,10 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
 
 
 
+    // The third area shows the dependencies for this proof.
+    // It shows the names of the facts, clicking one takes you
+    // to that fact page.
+
     QScrollArea *depsScrollArea = new QScrollArea();
     depsScrollArea->setWidgetResizable(true);
     depsScrollArea->setFrameShape(QFrame::NoFrame);
@@ -142,6 +186,14 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
     splitter->addWidget(depsScrollArea);
 
 
+
+    //  #####  ####  #####  ##   ##   ###   ##       #####
+    // ##   ##  ##  ##   ## ###  ##  ## ##  ##      ##   ##
+    //  ##      ##  ##      ###  ## ##   ## ##       ##
+    //   ###    ##  ##      ####### ##   ## ##        ###
+    //     ##   ##  ##  ### ##  ### ####### ##          ##
+    // ##   ##  ##  ##   ## ##  ### ##   ## ##      ##   ##
+    //  #####  ####  #####  ##   ## ##   ## #######  #####
 
     connect(editProofButton, &ImageButton::clicked, [=](){
         std::map<std::string, std::string> data;
@@ -180,3 +232,13 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
         pageStack->setCurrentIndex(2);
     });
 }
+
+
+
+//   #####  ##       #####  ########  #####
+//  ##   ## ##      ##   ##    ##    ##   ##
+//   ##     ##      ##   ##    ##     ##
+//    ###   ##      ##   ##    ##      ###
+//      ##  ##      ##   ##    ##        ##
+//  ##   ## ##      ##   ##    ##    ##   ##
+//   #####  #######  #####     ##     #####
