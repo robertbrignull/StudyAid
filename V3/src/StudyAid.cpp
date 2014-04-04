@@ -16,7 +16,7 @@
 #include "pages/proofPage.h"
 #include "widgets/resizableStackedWidget.h"
 
-#include "test/test.h"
+#include "test/runner.h"
 
 #include "StudyAid.h"
 
@@ -64,8 +64,7 @@ int main(int argc, char **argv)
     app.setFont(font);
 
     if (testMode) {
-        Test test;
-        QTest::qExec(&test);
+        runAllTests();
 
         return 0;
     }

@@ -1,5 +1,3 @@
-#include "unistd.h"
-
 #include <iostream>
 
 #include <QLineEdit>
@@ -23,9 +21,9 @@
 #include "widgets/factListView.h"
 #include "widgets/factList.h"
 
-#include "test/test.h"
+#include "test/course.h"
 
-void Test::init()
+void CourseTest::init()
 {
     clearTestDatabase();
 
@@ -34,12 +32,12 @@ void Test::init()
     window->show(); 
 }
 
-void Test::cleanup()
+void CourseTest::cleanup()
 {
     delete window;
 }
 
-void Test::test_addCourse()
+void CourseTest::test_addCourse()
 {
     RootPage *rootPage = window->rootPage;
     CoursePage *coursePage = window->coursePage;
@@ -68,7 +66,7 @@ void Test::test_addCourse()
     QVERIFY(it->second.second->course.name == newCourseName);
 }
 
-void Test::test_editCourse()
+void CourseTest::test_editCourse()
 {
     RootPage *rootPage = window->rootPage;
     CoursePage *coursePage = window->coursePage;
@@ -85,7 +83,7 @@ void Test::test_editCourse()
     QVERIFY(rootPage->idCourseMap.begin()->second.second->course.name == newCourseName);
 }
 
-void Test::test_deleteCourse()
+void CourseTest::test_deleteCourse()
 {
     RootPage *rootPage = window->rootPage;
 
@@ -100,7 +98,7 @@ void Test::test_deleteCourse()
     QVERIFY(rootPage->idCourseMap.size() == 0);
 }
 
-void Test::addCourse(const char *name)
+void CourseTest::addCourse(const char *name)
 {
     RootPage *rootPage = window->rootPage;
 
@@ -109,7 +107,7 @@ void Test::addCourse(const char *name)
     QTest::mouseClick(rootPage->courseAddDialog->completeButton, Qt::LeftButton);
 }
 
-void Test::editCurrentCourse(const char *name)
+void CourseTest::editCurrentCourse(const char *name)
 {
     CoursePage *coursePage = window->coursePage;
 
@@ -118,7 +116,7 @@ void Test::editCurrentCourse(const char *name)
     QTest::mouseClick(coursePage->courseEditDialog->completeButton, Qt::LeftButton);
 }
 
-void Test::deleteCurrentCourse()
+void CourseTest::deleteCurrentCourse()
 {
     CoursePage *coursePage = window->coursePage;
 

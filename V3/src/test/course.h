@@ -4,7 +4,7 @@
 
 class StudyAid;
 
-class Test : public QObject
+class CourseTest : public QObject
 {
     Q_OBJECT
 
