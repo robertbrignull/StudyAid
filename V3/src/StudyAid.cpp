@@ -52,7 +52,8 @@ int main(int argc, char **argv)
 {
     bool testMode = (argc >= 2 && strncmp(argv[1], "test", 4) == 0);
 
-    initialiseDatabase(testMode);
+    initialiseConnection(testMode);
+    initialiseBackup();
     initialiseLatex();
 
     QApplication app(argc, argv);

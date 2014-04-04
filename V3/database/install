@@ -1,3 +1,5 @@
 #!/bin/bash
 
-mysql -uroot mysql < installDatabases.sql
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+mysql -uroot mysql < $DIR/installDatabases.sql
