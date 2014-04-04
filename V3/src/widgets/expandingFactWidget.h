@@ -24,14 +24,6 @@ public:
     void mousePressEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *);
 
-public slots:
-    void viewButtonClicked();
-
-    void factEditedSlot(Fact fact);
-
-private:
-    void setExpanded(bool expanded);
-
 
 
     Model *model;
@@ -49,4 +41,12 @@ private:
 
     int radius, border;
     QColor headColor, bodyColor, borderColor;
+
+public slots:
+    void viewButtonClicked();
+
+    void factEditedSlot(Fact fact);
+
+private:
+    void setExpanded(bool expanded);
 };

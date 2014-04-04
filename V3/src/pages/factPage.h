@@ -22,6 +22,7 @@ class TrafficLight;
 class QScrollArea;
 class ProofViewWidget;
 class ImageButton;
+class BreadCrumbs;
 
 class FactPage : public QWidget
 {
@@ -34,6 +35,8 @@ public:
 
     Model *model;
     ResizableStackedWidget *pageStack;
+
+    BreadCrumbs *breadCrumbs;
 
     ImageButton *editFactButton;
     FactForm *factEditForm;

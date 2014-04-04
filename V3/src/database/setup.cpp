@@ -56,11 +56,15 @@ void clearTestDatabase()
 {
     if (databaseName != "study_aid_v3_test") return;
 
+    mysqlpp::Query(getConn(), true, "SET FOREIGN_KEY_CHECKS = 0").execute();
+
     mysqlpp::Query(getConn(), true, "DELETE FROM course").execute();
     mysqlpp::Query(getConn(), true, "DELETE FROM proof_dependency").execute();
     mysqlpp::Query(getConn(), true, "DELETE FROM fact_dependency").execute();
     mysqlpp::Query(getConn(), true, "DELETE FROM proof").execute();
     mysqlpp::Query(getConn(), true, "DELETE FROM fact").execute();
+    
+    mysqlpp::Query(getConn(), true, "SET FOREIGN_KEY_CHECKS = 1;").execute();
 }
 
 mysqlpp::Connection *getConn()

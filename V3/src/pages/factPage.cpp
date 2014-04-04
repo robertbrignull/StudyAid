@@ -65,7 +65,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
     QHBoxLayout *crumbBorderLayout = new QHBoxLayout();
 
-    BreadCrumbs *breadCrumbs = new BreadCrumbs(2, model, pageStack);
+    breadCrumbs = new BreadCrumbs(2, model, pageStack);
     breadCrumbs->setFixedWidth(700);
 
     crumbBorderLayout->addStretch(1);
