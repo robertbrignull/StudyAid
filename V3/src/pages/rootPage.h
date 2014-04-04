@@ -26,10 +26,9 @@ public:
     Model *model;
     ResizableStackedWidget *pageStack;
 
+    ImageButton *newCourseButton;
     CourseForm *courseAddForm;
     FormDialog *courseAddDialog;
-
-    ImageButton *newCourseButton;
 
     // The layout that contains the courses
     QVBoxLayout *scrollLayout;

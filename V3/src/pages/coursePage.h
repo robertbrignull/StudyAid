@@ -15,6 +15,7 @@ class Splitter;
 class QVBoxLayout;
 class SectionPickerWidget;
 class FactListView;
+class ImageButton;
 
 class CoursePage : public QWidget
 {
@@ -28,14 +29,13 @@ public:
     Model *model;
     ResizableStackedWidget *pageStack;
 
-    // The BreadCrumbs widgets at the top of page
     BreadCrumbs *breadCrumbs;
 
-    // The form and dialog for editing a course
+    ImageButton *editCourseButton;
     CourseForm *courseEditForm;
     FormDialog *courseEditDialog;
 
-    // Dialog for deleting a course
+    ImageButton *deleteCourseButton;
     DeleteDialog *courseDeleteDialog;
 
     // Both labels that hold the name of the current course
@@ -44,13 +44,8 @@ public:
     // THe splitter contains the SectionPicker and FactListView
     Splitter *splitter;
 
-    // The layouts for the two sides of the splitter
     QVBoxLayout *pickerScrollLayout, *courseScrollLayout;
-
-    // The current section picker
     SectionPickerWidget *sectionPicker;
-
-    // The current fact list view
     FactListView *factListView;
 
 public slots:

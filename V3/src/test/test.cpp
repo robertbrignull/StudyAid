@@ -40,22 +40,19 @@ void Test::cleanup()
 
 void Test::test_addCourse()
 {
-    const char* newCourseName = "Set Theory";
+    RootPage *rootPage = window->rootPage;
+    CoursePage *coursePage = window->coursePage;
+
+    const char *newCourseName = "Set Theory";
 
     QVERIFY(window->stack->currentIndex() == 0);
-
-    RootPage *rootPage = window->rootPage;
 
     QVERIFY(rootPage->scrollLayout->count() == 1);
     QVERIFY(rootPage->idCourseMap.size() == 0);
 
-    QTest::mouseClick(rootPage->newCourseButton, Qt::LeftButton);
-    QTest::keyClicks(rootPage->courseAddForm->nameInput, newCourseName);
-    QTest::mouseClick(rootPage->courseAddDialog->completeButton, Qt::LeftButton);
+    addCourse(newCourseName);
 
     QVERIFY(window->stack->currentIndex() == 1);
-
-    CoursePage *coursePage = window->coursePage;
 
     QVERIFY(coursePage->courseLabel->text() == newCourseName);
     QVERIFY(coursePage->breadCrumbs->currentCourseLabel->text() == newCourseName);
@@ -68,4 +65,41 @@ void Test::test_addCourse()
     auto it = rootPage->idCourseMap.begin();
     QVERIFY(it->second.second == rootPage->scrollLayout->itemAt(0)->widget());
     QVERIFY(it->second.second->course.name == newCourseName);
+}
+
+void Test::test_editCourse()
+{
+    RootPage *rootPage = window->rootPage;
+    CoursePage *coursePage = window->coursePage;
+
+    const char *oldCourseName = "Set Theory";
+    const char *newCourseName = "Linear Algebra";
+
+    addCourse(oldCourseName);
+    editCourse(newCourseName);
+
+    std::cout << coursePage->breadCrumbs->currentCourseLabel->text().toStdString() << std::endl;
+
+    QVERIFY(coursePage->courseLabel->text() == newCourseName);
+    QVERIFY(coursePage->breadCrumbs->currentCourseLabel->text() == newCourseName);
+
+    QVERIFY(rootPage->idCourseMap.begin()->second.second->course.name == newCourseName);
+}
+
+void Test::addCourse(const char *name)
+{
+    RootPage *rootPage = window->rootPage;
+
+    QTest::mouseClick(rootPage->newCourseButton, Qt::LeftButton);
+    rootPage->courseAddForm->nameInput->setText(name);
+    QTest::mouseClick(rootPage->courseAddDialog->completeButton, Qt::LeftButton);
+}
+
+void Test::editCourse(const char *name)
+{
+    CoursePage *coursePage = window->coursePage;
+
+    QTest::mouseClick(coursePage->editCourseButton, Qt::LeftButton);
+    coursePage->courseEditForm->nameInput->setText(name);
+    QTest::mouseClick(coursePage->courseEditDialog->completeButton, Qt::LeftButton);
 }

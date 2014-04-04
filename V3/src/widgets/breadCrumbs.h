@@ -33,6 +33,10 @@ public slots:
     void factSelectedChangedSlot(Fact fact);
     void proofSelectedChangedSlot(Proof proof);
 
+    void courseEditedSlot(Course course);
+    void factEditedSlot(Fact fact);
+    void proofEditedSlot(Proof proof);
+
     void coursesLabelClicked();
     void factsLabelClicked();
     void proofsLabelClicked();

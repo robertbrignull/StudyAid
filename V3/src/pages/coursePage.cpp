@@ -85,12 +85,12 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
     courseFont.setPointSize(38);
     courseLabel->setFont(courseFont);
 
-    ImageButton *editCourseButton = new ImageButton(QPixmap(":/images/pencil_black.png"), QSize(32, 32));
+    editCourseButton = new ImageButton(QPixmap(":/images/pencil_black.png"), QSize(32, 32));
     QVBoxLayout *editCourseVLayout = new QVBoxLayout();
     editCourseVLayout->addSpacing(16);
     editCourseVLayout->addWidget(editCourseButton);
 
-    ImageButton *deleteCourseButton = new ImageButton(QPixmap(":/images/trash_black.png"), QSize(32, 32));
+    deleteCourseButton = new ImageButton(QPixmap(":/images/trash_black.png"), QSize(32, 32));
     QVBoxLayout *deleteCourseVLayout = new QVBoxLayout();
     deleteCourseVLayout->addSpacing(16);
     deleteCourseVLayout->addWidget(deleteCourseButton);
