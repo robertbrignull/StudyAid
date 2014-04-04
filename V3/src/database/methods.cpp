@@ -40,6 +40,17 @@ FactType loadFactType(mysqlpp::Row row)
     return factType;
 }
 
+Proof loadProof(mysqlpp::Row row)
+{
+    Proof proof;
+    proof.id = row["proof_id"];
+    proof.fact = row["proof_fact"];
+    proof.name = std::string(row["proof_name"].c_str());
+    proof.body = std::string(row["proof_body"].c_str());
+    proof.ordering = row["proof_ordering"];
+    return proof;
+}
+
 //   #####   #####  ##   ## ######   #####  #######
 //  ##   ## ##   ## ##   ## ##   ## ##   ## ##
 //  ##      ##   ## ##   ## ##   ##  ##     ##
@@ -276,4 +287,89 @@ std::vector<FactType> findAllFactTypes()
     }
 
     return factTypes;
+}
+
+
+
+//  ######  ######   #####   #####  #######
+//  ##   ## ##   ## ##   ## ##   ## ##
+//  ##   ## ##   ## ##   ## ##   ## ##
+//  ######  ######  ##   ## ##   ## #####
+//  ##      ##  ##  ##   ## ##   ## ##
+//  ##      ##   ## ##   ## ##   ## ##
+//  ##      ##    #  #####   #####  ##
+
+int addProof(int fact, std::string name)
+{
+    mysqlpp::Connection *conn = getConn();
+    mysqlpp::Query query(conn, true);
+
+    query << "SELECT MAX(proof_ordering) AS ordering FROM proof WHERE proof_fact = %0q";
+    query.parse();
+    mysqlpp::StoreQueryResult storeResult = query.store(fact);
+
+    int ordering = 0;
+    if (storeResult[0]["ordering"] != mysqlpp::null) {
+        ordering = storeResult[0]["ordering"] + 1;
+    }
+
+    query.reset();
+    query << "INSERT INTO proof (proof_fact, proof_name, proof_body, proof_ordering) VALUES (%0q, %1q, '', %2q)";
+    query.parse();
+
+    return query.execute(fact, name, ordering).insert_id();
+}
+
+Proof findProof(int id)
+{
+    mysqlpp::Connection *conn = getConn();
+
+    mysqlpp::Query query(conn, true, "SELECT * FROM proof WHERE proof_id = %0q");
+    query.parse();
+
+    mysqlpp::StoreQueryResult result = query.store(id);
+
+    if (result.num_rows() != 1) {
+        throw new NotFoundException();
+    }
+
+    return loadProof(result[0]);
+}
+
+std::vector<Proof> findProofsForFact(int fact)
+{
+    mysqlpp::Connection *conn = getConn();
+
+    mysqlpp::Query query(conn, true, "SELECT * FROM proof WHERE proof_fact = %0q");
+    query.parse();
+
+    mysqlpp::StoreQueryResult result = query.store(fact);
+
+    std::vector<Proof> proofs;
+
+    for (size_t i = 0; i < result.num_rows(); ++i) {
+        proofs.push_back(loadProof(result[i]));
+    }
+
+    return proofs;
+}
+
+void editProof(Proof proof)
+{
+    mysqlpp::Connection *conn = getConn();
+
+    mysqlpp::Query query(conn, true, "UPDATE proof SET proof_fact = %0q, proof_name = %1q, proof_body = %2q, proof_ordering = %3q WHERE proof_id = %4q");
+    query.parse();
+
+    query.execute(proof.fact, proof.name, proof.body, proof.ordering, proof.id);
+}
+
+void deleteProof(int id)
+{
+    mysqlpp::Connection *conn = getConn();
+
+    mysqlpp::Query query(conn, true, "DELETE FROM proof WHERE proof_id = %0q");
+    query.parse();
+
+    query.execute(id);
 }
