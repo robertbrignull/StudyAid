@@ -67,6 +67,9 @@ private:
     // Contains the name of the current fact
     QLabel *factLabel;
 
+    // The splitter
+    Splitter *splitter;
+
     // Contains the current fact's statement
     QTextEdit *statementTextEdit;
 

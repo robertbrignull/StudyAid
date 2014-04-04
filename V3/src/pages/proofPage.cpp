@@ -11,6 +11,8 @@
 #include <QTimer>
 
 #include "model.h"
+#include "database/methods.h"
+#include "latex/latex.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/imageButton.h"
 #include "widgets/horizontalSeperator.h"
@@ -19,6 +21,7 @@
 #include "widgets/resizableImage.h"
 #include "widgets/dependenciesWidget.h"
 #include "widgets/breadCrumbs.h"
+#include "widgets/trafficLight.h"
 #include "dialogs/deleteDialog.h"
 #include "dialogs/formDialog.h"
 #include "forms/proofForm.h"
@@ -28,10 +31,15 @@
 ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *parent)
     : QWidget(parent)
 {
-    ProofForm *proofEditForm = new ProofForm();
-    FormDialog *proofEditDialog = new FormDialog(this, proofEditForm, "Edit the proof...", "Change");
+    this->model = model;
+    this->pageStack = pageStack;
 
-    DeleteDialog *proofDeleteDialog = new DeleteDialog(this, "Are you sure you want to delete this proof?");
+
+
+    proofEditForm = new ProofForm();
+    proofEditDialog = new FormDialog(this, proofEditForm, "Edit the proof...", "Change");
+
+    proofDeleteDialog = new DeleteDialog(this, "Are you sure you want to delete this proof?");
 
 
 
@@ -74,10 +82,16 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
     QHBoxLayout *topLayout = new QHBoxLayout(topWidget);
     topLayout->setContentsMargins(0, 0, 0, 0);
 
-    QLabel *factLabel = new QLabel("Vector space proof");
-    QFont factFont = factLabel->font();
-    factFont.setPointSize(38);
-    factLabel->setFont(factFont);
+    proofLabel = new QLabel();
+    QFont proofFont = proofLabel->font();
+    proofFont.setPointSize(38);
+    proofLabel->setFont(proofFont);
+
+    trafficLight = new TrafficLight(TrafficLight::AMBER);
+    trafficLight->setFixedSize(QSize(32, 32));
+    QVBoxLayout *trafficLightVLayout = new QVBoxLayout();
+    trafficLightVLayout->addSpacing(16);
+    trafficLightVLayout->addWidget(trafficLight);
 
     ImageButton *editProofButton = new ImageButton(QPixmap(":/images/pencil_black.png"), QSize(32, 32));
     QVBoxLayout *editProofVLayout = new QVBoxLayout();
@@ -89,8 +103,10 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
     deleteProofVLayout->addSpacing(16);
     deleteProofVLayout->addWidget(deleteProofButton);
 
-    topLayout->addWidget(factLabel);
+    topLayout->addWidget(proofLabel);
     topLayout->addStretch(1);
+    topLayout->addLayout(trafficLightVLayout);
+    topLayout->addSpacing(10);
     topLayout->addLayout(editProofVLayout);
     topLayout->addSpacing(10);
     topLayout->addLayout(deleteProofVLayout);
@@ -118,7 +134,7 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
 
     // Use a vertical splitter to divide the areas.
 
-    Splitter *splitter = new Splitter(Qt::Vertical);
+    splitter = new Splitter(Qt::Vertical);
     outerLayout->addWidget(splitter);
     splitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -128,7 +144,7 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
     // used to edit the proof's body.
     // The QTextEdit does its own scrolling.
 
-    QTextEdit *bodyTextEdit = new QTextEdit();
+    bodyTextEdit = new QTextEdit();
     QFont font = bodyTextEdit->font();
     font.setPointSize(12);
     bodyTextEdit->setFont(font);
@@ -139,11 +155,11 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
     bodySaveTimer->setInterval(200);
 
     connect(bodyTextEdit, SIGNAL(textChanged()), bodySaveTimer, SLOT(start()));
-    // connect(bodySaveTimer, SIGNAL(timeout()), this, SLOT(saveBody()));
+    connect(bodySaveTimer, SIGNAL(timeout()), this, SLOT(saveBody()));
 
 
 
-    // The second area contains the rendered statement.
+    // The second area contains the rendered body.
 
     QScrollArea *bodyScrollArea = new QScrollArea();
     bodyScrollArea->setWidgetResizable(true);
@@ -156,7 +172,7 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
     bodyWidget->setPalette(palette);
     bodyWidget->setAutoFillBackground(true);
 
-    ResizableImage *bodyImage = new ResizableImage("images/latex/test.png");
+    bodyImage = new ResizableImage("");
 
     QHBoxLayout *bodyHLayout = new QHBoxLayout();
     bodyHLayout->addStretch(1);
@@ -173,20 +189,6 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
 
 
 
-    // The third area shows the dependencies for this proof.
-    // It shows the names of the facts, clicking one takes you
-    // to that fact page.
-
-    QScrollArea *depsScrollArea = new QScrollArea();
-    depsScrollArea->setWidgetResizable(true);
-    depsScrollArea->setFrameShape(QFrame::NoFrame);
-
-    DependenciesWidget *depsWidget = new DependenciesWidget();
-    depsScrollArea->setWidget(depsWidget);
-    splitter->addWidget(depsScrollArea);
-
-
-
     //  #####  ####  #####  ##   ##   ###   ##       #####
     // ##   ##  ##  ##   ## ###  ##  ## ##  ##      ##   ##
     //  ##      ##  ##      ###  ## ##   ## ##       ##
@@ -195,42 +197,18 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
     // ##   ##  ##  ##   ## ##  ### ##   ## ##      ##   ##
     //  #####  ####  #####  ##   ## ##   ## #######  #####
 
-    connect(editProofButton, &ImageButton::clicked, [=](){
-        std::map<std::string, std::string> data;
-        data.insert(std::pair<std::string, std::string>("name", "Vector space proof"));
-        proofEditForm->setData(data);
-        proofEditDialog->show();
-    });
+    connect(editProofButton, SIGNAL(clicked()), this, SLOT(proofEditButtonClicked()));
 
-    connect(proofEditDialog, &FormDialog::cancelled, [=](){
-        proofEditDialog->close();
-    });
+    connect(proofEditDialog, SIGNAL(cancelled()), proofEditDialog, SLOT(close()));
+    connect(proofEditDialog, SIGNAL(completed(std::map<std::string, std::string>)), this, SLOT(proofEditDialogCompleted(std::map<std::string, std::string>)));
 
-    connect(proofEditDialog, &FormDialog::completed, [=](std::map<std::string, std::string> data){
-        std::cout << "Change proof to: " << data.at("name") << std::endl;
-        proofEditDialog->close();
-    });
+    connect(deleteProofButton, SIGNAL(clicked()), proofDeleteDialog, SLOT(show()));
 
-    connect(deleteProofButton, &ImageButton::clicked, [=](){
-        proofDeleteDialog->show();
-    });
+    connect(proofDeleteDialog, SIGNAL(cancelled()), proofDeleteDialog, SLOT(close()));
+    connect(proofDeleteDialog, SIGNAL(accepted()), this, SLOT(proofDeleteDialogAccepted()));
 
-    connect(proofDeleteDialog, &DeleteDialog::accepted, [=](){
-        std::cout << "Deleted proof" << std::endl;
-        proofDeleteDialog->close();
-        pageStack->setCurrentIndex(2);
-    });
-
-    connect(proofDeleteDialog, &DeleteDialog::cancelled, [=](){
-        proofDeleteDialog->close();
-    });
-
-
-
-    connect(depsWidget, &DependenciesWidget::viewButtonClicked, [=](int id){
-        std::cout << "Selecting fact: " << id << std::endl;
-        pageStack->setCurrentIndex(2);
-    });
+    connect(model, SIGNAL(proofSelectedChanged(Proof)), this, SLOT(proofSelectedChangedSlot(Proof)));
+    connect(model, SIGNAL(proofEdited(Proof)), this, SLOT(proofEditedSlot(Proof)));
 }
 
 
@@ -242,3 +220,71 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
 //      ##  ##      ##   ##    ##        ##
 //  ##   ## ##      ##   ##    ##    ##   ##
 //   #####  #######  #####     ##     #####
+
+void ProofPage::proofEditButtonClicked()
+{
+    std::map<std::string, std::string> data;
+    data.insert(std::pair<std::string, std::string>("name", model->getProofSelected().name));
+    proofEditForm->setData(data);
+
+    proofEditDialog->show();
+}
+
+void ProofPage::proofEditDialogCompleted(std::map<std::string, std::string> data)
+{
+    Proof proof = model->getProofSelected();
+    proof.name = data.at("name");
+    editProof(proof);
+
+    model->editProof(proof);
+
+    proofEditDialog->close();
+}
+
+void ProofPage::saveBody()
+{
+    Proof proof = model->getProofSelected();
+    proof.body = bodyTextEdit->toPlainText().toStdString();
+
+    int result = renderProof(proof);
+
+    if (result == 0) {
+        bodyImage->setImage(getProofImageFilename(proof));
+        trafficLight->setState(TrafficLight::GREEN);
+    }
+    else {
+        trafficLight->setState(TrafficLight::RED);
+    }
+
+    editProof(proof);
+    model->editProof(proof);
+}
+
+void ProofPage::proofDeleteDialogAccepted()
+{
+    deleteProof(model->getProofSelected().id);
+
+    model->deleteProof(model->getProofSelected().id);
+
+    proofDeleteDialog->close();
+    pageStack->setCurrentIndex(2);
+}
+
+void ProofPage::proofSelectedChangedSlot(Proof proof)
+{
+    // Set labels with the proof and body
+    proofLabel->setText(QString::fromStdString(proof.name));
+
+    if (bodyTextEdit->toPlainText() != QString::fromStdString(proof.body)) {
+        bodyTextEdit->setPlainText(QString::fromStdString(proof.body));
+
+        bodyImage->setImage(getProofImageFilename(proof));
+
+        trafficLight->setState(TrafficLight::AMBER);
+    }
+}
+
+void ProofPage::proofEditedSlot(Proof proof)
+{
+    proofSelectedChangedSlot(proof);
+}

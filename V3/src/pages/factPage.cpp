@@ -145,7 +145,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
     // Use a vertical splitter to divide the areas.
 
-    Splitter *splitter = new Splitter(Qt::Vertical);
+    splitter = new Splitter(Qt::Vertical);
     outerLayout->addWidget(splitter);
     splitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -183,7 +183,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     statementWidget->setPalette(palette);
     statementWidget->setAutoFillBackground(true);
 
-    statementImage = new ResizableImage(":/images/default_image.png");
+    statementImage = new ResizableImage("");
 
     QHBoxLayout *statementHLayout = new QHBoxLayout();
     statementHLayout->addStretch(1);
@@ -216,6 +216,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     proofsWidget->setAutoFillBackground(true);
 
     proofsScrollLayout = new QVBoxLayout();
+    proofsScrollLayout->addStretch(1);
 
     idProofViewWidgetMap = std::map<int, std::pair<Proof, ProofViewWidget*> >();
 
@@ -364,7 +365,12 @@ void FactPage::factSelectedChangedSlot(Fact fact)
         proofsScrollArea->hide();
     }
 
-
+    if (fact.statement == "") {
+        splitter->setSizes(QList<int>{ 1, 1, 0 });
+    }
+    else {
+        splitter->setSizes(QList<int>{ 0, 1, 0 });
+    }
 }
 
 void FactPage::factEditedSlot(Fact fact)
