@@ -17,11 +17,5 @@ private slots:
     void test_deleteCourse();
 
 private:
-    void addCourse(const char *name);
-    void editCurrentCourse(const char *name);
-    void deleteCurrentCourse();
-
-
-
     StudyAid *window;
 };

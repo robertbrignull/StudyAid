@@ -10,7 +10,9 @@
 class Model;
 class ResizableStackedWidget;
 class QVBoxLayout;
+class FactForm;
 class FormDialog;
+class ImageButton;
 class ClickableQLabel;
 
 class SectionPickerWidget : public QWidget
@@ -19,6 +21,25 @@ class SectionPickerWidget : public QWidget
 
 public:
     SectionPickerWidget(Fact fact, Model *model, ResizableStackedWidget *pageStack, QWidget *parent = 0);
+
+
+
+    Model *model;
+    ResizableStackedWidget *pageStack;
+
+    Fact fact;
+
+    QVBoxLayout *layout;
+
+    FactForm *factAddForm;
+    FormDialog *factAddDialog;
+    ImageButton *addFactButton;
+
+    // The name of this section
+    ClickableQLabel *sectionLabel;
+
+    // A map from ids to SectionPickerWidgets
+    std::map<int, std::pair<Fact, SectionPickerWidget*> > idSectionPickerMap;
 
 signals:
     void sectionSelected(int id);
@@ -31,22 +52,4 @@ public slots:
     void factAddedSlot(Fact fact);
     void factEditedSlot(Fact fact);
     void factDeletedSlot(int id);
-
-private:
-    Model *model;
-    ResizableStackedWidget *pageStack;
-
-    Fact fact;
-
-    // Layout in use
-    QVBoxLayout *layout;
-
-    // Dialog to add a new fact
-    FormDialog *factAddDialog;
-
-    // The name of this section
-    ClickableQLabel *sectionLabel;
-
-    // A map from ids to SectionPickerWidgets
-    std::map<int, std::pair<Fact, SectionPickerWidget*> > idSectionPickerMap;
 };

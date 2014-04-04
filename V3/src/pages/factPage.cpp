@@ -97,17 +97,17 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     trafficLightVLayout->addSpacing(16);
     trafficLightVLayout->addWidget(trafficLight);
 
-    ImageButton *addProofButton = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(32, 32));
+    addProofButton = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(32, 32));
     QVBoxLayout *addProofVLayout = new QVBoxLayout();
     addProofVLayout->addSpacing(16);
     addProofVLayout->addWidget(addProofButton);
 
-    ImageButton *editFactButton = new ImageButton(QPixmap(":/images/pencil_black.png"), QSize(32, 32));
+    editFactButton = new ImageButton(QPixmap(":/images/pencil_black.png"), QSize(32, 32));
     QVBoxLayout *editFactVLayout = new QVBoxLayout();
     editFactVLayout->addSpacing(16);
     editFactVLayout->addWidget(editFactButton);
 
-    ImageButton *deleteFactButton = new ImageButton(QPixmap(":/images/trash_black.png"), QSize(32, 32));
+    deleteFactButton = new ImageButton(QPixmap(":/images/trash_black.png"), QSize(32, 32));
     QVBoxLayout *deleteFactVLayout = new QVBoxLayout();
     deleteFactVLayout->addSpacing(16);
     deleteFactVLayout->addWidget(deleteFactButton);

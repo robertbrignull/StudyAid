@@ -22,8 +22,8 @@ SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStack
     this->pageStack = pageStack;
 
 
-
-    factAddDialog = new FormDialog(this, new FactForm(), "Add a new fact...", "Add");
+    factAddForm = new FactForm();
+    factAddDialog = new FormDialog(this, factAddForm, "Add a new fact...", "Add");
 
     layout = new QVBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -32,11 +32,11 @@ SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStack
 
     QHBoxLayout *sectionLayout = new QHBoxLayout();
     sectionLabel = new ClickableQLabel((fact.parent != -1) ? fact.name : "All");
-    ImageButton *viewSectionButton = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(16, 16));
+    addFactButton = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(16, 16));
 
     sectionLayout->addWidget(sectionLabel);
     sectionLayout->addStretch(1);
-    sectionLayout->addWidget(viewSectionButton);
+    sectionLayout->addWidget(addFactButton);
 
     layout->addLayout(sectionLayout);
 
@@ -55,7 +55,7 @@ SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStack
         emit sectionSelected(fact.id);
     });
 
-    connect(viewSectionButton, SIGNAL(clicked()), factAddDialog, SLOT(show()));
+    connect(addFactButton, SIGNAL(clicked()), factAddDialog, SLOT(show()));
 
     connect(factAddDialog, SIGNAL(cancelled()), factAddDialog, SLOT(close()));
     connect(factAddDialog, SIGNAL(completed(std::map<std::string, std::string>)), this, SLOT(factAddFormCompleted(std::map<std::string, std::string>)));

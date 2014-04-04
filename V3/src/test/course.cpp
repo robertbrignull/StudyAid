@@ -21,6 +21,8 @@
 #include "widgets/factListView.h"
 #include "widgets/factList.h"
 
+#include "test/testUtil.h"
+
 #include "test/course.h"
 
 void CourseTest::init()
@@ -28,8 +30,6 @@ void CourseTest::init()
     clearTestDatabase();
 
     window = new StudyAid();
-    window->setWindowTitle("StudyAid");
-    window->show(); 
 }
 
 void CourseTest::cleanup()
@@ -49,7 +49,7 @@ void CourseTest::test_addCourse()
     QVERIFY(rootPage->scrollLayout->count() == 1);
     QVERIFY(rootPage->idCourseMap.size() == 0);
 
-    addCourse(newCourseName);
+    TestUtil::addCourse(window, newCourseName);
 
     QVERIFY(window->stack->currentIndex() == 1);
 
@@ -74,8 +74,8 @@ void CourseTest::test_editCourse()
     const char *oldCourseName = "Set Theory";
     const char *newCourseName = "Linear Algebra";
 
-    addCourse(oldCourseName);
-    editCurrentCourse(newCourseName);
+    TestUtil::addCourse(window, oldCourseName);
+    TestUtil::editCurrentCourse(window, newCourseName);
 
     QVERIFY(coursePage->courseLabel->text() == newCourseName);
     QVERIFY(coursePage->breadCrumbs->currentCourseLabel->text() == newCourseName);
@@ -89,37 +89,11 @@ void CourseTest::test_deleteCourse()
 
     const char *newCourseName = "Complex Algebra";
 
-    addCourse(newCourseName);
-    deleteCurrentCourse();
+    TestUtil::addCourse(window, newCourseName);
+    TestUtil::deleteCurrentCourse(window);
 
     QVERIFY(window->stack->currentIndex() == 0);
 
     QVERIFY(rootPage->scrollLayout->count() == 1);
     QVERIFY(rootPage->idCourseMap.size() == 0);
-}
-
-void CourseTest::addCourse(const char *name)
-{
-    RootPage *rootPage = window->rootPage;
-
-    QTest::mouseClick(rootPage->newCourseButton, Qt::LeftButton);
-    rootPage->courseAddForm->nameInput->setText(name);
-    QTest::mouseClick(rootPage->courseAddDialog->completeButton, Qt::LeftButton);
-}
-
-void CourseTest::editCurrentCourse(const char *name)
-{
-    CoursePage *coursePage = window->coursePage;
-
-    QTest::mouseClick(coursePage->editCourseButton, Qt::LeftButton);
-    coursePage->courseEditForm->nameInput->setText(name);
-    QTest::mouseClick(coursePage->courseEditDialog->completeButton, Qt::LeftButton);
-}
-
-void CourseTest::deleteCurrentCourse()
-{
-    CoursePage *coursePage = window->coursePage;
-
-    QTest::mouseClick(coursePage->deleteCourseButton, Qt::LeftButton);
-    QTest::mouseClick(coursePage->courseDeleteDialog->acceptButton, Qt::LeftButton);
 }

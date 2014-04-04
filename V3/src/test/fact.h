@@ -12,6 +12,10 @@ private slots:
     void init();
     void cleanup();
 
+    void test_addFact();
+    void test_editFact();
+    void test_deleteFact();
+
 private:
     StudyAid *window;
 };

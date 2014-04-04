@@ -21,6 +21,8 @@
 #include "widgets/factListView.h"
 #include "widgets/factList.h"
 
+#include "test/testUtil.h"
+
 #include "test/fact.h"
 
 void FactTest::init()
@@ -28,11 +30,24 @@ void FactTest::init()
     clearTestDatabase();
 
     window = new StudyAid();
-    window->setWindowTitle("StudyAid");
-    window->show(); 
 }
 
 void FactTest::cleanup()
 {
     delete window;
+}
+
+void FactTest::test_addFact()
+{
+
+}
+
+void FactTest::test_editFact()
+{
+
+}
+
+void FactTest::test_deleteFact()
+{
+
 }

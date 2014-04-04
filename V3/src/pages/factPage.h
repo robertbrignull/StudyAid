@@ -21,6 +21,7 @@ class ResizableImage;
 class TrafficLight;
 class QScrollArea;
 class ProofViewWidget;
+class ImageButton;
 
 class FactPage : public QWidget
 {
@@ -29,39 +30,19 @@ class FactPage : public QWidget
 public:
     FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *parent = 0);
 
-public slots:
-    void factEditButtonClicked();
-    void factEditDialogCompleted(std::map<std::string, std::string> data);
-
-    void saveStatement();
-
-    void factDeleteDialogAccepted();
-
-    void proofAddDialogCompleted(std::map<std::string, std::string> data);
-
-    void factSelectedChangedSlot(Fact fact);
-    void factEditedSlot(Fact fact);
-
-    void proofAddedSlot(Proof proof);
-    void proofEditedSlot(Proof proof);
-    void proofDeletedSlot(int id);
-
-private:
-    void insertProofViewWidget(Proof proof, ProofViewWidget *proofViewWidget);
-
 
 
     Model *model;
     ResizableStackedWidget *pageStack;
 
-    // The form and dialog for editing a fact
+    ImageButton *editFactButton;
     FactForm *factEditForm;
     FormDialog *factEditDialog;
 
-    // Dialog for deleting a fact
+    ImageButton *deleteFactButton;
     DeleteDialog *factDeleteDialog;
 
-    // Dialog for adding a proof
+    ImageButton *addProofButton;
     FormDialog *proofAddDialog;
 
     // Contains the name of the current fact
@@ -85,4 +66,24 @@ private:
 
     // A map from ids to ProofViewWidgets
     std::map<int, std::pair<Proof, ProofViewWidget*> > idProofViewWidgetMap;
+
+public slots:
+    void factEditButtonClicked();
+    void factEditDialogCompleted(std::map<std::string, std::string> data);
+
+    void saveStatement();
+
+    void factDeleteDialogAccepted();
+
+    void proofAddDialogCompleted(std::map<std::string, std::string> data);
+
+    void factSelectedChangedSlot(Fact fact);
+    void factEditedSlot(Fact fact);
+
+    void proofAddedSlot(Proof proof);
+    void proofEditedSlot(Proof proof);
+    void proofDeletedSlot(int id);
+
+private:
+    void insertProofViewWidget(Proof proof, ProofViewWidget *proofViewWidget);
 };
