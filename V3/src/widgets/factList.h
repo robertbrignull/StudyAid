@@ -21,12 +21,6 @@ public:
 
     void paintEvent(QPaintEvent *);
 
-public slots:
-    void factAddedSlot(Fact fact);
-    void factEditedSlot(Fact fact);
-    void factDeletedSlot(int id);
-
-private:
     void insertFactWidget(Fact fact, QWidget *widget);
 
 
@@ -44,4 +38,9 @@ private:
     std::map<int, std::pair<Fact, QWidget*> > idChildMap;
 
     QLabel *sectionNameLabel;
+
+public slots:
+    void factAddedSlot(Fact fact);
+    void factEditedSlot(Fact fact);
+    void factDeletedSlot(int id);
 };

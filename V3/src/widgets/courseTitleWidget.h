@@ -16,14 +16,15 @@ public:
 
     void paintEvent(QPaintEvent *);
 
+
+
+    Course course;
+    int radius;
+    QColor headColor, borderColor;
+
 signals:
     void viewButtonClicked(Course course);
 
 public slots:
     void viewButtonClickedSlot();
-
-private:
-    Course course;
-    int radius;
-    QColor headColor, borderColor;
 };

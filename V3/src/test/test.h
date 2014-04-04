@@ -12,7 +12,7 @@ private slots:
     void init();
     void cleanup();
 
-    void testOne();
+    void test_addCourse();
 
 private:
     StudyAid *window;

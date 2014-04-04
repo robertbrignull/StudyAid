@@ -59,7 +59,7 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
 
     QHBoxLayout *crumbBorderLayout = new QHBoxLayout();
 
-    BreadCrumbs *breadCrumbs = new BreadCrumbs(1, model, pageStack);
+    breadCrumbs = new BreadCrumbs(1, model, pageStack);
     breadCrumbs->setFixedWidth(700);
 
     crumbBorderLayout->addStretch(1);
@@ -232,7 +232,7 @@ void CoursePage::courseSelectedChangedSlot(Course course)
     while (pickerScrollLayout->count() > 0) {
         delete pickerScrollLayout->takeAt(0)->widget();
     }
-    SectionPickerWidget *sectionPicker = new SectionPickerWidget(findFact(course.root_fact), model, pageStack);
+    sectionPicker = new SectionPickerWidget(findFact(course.root_fact), model, pageStack);
     pickerScrollLayout->addWidget(sectionPicker);
     pickerScrollLayout->addStretch(1);
 
@@ -240,7 +240,7 @@ void CoursePage::courseSelectedChangedSlot(Course course)
     while (courseScrollLayout->count() > 0) {
         delete courseScrollLayout->takeAt(0)->widget();
     }
-    FactListView *factListView = new FactListView(course, model, pageStack);
+    factListView = new FactListView(course, model, pageStack);
     courseScrollLayout->addWidget(factListView);
     courseScrollLayout->addStretch(1);
 
