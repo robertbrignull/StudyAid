@@ -14,10 +14,12 @@ private slots:
 
     void test_addCourse();
     void test_editCourse();
+    void test_deleteCourse();
 
 private:
     void addCourse(const char *name);
-    void editCourse(const char *name);
+    void editCurrentCourse(const char *name);
+    void deleteCurrentCourse();
 
 
 

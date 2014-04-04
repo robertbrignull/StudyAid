@@ -14,6 +14,7 @@
 #include "pages/rootPage.h"
 #include "pages/coursePage.h"
 #include "dialogs/formDialog.h"
+#include "dialogs/deleteDialog.h"
 #include "forms/courseForm.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/imageButton.h"
@@ -76,14 +77,27 @@ void Test::test_editCourse()
     const char *newCourseName = "Linear Algebra";
 
     addCourse(oldCourseName);
-    editCourse(newCourseName);
-
-    std::cout << coursePage->breadCrumbs->currentCourseLabel->text().toStdString() << std::endl;
+    editCurrentCourse(newCourseName);
 
     QVERIFY(coursePage->courseLabel->text() == newCourseName);
     QVERIFY(coursePage->breadCrumbs->currentCourseLabel->text() == newCourseName);
 
     QVERIFY(rootPage->idCourseMap.begin()->second.second->course.name == newCourseName);
+}
+
+void Test::test_deleteCourse()
+{
+    RootPage *rootPage = window->rootPage;
+
+    const char *newCourseName = "Complex Algebra";
+
+    addCourse(newCourseName);
+    deleteCurrentCourse();
+
+    QVERIFY(window->stack->currentIndex() == 0);
+
+    QVERIFY(rootPage->scrollLayout->count() == 1);
+    QVERIFY(rootPage->idCourseMap.size() == 0);
 }
 
 void Test::addCourse(const char *name)
@@ -95,11 +109,19 @@ void Test::addCourse(const char *name)
     QTest::mouseClick(rootPage->courseAddDialog->completeButton, Qt::LeftButton);
 }
 
-void Test::editCourse(const char *name)
+void Test::editCurrentCourse(const char *name)
 {
     CoursePage *coursePage = window->coursePage;
 
     QTest::mouseClick(coursePage->editCourseButton, Qt::LeftButton);
     coursePage->courseEditForm->nameInput->setText(name);
     QTest::mouseClick(coursePage->courseEditDialog->completeButton, Qt::LeftButton);
+}
+
+void Test::deleteCurrentCourse()
+{
+    CoursePage *coursePage = window->coursePage;
+
+    QTest::mouseClick(coursePage->deleteCourseButton, Qt::LeftButton);
+    QTest::mouseClick(coursePage->courseDeleteDialog->acceptButton, Qt::LeftButton);
 }

@@ -27,8 +27,8 @@ DeleteDialog::DeleteDialog(QWidget *parent, std::string text)
     layout->addWidget(new HorizontalSeperator(QColor(200, 200, 200), 1));
     layout->addSpacing(15);
 
-    QPushButton *cancelButton = new QPushButton("Cancel");
-    QPushButton *acceptButton = new QPushButton("Delete");
+    cancelButton = new QPushButton("Cancel");
+    acceptButton = new QPushButton("Delete");
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     buttonLayout->addWidget(cancelButton);
