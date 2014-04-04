@@ -25,6 +25,8 @@ public:
     void paintEvent(QPaintEvent *);
 
 public slots:
+    void viewButtonClicked();
+
     void factEditedSlot(Fact fact);
 
 private:

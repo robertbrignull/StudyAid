@@ -1,6 +1,7 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
 <qresource>
+    <file>images/default_image.png</file>
     <file>images/arrow_right_white.png</file>
     <file>images/arrow_right_black.png</file>
     <file>images/plus_black.png</file>

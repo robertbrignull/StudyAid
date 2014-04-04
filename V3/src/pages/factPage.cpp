@@ -1,4 +1,5 @@
 #include <iostream>
+#include <map>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -8,15 +9,20 @@
 #include <QPalette>
 #include <QScrollArea>
 #include <QTextEdit>
+#include <QTimer>
 
 #include "model.h"
 #include "database/methods.h"
+#include "latex/latex.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/imageButton.h"
 #include "widgets/horizontalSeperator.h"
 #include "widgets/clickableQLabel.h"
 #include "widgets/splitter.h"
 #include "widgets/resizableImage.h"
+#include "widgets/breadCrumbs.h"
+#include "widgets/trafficLight.h"
+#include "widgets/proofViewWidget.h"
 #include "dialogs/deleteDialog.h"
 #include "dialogs/formDialog.h"
 #include "forms/factForm.h"
@@ -27,12 +33,17 @@
 FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *parent)
     : QWidget(parent)
 {
-    FactForm *factEditForm = new FactForm();
-    FormDialog *factEditDialog = new FormDialog(this, factEditForm, "Edit the fact...", "Change");
+    this->model = model;
+    this->pageStack = pageStack;
 
-    DeleteDialog *factDeleteDialog = new DeleteDialog(this, "Are you sure you want to delete this fact?");
 
-    FormDialog *proofAddDialog = new FormDialog(this, new ProofForm(), "Add a new proof...", "Add");
+
+    factEditForm = new FactForm();
+    factEditDialog = new FormDialog(this, factEditForm, "Edit the fact...", "Change");
+
+    factDeleteDialog = new DeleteDialog(this, "Are you sure you want to delete this fact?");
+
+    proofAddDialog = new FormDialog(this, new ProofForm(), "Add a new proof...", "Add");
 
 
 
@@ -40,54 +51,33 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
 
 
+    //  ##   ## #######   ###   #####   ####### #####
+    //  ##   ## ##       ## ##  ##  ##  ##      ##  ##
+    //  ##   ## ##      ##   ## ##   ## ##      ##   ##
+    //  ####### #####   ##   ## ##   ## #####   ##  ##
+    //  ##   ## ##      ####### ##   ## ##      #####
+    //  ##   ## ##      ##   ## ##  ##  ##      ##  ##
+    //  ##   ## ####### ##   ## #####   ####### ##   ##
+
+    // The breadcrumbs show the current course and provide
+    // a way to go back to the courses screen.
+    // It is presented like a filepath.
+
     QHBoxLayout *crumbBorderLayout = new QHBoxLayout();
 
-    QWidget *crumbWidget = new QWidget();
-    crumbWidget->setFixedWidth(700);
-    QHBoxLayout *crumbLayout = new QHBoxLayout(crumbWidget);
-    crumbLayout->setContentsMargins(0, 0, 0, 0);
-
-    ClickableQLabel *coursesLabel = new ClickableQLabel("Courses");
-    factsLabel = new ClickableQLabel("");
-    currentFactLabel = new QLabel();
-    QLabel *sep1Label = new QLabel(" / ");
-    QLabel *sep2Label = new QLabel(" / ");
-
-    QFont font = coursesLabel->font();
-    font.setPointSize(14);
-    coursesLabel->setFont(font);
-    factsLabel->setFont(font);
-    currentFactLabel->setFont(font);
-    sep1Label->setFont(font);
-    sep2Label->setFont(font);
-
-    QPalette palette = coursesLabel->palette();
-
-    palette.setColor(QPalette::WindowText, Qt::blue);
-    palette.setColor(QPalette::Text, Qt::blue);
-    coursesLabel->setPalette(palette);
-    factsLabel->setPalette(palette);
-
-    palette.setColor(QPalette::WindowText, Qt::gray);
-    palette.setColor(QPalette::Text, Qt::gray);
-    currentFactLabel->setPalette(palette);
-    sep1Label->setPalette(palette);
-    sep2Label->setPalette(palette);
-
-    crumbLayout->addWidget(coursesLabel);
-    crumbLayout->addWidget(sep1Label);
-    crumbLayout->addWidget(factsLabel);
-    crumbLayout->addWidget(sep2Label);
-    crumbLayout->addWidget(currentFactLabel);
-    crumbLayout->addStretch(1);
+    BreadCrumbs *breadCrumbs = new BreadCrumbs(2, model, pageStack);
+    breadCrumbs->setFixedWidth(700);
 
     crumbBorderLayout->addStretch(1);
-    crumbBorderLayout->addWidget(crumbWidget);
+    crumbBorderLayout->addWidget(breadCrumbs);
     crumbBorderLayout->addStretch(1);
 
     outerLayout->addLayout(crumbBorderLayout);
 
 
+
+    // Now show the name of the current fact and some buttons to
+    // edit it, delete it or add a proof if applicable.
 
     QHBoxLayout *topBorderLayout = new QHBoxLayout();
 
@@ -100,6 +90,12 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     QFont factFont = factLabel->font();
     factFont.setPointSize(38);
     factLabel->setFont(factFont);
+
+    trafficLight = new TrafficLight(TrafficLight::AMBER);
+    trafficLight->setFixedSize(QSize(32, 32));
+    QVBoxLayout *trafficLightVLayout = new QVBoxLayout();
+    trafficLightVLayout->addSpacing(16);
+    trafficLightVLayout->addWidget(trafficLight);
 
     ImageButton *addProofButton = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(32, 32));
     QVBoxLayout *addProofVLayout = new QVBoxLayout();
@@ -118,6 +114,8 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
     topLayout->addWidget(factLabel);
     topLayout->addStretch(1);
+    topLayout->addLayout(trafficLightVLayout);
+    topLayout->addSpacing(10);
     topLayout->addLayout(addProofVLayout);
     topLayout->addSpacing(10);
     topLayout->addLayout(editFactVLayout);
@@ -137,19 +135,42 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
     
 
-    Splitter *splitter = new Splitter(Qt::Vertical);
+    //  ######   #####  #####   ##    ##
+    //  ##   ## ##   ## ##  ###  ##  ##
+    //  ##   ## ##   ## ##   ##   ####
+    //  ######  ##   ## ##   ##    ##
+    //  ##   ## ##   ## ##   ##    ##
+    //  ##   ## ##   ## ##  ###    ##
+    //  ######   #####  #####      ##
+
+    // Use a vertical splitter to divide the areas.
+
+    splitter = new Splitter(Qt::Vertical);
     outerLayout->addWidget(splitter);
     splitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 
 
+    // The first area is a large text editing widget, this is
+    // used to edit the fact's statement.
+    // The QTextEdit does its own scrolling.
+
     statementTextEdit = new QTextEdit();
-    font = statementTextEdit->font();
+    QFont font = statementTextEdit->font();
     font.setPointSize(12);
     statementTextEdit->setFont(font);
     splitter->addWidget(statementTextEdit);
 
+    QTimer *statementSaveTimer = new QTimer(this);
+    statementSaveTimer->setSingleShot(true);
+    statementSaveTimer->setInterval(200);
 
+    connect(statementTextEdit, SIGNAL(textChanged()), statementSaveTimer, SLOT(start()));
+    connect(statementSaveTimer, SIGNAL(timeout()), this, SLOT(saveStatement()));
+
+
+
+    // The second area contains the rendered statement.
 
     QScrollArea *statementScrollArea = new QScrollArea();
     statementScrollArea->setWidgetResizable(true);
@@ -157,14 +178,16 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
     QWidget *statementWidget = new QWidget();
 
-    palette = statementWidget->palette();
+    QPalette palette = statementWidget->palette();
     palette.setColor(QPalette::Background, Qt::white);
     statementWidget->setPalette(palette);
     statementWidget->setAutoFillBackground(true);
 
+    statementImage = new ResizableImage("");
+
     QHBoxLayout *statementHLayout = new QHBoxLayout();
     statementHLayout->addStretch(1);
-    statementHLayout->addWidget(new ResizableImage("images/latex/test.png"));
+    statementHLayout->addWidget(statementImage);
     statementHLayout->addStretch(1);
 
     QVBoxLayout *statementVLayout = new QVBoxLayout();
@@ -177,7 +200,11 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
 
 
-    QScrollArea *proofsScrollArea = new QScrollArea();
+    // The third area shows the proofs for this fact.
+    // It shows the rendered proof and buttons to go
+    // to the proof page.
+
+    proofsScrollArea = new QScrollArea();
     proofsScrollArea->setWidgetResizable(true);
     proofsScrollArea->setFrameShape(QFrame::NoFrame);
 
@@ -188,121 +215,206 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     proofsWidget->setPalette(palette);
     proofsWidget->setAutoFillBackground(true);
 
-    QVBoxLayout *proofsVLayout = new QVBoxLayout();
-    QHBoxLayout *proofsHLayout;
+    proofsScrollLayout = new QVBoxLayout();
+    proofsScrollLayout->addStretch(1);
 
-    ImageButton *viewProofButton = new ImageButton(QPixmap(":/images/arrow_right_black.png"), QSize(24, 24));
+    idProofViewWidgetMap = std::map<int, std::pair<Proof, ProofViewWidget*> >();
 
-    proofsHLayout = new QHBoxLayout();
-    proofsHLayout->addWidget(new QLabel("Proof"));
-    proofsHLayout->addStretch(1);
-    proofsHLayout->addWidget(viewProofButton);
-    proofsVLayout->addLayout(proofsHLayout);
-
-    proofsHLayout = new QHBoxLayout();
-    proofsHLayout->addStretch(1);
-    proofsHLayout->addWidget(new ResizableImage("images/latex/test.png"));
-    proofsHLayout->addStretch(1);
-    proofsVLayout->addLayout(proofsHLayout);
-
-    proofsVLayout->addStretch(1);
-
-    proofsWidget->setLayout(proofsVLayout);
+    proofsWidget->setLayout(proofsScrollLayout);
     proofsScrollArea->setWidget(proofsWidget);
     splitter->addWidget(proofsScrollArea);
 
 
 
-    connect(coursesLabel, &ClickableQLabel::clicked, [=](){
-        pageStack->setCurrentIndex(0);
-    });
+    //  #####  ####  #####  ##   ##   ###   ##       #####
+    // ##   ##  ##  ##   ## ###  ##  ## ##  ##      ##   ##
+    //  ##      ##  ##      ###  ## ##   ## ##       ##
+    //   ###    ##  ##      ####### ##   ## ##        ###
+    //     ##   ##  ##  ### ##  ### ####### ##          ##
+    // ##   ##  ##  ##   ## ##  ### ##   ## ##      ##   ##
+    //  #####  ####  #####  ##   ## ##   ## #######  #####
 
-    connect(factsLabel, &ClickableQLabel::clicked, [=](){
-        pageStack->setCurrentIndex(1);
-    });
+    connect(addProofButton, SIGNAL(clicked()), proofAddDialog, SLOT(show()));
 
+    connect(proofAddDialog, SIGNAL(cancelled()), proofAddDialog, SLOT(close()));
+    connect(proofAddDialog, SIGNAL(completed(std::map<std::string, std::string>)), this, SLOT(proofAddDialogCompleted(std::map<std::string, std::string>)));
 
+    connect(editFactButton, SIGNAL(clicked()), this, SLOT(factEditButtonClicked()));
 
-    connect(addProofButton, &ImageButton::clicked, [=](){
-        proofAddDialog->show();
-    });
+    connect(factEditDialog, SIGNAL(cancelled()), factEditDialog, SLOT(close()));
+    connect(factEditDialog, SIGNAL(completed(std::map<std::string, std::string>)), this, SLOT(factEditDialogCompleted(std::map<std::string, std::string>)));
 
-    connect(proofAddDialog, &FormDialog::completed, [=](std::map<std::string, std::string> data){
-        std::cout << "Proof added: " << data.at("name") << std::endl;
-        proofAddDialog->close();
-        pageStack->setCurrentIndex(3);
-    });
+    connect(deleteFactButton, SIGNAL(clicked()), factDeleteDialog, SLOT(show()));
 
-    connect(proofAddDialog, &FormDialog::cancelled, [=](){
-        proofAddDialog->close();
-    });
+    connect(factDeleteDialog, SIGNAL(cancelled()), factDeleteDialog, SLOT(close()));
+    connect(factDeleteDialog, SIGNAL(accepted()), this, SLOT(factDeleteDialogAccepted()));
 
-
-
-    connect(viewProofButton, &ImageButton::clicked, [=](){
-        pageStack->setCurrentIndex(3);
-    });
-
-
-
-    connect(editFactButton, &ImageButton::clicked, [=](){
-        std::map<std::string, std::string> data;
-        data.insert(std::pair<std::string, std::string>("type", model->getFactSelected().type));
-        data.insert(std::pair<std::string, std::string>("name", model->getFactSelected().name));
-        factEditForm->setData(data);
-
-        factEditDialog->show();
-    });
-
-    connect(factEditDialog, &FormDialog::cancelled, [=](){
-        factEditDialog->close();
-    });
-
-    connect(factEditDialog, &FormDialog::completed, [=](std::map<std::string, std::string> data){
-        Fact fact = model->getFactSelected();
-        fact.type = data.at("type");
-        fact.name = data.at("name");
-        editFact(fact);
-
-        model->editFact(fact);
-
-        factEditDialog->close();
-    });
-
-    connect(deleteFactButton, &ImageButton::clicked, [=](){
-        factDeleteDialog->show();
-    });
-
-    connect(factDeleteDialog, &DeleteDialog::accepted, [=](){
-        deleteFact(model->getFactSelected().id);
-
-        model->deleteFact(model->getFactSelected().id);
-
-        factDeleteDialog->close();
-        pageStack->setCurrentIndex(1);
-    });
-
-    connect(factDeleteDialog, &DeleteDialog::cancelled, [=](){
-        factDeleteDialog->close();
-    });
+    connect(model, SIGNAL(factSelectedChanged(Fact)), this, SLOT(factSelectedChangedSlot(Fact)));
+    connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
+    connect(model, SIGNAL(proofAdded(Proof)), this, SLOT(proofAddedSlot(Proof)));
+    connect(model, SIGNAL(proofEdited(Proof)), this, SLOT(proofEditedSlot(Proof)));
+    connect(model, SIGNAL(proofDeleted(int)), this, SLOT(proofDeletedSlot(int)));
+}
 
 
 
-    connect(model, &Model::courseSelectedChanged, [=](Course course){
-        factsLabel->setText(QString::fromStdString(course.name));
-    });
+//   #####  ##       #####  ########  #####
+//  ##   ## ##      ##   ##    ##    ##   ##
+//   ##     ##      ##   ##    ##     ##
+//    ###   ##      ##   ##    ##      ###
+//      ##  ##      ##   ##    ##        ##
+//  ##   ## ##      ##   ##    ##    ##   ##
+//   #####  #######  #####     ##     #####
 
-    connect(model, &Model::factSelectedChanged, [=](Fact fact){
-        currentFactLabel->setText(QString::fromStdString(fact.name));
-        factLabel->setText(QString::fromStdString(fact.name));
+void FactPage::factEditButtonClicked()
+{
+    std::map<std::string, std::string> data;
+    data.insert(std::pair<std::string, std::string>("type", model->getFactSelected().type));
+    data.insert(std::pair<std::string, std::string>("name", model->getFactSelected().name));
+    factEditForm->setData(data);
 
-        statementTextEdit->setText(QString::fromStdString(fact.statement));
-    });
+    factEditDialog->show();
+}
 
-    connect(model, &Model::factEdited, [=](Fact fact){
-        currentFactLabel->setText(QString::fromStdString(fact.name));
-        factLabel->setText(QString::fromStdString(fact.name));
+void FactPage::factEditDialogCompleted(std::map<std::string, std::string> data)
+{
+    Fact fact = model->getFactSelected();
+    fact.type = data.at("type");
+    fact.name = data.at("name");
+    editFact(fact);
 
-        statementTextEdit->setText(QString::fromStdString(fact.statement));
-    });
+    model->editFact(fact);
+
+    factEditDialog->close();
+}
+
+void FactPage::saveStatement()
+{
+    Fact fact = model->getFactSelected();
+    fact.statement = statementTextEdit->toPlainText().toStdString();
+
+    int result = renderFact(fact);
+
+    if (result == 0) {
+        statementImage->setImage(getFactImageFilename(fact));
+        trafficLight->setState(TrafficLight::GREEN);
+    }
+    else {
+        trafficLight->setState(TrafficLight::RED);
+    }
+
+    editFact(fact);
+    model->editFact(fact);
+}
+
+void FactPage::factDeleteDialogAccepted()
+{
+    deleteFact(model->getFactSelected().id);
+
+    model->deleteFact(model->getFactSelected().id);
+
+    factDeleteDialog->close();
+    pageStack->setCurrentIndex(1);
+}
+
+void FactPage::proofAddDialogCompleted(std::map<std::string, std::string> data)
+{
+    Proof proof = findProof(addProof(model->getFactSelected().id, data.at("name")));
+
+    model->addProof(proof);
+    model->setProofSelected(proof);
+
+    proofAddDialog->close();
+    pageStack->setCurrentIndex(3);
+}
+
+void FactPage::factSelectedChangedSlot(Fact fact)
+{
+    // Set labels with the name and statement
+    factLabel->setText(QString::fromStdString(fact.name));
+
+    if (statementTextEdit->toPlainText() != QString::fromStdString(fact.statement)) {
+        statementTextEdit->setPlainText(QString::fromStdString(fact.statement));
+
+        statementImage->setImage(getFactImageFilename(fact));
+
+        trafficLight->setState(TrafficLight::AMBER);
+    }
+
+    // Show or hide the proof section depending on fact type
+    if (findFactType(fact.type).can_have_proof) {
+        // Remove all old proofs
+        for (auto it = idProofViewWidgetMap.begin(); it != idProofViewWidgetMap.end(); it++) {
+            auto item = it->second;
+            proofsScrollLayout->removeWidget(item.second);
+            delete item.second;
+        }
+        idProofViewWidgetMap.clear();
+
+        // Add all proofs of this fact
+        std::vector<Proof> proofs = findProofsForFact(fact.id);
+
+        for (size_t i = 0 ; i < proofs.size(); ++i) {
+            proofAddedSlot(proofs[i]);
+        }
+
+        // Show the section
+        proofsScrollArea->show();
+    }
+    else {
+        proofsScrollArea->hide();
+    }
+
+    if (fact.statement == "") {
+        splitter->setSizes(QList<int>{ 1, 1, 0 });
+    }
+    else {
+        splitter->setSizes(QList<int>{ 0, 1, 0 });
+    }
+}
+
+void FactPage::factEditedSlot(Fact fact)
+{
+    if (fact.id == model->getFactSelected().id) {
+        factSelectedChangedSlot(fact);
+    }
+}
+
+void FactPage::proofAddedSlot(Proof proof)
+{
+    insertProofViewWidget(proof, new ProofViewWidget(proof, model, pageStack));
+}
+
+void FactPage::proofEditedSlot(Proof proof)
+{
+    auto item = idProofViewWidgetMap.at(proof.id);
+
+    proofsScrollLayout->removeWidget(item.second);
+    idProofViewWidgetMap.erase(proof.id);
+
+    insertProofViewWidget(proof, item.second);
+}
+
+void FactPage::proofDeletedSlot(int id)
+{
+    auto item = idProofViewWidgetMap.at(id);
+
+    proofsScrollLayout->removeWidget(item.second);
+    idProofViewWidgetMap.erase(id);
+    delete item.second;
+}
+
+void FactPage::insertProofViewWidget(Proof proof, ProofViewWidget *proofViewWidget)
+{
+    int position = idProofViewWidgetMap.size();
+
+    for (auto it = idProofViewWidgetMap.begin(); it != idProofViewWidgetMap.end(); it++) {
+        if (it->second.first.ordering > proof.ordering) {
+            position = std::min(position, proofsScrollLayout->indexOf(it->second.second));
+        }
+    }
+
+    proofsScrollLayout->insertWidget(position, proofViewWidget);
+
+    idProofViewWidgetMap.insert(std::pair<int, std::pair<Proof, ProofViewWidget*> >(proof.id, std::pair<Proof, ProofViewWidget*>(proof, proofViewWidget)));
 }

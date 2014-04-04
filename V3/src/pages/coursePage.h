@@ -24,7 +24,7 @@ public slots:
     void courseEditButtonClicked();
     void courseEditDialogCompleted(std::map<std::string, std::string> data);
 
-    void courseDeleteFormAccepted();
+    void courseDeleteDialogAccepted();
 
     void courseSelectedChangedSlot(Course course);
     void courseEditedSlot(Course course);
@@ -41,7 +41,7 @@ private:
     DeleteDialog *courseDeleteDialog;
 
     // Both labels that hold the name of the current course
-    QLabel *currentCourseLabel, *courseLabel;
+    QLabel *courseLabel;
 
     // THe splitter contains the SectionPicker and FactListView
     Splitter *splitter;

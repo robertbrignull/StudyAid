@@ -18,6 +18,7 @@
 #include "widgets/factListView.h"
 #include "widgets/sectionPickerWidget.h"
 #include "widgets/splitter.h"
+#include "widgets/breadCrumbs.h"
 #include "dialogs/deleteDialog.h"
 #include "dialogs/formDialog.h"
 #include "forms/courseForm.h"
@@ -58,38 +59,11 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
 
     QHBoxLayout *crumbBorderLayout = new QHBoxLayout();
 
-    QWidget *crumbWidget = new QWidget();
-    crumbWidget->setFixedWidth(700);
-    QHBoxLayout *crumbLayout = new QHBoxLayout(crumbWidget);
-    crumbLayout->setContentsMargins(0, 0, 0, 0);
-
-    ClickableQLabel *coursesLabel = new ClickableQLabel("Courses");
-    QLabel *sepLabel = new QLabel(" / ");
-    currentCourseLabel = new QLabel();
-
-    QFont font = coursesLabel->font();
-    font.setPointSize(14);
-    coursesLabel->setFont(font);
-    currentCourseLabel->setFont(font);
-
-    QPalette palette = coursesLabel->palette();
-
-    palette.setColor(QPalette::WindowText, Qt::blue);
-    palette.setColor(QPalette::Text, Qt::blue);
-    coursesLabel->setPalette(palette);
-
-    palette.setColor(QPalette::WindowText, Qt::gray);
-    palette.setColor(QPalette::Text, Qt::gray);
-    sepLabel->setPalette(palette);
-    currentCourseLabel->setPalette(palette);
-
-    crumbLayout->addWidget(coursesLabel);
-    crumbLayout->addWidget(sepLabel);
-    crumbLayout->addWidget(currentCourseLabel);
-    crumbLayout->addStretch(1);
+    BreadCrumbs *breadCrumbs = new BreadCrumbs(1, model, pageStack);
+    breadCrumbs->setFixedWidth(700);
 
     crumbBorderLayout->addStretch(1);
-    crumbBorderLayout->addWidget(crumbWidget);
+    crumbBorderLayout->addWidget(breadCrumbs);
     crumbBorderLayout->addStretch(1);
 
     outerLayout->addLayout(crumbBorderLayout);
@@ -139,13 +113,13 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
 
 
 
-    //  #######   ###    #####  ########  #####
-    //  ##       ## ##  ##   ##    ##    ##   ##
-    //  ##      ##   ## ##         ##     ##
-    //  #####   ##   ## ##         ##      ###
-    //  ##      ####### ##         ##        ##
-    //  ##      ##   ## ##   ##    ##    ##   ##
-    //  ##      ##   ##  #####     ##     #####
+    //  ######   #####  #####   ##    ##
+    //  ##   ## ##   ## ##  ###  ##  ##
+    //  ##   ## ##   ## ##   ##   ####
+    //  ######  ##   ## ##   ##    ##
+    //  ##   ## ##   ## ##   ##    ##
+    //  ##   ## ##   ## ##  ###    ##
+    //  ######   #####  #####      ##
 
     // Use a horizontal splitter to divide the two areas dynamically
 
@@ -197,10 +171,6 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
     // ##   ##  ##  ##   ## ##  ### ##   ## ##      ##   ##
     //  #####  ####  #####  ##   ## ##   ## #######  #####
 
-    connect(coursesLabel, &ClickableQLabel::clicked, [=](){
-        pageStack->setCurrentIndex(0);
-    });
-
     connect(editCourseButton, SIGNAL(clicked()), this, SLOT(courseEditButtonClicked()));
 
     connect(courseEditDialog, SIGNAL(cancelled()), courseEditDialog, SLOT(close()));
@@ -208,7 +178,7 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
 
     connect(deleteCourseButton, SIGNAL(clicked()), courseDeleteDialog, SLOT(show()));
 
-    connect(courseDeleteDialog, SIGNAL(accepted()), this, SLOT(courseDeleteFormAccepted()));
+    connect(courseDeleteDialog, SIGNAL(accepted()), this, SLOT(courseDeleteDialogAccepted()));
     connect(courseDeleteDialog, SIGNAL(cancelled()), courseDeleteDialog, SLOT(close()));
 
     connect(model, SIGNAL(courseSelectedChanged(Course)), this, SLOT(courseSelectedChangedSlot(Course)));
@@ -243,7 +213,7 @@ void CoursePage::courseEditDialogCompleted(std::map<std::string, std::string> da
     courseEditDialog->close();
 }
 
-void CoursePage::courseDeleteFormAccepted()
+void CoursePage::courseDeleteDialogAccepted()
 {
     deleteCourse(model->getCourseSelected().id);
 
@@ -256,7 +226,6 @@ void CoursePage::courseDeleteFormAccepted()
 void CoursePage::courseSelectedChangedSlot(Course course)
 {
     // Update the labels with the name of the course
-    currentCourseLabel->setText(QString::fromStdString(course.name));
     courseLabel->setText(QString::fromStdString(course.name));
 
     // Rebuild the section picker
@@ -289,7 +258,6 @@ void CoursePage::courseEditedSlot(Course course)
 {
     if (model->isCourseSelected() && model->getCourseSelected().id == course.id) {
         // Update the labels with the name of the course
-        currentCourseLabel->setText(QString::fromStdString(course.name));
         courseLabel->setText(QString::fromStdString(course.name));
     }
 }

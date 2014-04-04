@@ -2,14 +2,18 @@
 
 #include <iostream>
 
-typedef std::string FactType;
+typedef struct FactType
+{
+    std::string fact_type;
+    bool can_have_proof;
+} FactType;
 
 typedef struct Fact
 {
     int id;
     int parent;
     std::string name;
-    FactType type;
+    std::string type;
     std::string statement;
     int ordering;
 } Fact;
