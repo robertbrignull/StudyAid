@@ -1,3 +1,4 @@
+
 -- Necessary to drop table, even though we have a new database
 DROP TABLE IF EXISTS course;
 DROP TABLE IF EXISTS proof_dependency;

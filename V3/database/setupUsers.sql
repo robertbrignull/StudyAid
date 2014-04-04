@@ -1,3 +1,4 @@
+
 -- Remove the databases if needed and add new ones
 DROP DATABASE IF EXISTS study_aid_v3;
 DROP DATABASE IF EXISTS study_aid_v3_test;
@@ -11,10 +12,3 @@ DROP USER 'study_aid_v3'@'localhost';
 CREATE USER 'study_aid_v3'@'localhost';
 GRANT ALL PRIVILEGES ON study_aid_v3.* TO 'study_aid_v3'@'localhost';
 GRANT ALL PRIVILEGES ON study_aid_v3_test.* TO 'study_aid_v3'@'localhost';
-
--- Now install the normal and test databases
-USE study_aid_v3;
-SOURCE setupDatabase.sql
-
-USE study_aid_v3_test;
-SOURCE setupDatabase.sql

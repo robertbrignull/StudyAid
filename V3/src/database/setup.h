@@ -11,6 +11,10 @@ void initialiseConnection(bool testMode);
  */
 void initialiseBackup();
 
+/* Clears the test database
+ */
+void clearTestDatabase();
+
 /* Returns a connection to the database.
  */
 mysqlpp::Connection *getConn();

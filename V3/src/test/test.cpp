@@ -8,6 +8,7 @@
 #include <QtTest/QtTest>
 
 #include "StudyAid.h"
+#include "database/setup.h"
 #include "pages/rootPage.h"
 #include "dialogs/formDialog.h"
 #include "forms/courseForm.h"
@@ -18,6 +19,8 @@
 
 void Test::init()
 {
+    clearTestDatabase();
+
     window = new StudyAid();
     window->setWindowTitle("StudyAid");
     window->show(); 

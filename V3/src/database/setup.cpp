@@ -12,6 +12,7 @@
 
 #include <QFile>
 #include <QString>
+#include <QTextStream>
 
 #include "database/setup.h"
 
@@ -49,6 +50,17 @@ void initialiseBackup()
         QFile::setPermissions(QString::fromStdString(dataDir + "database/restore"), QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner | QFile::ReadUser | QFile::WriteUser | QFile::ExeUser | QFile::ReadGroup | QFile::ReadOther);
         QFile::setPermissions(QString::fromStdString(dataDir + "database/install"), QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner | QFile::ReadUser | QFile::WriteUser | QFile::ExeUser | QFile::ReadGroup | QFile::ReadOther);
     }
+}
+
+void clearTestDatabase()
+{
+    if (databaseName != "study_aid_v3_test") return;
+
+    mysqlpp::Query(getConn(), true, "DELETE FROM course").execute();
+    mysqlpp::Query(getConn(), true, "DELETE FROM proof_dependency").execute();
+    mysqlpp::Query(getConn(), true, "DELETE FROM fact_dependency").execute();
+    mysqlpp::Query(getConn(), true, "DELETE FROM proof").execute();
+    mysqlpp::Query(getConn(), true, "DELETE FROM fact").execute();
 }
 
 mysqlpp::Connection *getConn()
