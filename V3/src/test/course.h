@@ -12,9 +12,13 @@ private slots:
     void init();
     void cleanup();
 
-    void test_addCourse();
+    void test_addCourse_one();
+    void test_addCourse_multiple();
+
     void test_editCourse();
-    void test_deleteCourse();
+
+    void test_deleteCourse_all();
+    void test_deleteCourse_one();
 
 private:
     StudyAid *window;

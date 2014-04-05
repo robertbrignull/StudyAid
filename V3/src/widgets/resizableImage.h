@@ -23,12 +23,13 @@ public:
     void resizeEvent(QResizeEvent *event);
     void paintEvent(QPaintEvent *);
 
-public slots:
-    void setImage(std::string filename);
-    void reloadImage();
 
-private:
+
     std::string filename;
     QPixmap image, scaledImage;
     bool imageLoaded;
+
+public slots:
+    void setImage(std::string filename);
+    void reloadImage();
 };

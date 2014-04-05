@@ -1,3 +1,5 @@
+#include "unistd.h"
+
 #include <iostream>
 
 #include <QLineEdit>
@@ -5,6 +7,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QComboBox>
+#include <QTextEdit>
 
 #include <QtTest/QtTest>
 
@@ -99,6 +102,12 @@ void TestUtil::editCurrentFact(StudyAid *window, const char *name, const char *t
     typeInput->setCurrentIndex(typeInput->findText(type));
 
     QTest::mouseClick(factPage->factEditDialog->completeButton, Qt::LeftButton);
+}
+
+void TestUtil::editCurrentFactStatement(StudyAid *window, const char *statement)
+{
+    window->factPage->statementTextEdit->setPlainText(statement);
+    usleep(500000);
 }
 
 void TestUtil::deleteCurrentFact(StudyAid *window)

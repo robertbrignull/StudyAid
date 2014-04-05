@@ -33,6 +33,18 @@
 FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *parent)
     : QWidget(parent)
 {
+    QTimer *testTimer = new QTimer(this);
+    testTimer->setInterval(10);
+
+    connect(testTimer, &QTimer::timeout, [](){
+        std::cout << "timeout" << std::endl;
+    });
+
+    testTimer->start();
+
+
+
+
     this->model = model;
     this->pageStack = pageStack;
 
@@ -365,13 +377,6 @@ void FactPage::factSelectedChangedSlot(Fact fact)
     else {
         proofsScrollArea->hide();
         addProofButton->hide();
-    }
-
-    if (fact.statement == "") {
-        splitter->setSizes(QList<int>{ 1, 1, 0 });
-    }
-    else {
-        splitter->setSizes(QList<int>{ 0, 1, 0 });
     }
 }
 

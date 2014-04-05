@@ -9,5 +9,6 @@ public:
 
     static void addFact(StudyAid *window, const char *name, const char *type);
     static void editCurrentFact(StudyAid *window, const char *name, const char *type);
+    static void editCurrentFactStatement(StudyAid *window, const char *statement);
     static void deleteCurrentFact(StudyAid *window);
 };
