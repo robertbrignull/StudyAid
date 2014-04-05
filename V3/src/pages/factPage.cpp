@@ -360,9 +360,11 @@ void FactPage::factSelectedChangedSlot(Fact fact)
 
         // Show the section
         proofsScrollArea->show();
+        addProofButton->show();
     }
     else {
         proofsScrollArea->hide();
+        addProofButton->hide();
     }
 
     if (fact.statement == "") {

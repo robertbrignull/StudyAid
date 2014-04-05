@@ -61,6 +61,11 @@ void CourseTest::test_addCourse()
     QVERIFY(coursePage->courseLabel->text() == newCourseName);
     QVERIFY(coursePage->breadCrumbs->currentCourseLabel->text() == newCourseName);
 
+    // Check that the name is correct in the editCourseDialog
+    QTest::mouseClick(coursePage->editCourseButton, Qt::LeftButton);
+    QVERIFY(coursePage->courseEditForm->nameInput->text() == newCourseName);
+    QTest::mouseClick(coursePage->courseEditDialog->cancelButton, Qt::LeftButton);
+
     // Check that it has no facts
     QVERIFY(coursePage->factListView->currentFactList->idChildMap.size() == 0);
 
@@ -91,6 +96,11 @@ void CourseTest::test_editCourse()
     // Check that the new name is shown everywhere on the course page
     QVERIFY(coursePage->courseLabel->text() == newCourseName);
     QVERIFY(coursePage->breadCrumbs->currentCourseLabel->text() == newCourseName);
+
+    // Check that the name is correct in the editCourseDialog
+    QTest::mouseClick(coursePage->editCourseButton, Qt::LeftButton);
+    QVERIFY(coursePage->courseEditForm->nameInput->text() == newCourseName);
+    QTest::mouseClick(coursePage->courseEditDialog->cancelButton, Qt::LeftButton);
 
     // And is shown correctly on the root page
     QVERIFY(rootPage->idCourseMap.begin()->second.second->course.name == newCourseName);
