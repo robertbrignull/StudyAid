@@ -10,6 +10,7 @@
 class ResizableStackedWidget;
 class Model;
 class FactForm;
+class ProofForm;
 class FormDialog;
 class DeleteDialog;
 class ClickableQLabel;
@@ -47,6 +48,7 @@ public:
     DeleteDialog *factDeleteDialog;
 
     ImageButton *addProofButton;
+    ProofForm *proofAddForm;
     FormDialog *proofAddDialog;
 
     // Contains the name of the current fact

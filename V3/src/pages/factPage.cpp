@@ -43,7 +43,8 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
     factDeleteDialog = new DeleteDialog(this, "Are you sure you want to delete this fact?");
 
-    proofAddDialog = new FormDialog(this, new ProofForm(), "Add a new proof...", "Add");
+    proofAddForm = new ProofForm();
+    proofAddDialog = new FormDialog(this, proofAddForm, "Add a new proof...", "Add");
 
 
 

@@ -246,6 +246,7 @@ void FactTest::test_editFact_canNotHaveProof()
 
 void FactTest::test_editFact_statement()
 {
+    CoursePage *coursePage = window->coursePage;
     FactPage *factPage = window->factPage;
 
     const char *courseName = "Set Theory";
@@ -269,7 +270,10 @@ void FactTest::test_editFact_statement()
     QVERIFY(factPage->statementImage->imageLoaded == true);
 
     // Record the size of the image
-    int oldHeight = factPage->statementImage->image.height();
+    int oldHeightOnFactPage = factPage->statementImage->image.height();
+
+    auto it = coursePage->factListView->currentFactList->idChildMap.begin();
+    int oldHeightOnCoursePage = ((ExpandingFactWidget*) it->second.second)->image->image.height();
 
     // Change the statement to something longer
     TestUtil::editCurrentFactStatement(window, longFactStatement);
@@ -277,8 +281,11 @@ void FactTest::test_editFact_statement()
     // Check the rendered image is not blank
     QVERIFY(factPage->statementImage->imageLoaded == true);
 
-    // Check the size of the rendered image increased
-    QVERIFY(factPage->statementImage->image.height() > oldHeight);
+    // Check the size of the rendered images have increased
+    QVERIFY(factPage->statementImage->image.height() > oldHeightOnFactPage);
+
+    it = coursePage->factListView->currentFactList->idChildMap.begin();
+    QVERIFY(((ExpandingFactWidget*) it->second.second)->image->image.height() > oldHeightOnCoursePage);
 }
 
 void FactTest::test_deleteFact_all()

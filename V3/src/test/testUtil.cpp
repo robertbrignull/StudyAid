@@ -16,10 +16,12 @@
 #include "pages/rootPage.h"
 #include "pages/coursePage.h"
 #include "pages/factPage.h"
+#include "pages/proofPage.h"
 #include "dialogs/formDialog.h"
 #include "dialogs/deleteDialog.h"
 #include "forms/courseForm.h"
 #include "forms/factForm.h"
+#include "forms/proofForm.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/imageButton.h"
 #include "widgets/breadCrumbs.h"
@@ -106,8 +108,10 @@ void TestUtil::editCurrentFact(StudyAid *window, const char *name, const char *t
 
 void TestUtil::editCurrentFactStatement(StudyAid *window, const char *statement)
 {
-    window->factPage->statementTextEdit->setPlainText(statement);
-    window->factPage->saveStatement();
+    FactPage *factPage = window->factPage;
+
+    factPage->statementTextEdit->setPlainText(statement);
+    factPage->saveStatement();
 }
 
 void TestUtil::deleteCurrentFact(StudyAid *window)
@@ -116,4 +120,52 @@ void TestUtil::deleteCurrentFact(StudyAid *window)
 
     QTest::mouseClick(factPage->deleteFactButton, Qt::LeftButton);
     QTest::mouseClick(factPage->factDeleteDialog->acceptButton, Qt::LeftButton);
+}
+
+
+
+//  ######  ######   #####   #####  #######
+//  ##   ## ##   ## ##   ## ##   ## ##
+//  ##   ## ##   ## ##   ## ##   ## ##
+//  ######  ######  ##   ## ##   ## #####
+//  ##      ##  ##  ##   ## ##   ## ##
+//  ##      ##   ## ##   ## ##   ## ##
+//  ##      ##    #  #####   #####  ##
+
+void TestUtil::addProof(StudyAid *window, const char *name)
+{
+    FactPage *factPage = window->factPage;
+
+    QTest::mouseClick(factPage->addProofButton, Qt::LeftButton);
+
+    factPage->proofAddForm->nameInput->setText(name);
+
+    QTest::mouseClick(factPage->proofAddDialog->completeButton, Qt::LeftButton);
+}
+
+void TestUtil::editCurrentProof(StudyAid *window, const char *name)
+{
+    ProofPage *proofPage = window->proofPage;
+
+    QTest::mouseClick(proofPage->editProofButton, Qt::LeftButton);
+
+    proofPage->proofEditForm->nameInput->setText(name);
+
+    QTest::mouseClick(proofPage->proofEditDialog->completeButton, Qt::LeftButton);
+}
+
+void TestUtil::editCurrentProofBody(StudyAid *window, const char *body)
+{
+    ProofPage *proofPage = window->proofPage;
+
+    proofPage->bodyTextEdit->setPlainText(body);
+    proofPage->saveBody();
+}
+
+void TestUtil::deleteCurrentProof(StudyAid *window)
+{
+    ProofPage *proofPage = window->proofPage;
+
+    QTest::mouseClick(proofPage->deleteProofButton, Qt::LeftButton);
+    QTest::mouseClick(proofPage->proofDeleteDialog->acceptButton, Qt::LeftButton);
 }
