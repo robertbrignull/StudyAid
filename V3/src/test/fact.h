@@ -20,6 +20,7 @@ private slots:
     void test_editFact();
     void test_editFact_canHaveProof();
     void test_editFact_canNotHaveProof();
+    void test_editFact_statement();
 
     void test_deleteFact_all();
     void test_deleteFact_one();

@@ -23,6 +23,7 @@ class QScrollArea;
 class ProofViewWidget;
 class ImageButton;
 class BreadCrumbs;
+class QTimer;
 
 class FactPage : public QWidget
 {
@@ -56,6 +57,9 @@ public:
 
     // Contains the current fact's statement
     QTextEdit *statementTextEdit;
+
+    // For the timer that saves and renders the statement
+    QTimer *statementSaveTimer;
 
     // The rendered statement
     ResizableImage *statementImage;

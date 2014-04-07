@@ -107,7 +107,7 @@ void TestUtil::editCurrentFact(StudyAid *window, const char *name, const char *t
 void TestUtil::editCurrentFactStatement(StudyAid *window, const char *statement)
 {
     window->factPage->statementTextEdit->setPlainText(statement);
-    usleep(500000);
+    window->factPage->saveStatement();
 }
 
 void TestUtil::deleteCurrentFact(StudyAid *window)

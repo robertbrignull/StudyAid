@@ -33,18 +33,6 @@
 FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *parent)
     : QWidget(parent)
 {
-    QTimer *testTimer = new QTimer(this);
-    testTimer->setInterval(10);
-
-    connect(testTimer, &QTimer::timeout, [](){
-        std::cout << "timeout" << std::endl;
-    });
-
-    testTimer->start();
-
-
-
-
     this->model = model;
     this->pageStack = pageStack;
 
@@ -173,7 +161,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     statementTextEdit->setFont(font);
     splitter->addWidget(statementTextEdit);
 
-    QTimer *statementSaveTimer = new QTimer(this);
+    statementSaveTimer = new QTimer(this);
     statementSaveTimer->setSingleShot(true);
     statementSaveTimer->setInterval(200);
 

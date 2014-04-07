@@ -244,6 +244,43 @@ void FactTest::test_editFact_canNotHaveProof()
     QVERIFY(factPage->addProofButton->isVisible() == factCanHaveType);
 }
 
+void FactTest::test_editFact_statement()
+{
+    FactPage *factPage = window->factPage;
+
+    const char *courseName = "Set Theory";
+    const char *factName = "ZF1 - Extensionality";
+    const char *factType = "Axiom";
+    const char *shortFactStatement = "Single line";
+    const char *longFactStatement = "Multiple\\\\\n... lines!";
+
+    // Add our course and fact
+    TestUtil::addCourse(window, courseName);
+    TestUtil::addFact(window, factName, factType);
+
+    // Check the statement is empty
+    QVERIFY(factPage->statementTextEdit->toPlainText() == "");
+    QVERIFY(factPage->statementImage->imageLoaded == false);
+
+    // Change the statement to something short but nonempty
+    TestUtil::editCurrentFactStatement(window, shortFactStatement);
+
+    // Check the rendered image is not blank
+    QVERIFY(factPage->statementImage->imageLoaded == true);
+
+    // Record the size of the image
+    int oldHeight = factPage->statementImage->image.height();
+
+    // Change the statement to something longer
+    TestUtil::editCurrentFactStatement(window, longFactStatement);
+
+    // Check the rendered image is not blank
+    QVERIFY(factPage->statementImage->imageLoaded == true);
+
+    // Check the size of the rendered image increased
+    QVERIFY(factPage->statementImage->image.height() > oldHeight);
+}
+
 void FactTest::test_deleteFact_all()
 {
     CoursePage *coursePage = window->coursePage;
