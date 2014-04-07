@@ -6,12 +6,16 @@
 
 class ResizableStackedWidget;
 class Model;
+class BreadCrumbs;
 class CourseForm;
 class FormDialog;
 class DeleteDialog;
 class QLabel;
 class Splitter;
 class QVBoxLayout;
+class SectionPickerWidget;
+class FactListView;
+class ImageButton;
 
 class CoursePage : public QWidget
 {
@@ -19,6 +23,30 @@ class CoursePage : public QWidget
 
 public:
     CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget *parent = 0);
+
+
+
+    Model *model;
+    ResizableStackedWidget *pageStack;
+
+    BreadCrumbs *breadCrumbs;
+
+    ImageButton *editCourseButton;
+    CourseForm *courseEditForm;
+    FormDialog *courseEditDialog;
+
+    ImageButton *deleteCourseButton;
+    DeleteDialog *courseDeleteDialog;
+
+    // Both labels that hold the name of the current course
+    QLabel *courseLabel;
+
+    // THe splitter contains the SectionPicker and FactListView
+    Splitter *splitter;
+
+    QVBoxLayout *pickerScrollLayout, *courseScrollLayout;
+    SectionPickerWidget *sectionPicker;
+    FactListView *factListView;
 
 public slots:
     void courseEditButtonClicked();
@@ -28,24 +56,4 @@ public slots:
 
     void courseSelectedChangedSlot(Course course);
     void courseEditedSlot(Course course);
-
-private:
-    Model *model;
-    ResizableStackedWidget *pageStack;
-
-    // The form and dialog for editing a course
-    CourseForm *courseEditForm;
-    FormDialog *courseEditDialog;
-
-    // Dialog for deleting a course
-    DeleteDialog *courseDeleteDialog;
-
-    // Both labels that hold the name of the current course
-    QLabel *courseLabel;
-
-    // THe splitter contains the SectionPicker and FactListView
-    Splitter *splitter;
-
-    // The layouts for the two sides of the splitter
-    QVBoxLayout *pickerScrollLayout, *courseScrollLayout;
 };

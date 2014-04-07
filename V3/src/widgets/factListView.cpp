@@ -18,7 +18,8 @@ FactListView::FactListView(Course course, Model *model, ResizableStackedWidget *
 
     layout = new QHBoxLayout(this);
 
-    layout->addWidget(rootFactList);
+    currentFactList = rootFactList;
+    layout->addWidget(currentFactList);
 }
 
 FactListView::~FactListView()
@@ -32,5 +33,6 @@ void FactListView::selectSection(int id)
         layout->takeAt(0)->widget();
     }
 
-    layout->addWidget(idFactListMap.at(id));
+    currentFactList = idFactListMap.at(id);
+    layout->addWidget(currentFactList);
 }

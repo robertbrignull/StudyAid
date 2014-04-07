@@ -61,7 +61,7 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
 
     QHBoxLayout *crumbBorderLayout = new QHBoxLayout();
 
-    BreadCrumbs *breadCrumbs = new BreadCrumbs(3, model, pageStack);
+    breadCrumbs = new BreadCrumbs(3, model, pageStack);
     breadCrumbs->setFixedWidth(700);
 
     crumbBorderLayout->addStretch(1);
@@ -93,12 +93,12 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
     trafficLightVLayout->addSpacing(16);
     trafficLightVLayout->addWidget(trafficLight);
 
-    ImageButton *editProofButton = new ImageButton(QPixmap(":/images/pencil_black.png"), QSize(32, 32));
+    editProofButton = new ImageButton(QPixmap(":/images/pencil_black.png"), QSize(32, 32));
     QVBoxLayout *editProofVLayout = new QVBoxLayout();
     editProofVLayout->addSpacing(16);
     editProofVLayout->addWidget(editProofButton);
 
-    ImageButton *deleteProofButton = new ImageButton(QPixmap(":/images/trash_black.png"), QSize(32, 32));
+    deleteProofButton = new ImageButton(QPixmap(":/images/trash_black.png"), QSize(32, 32));
     QVBoxLayout *deleteProofVLayout = new QVBoxLayout();
     deleteProofVLayout->addSpacing(16);
     deleteProofVLayout->addWidget(deleteProofButton);

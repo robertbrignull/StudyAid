@@ -1,3 +1,5 @@
 #!/bin/bash
 
-mysql -uroot mysql < installDatabases.sql
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+cat $DIR/setupUsers.sql <(echo "USE study_aid_v3;") $DIR/setupDatabase.sql <(echo "USE study_aid_v3_test;") $DIR/setupDatabase.sql | mysql -uroot mysql

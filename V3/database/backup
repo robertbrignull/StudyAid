@@ -1,3 +1,5 @@
 #!/bin/bash
 
-mysqldump -ustudy_aid_v3 study_aid_v3 > study_aid_v3.sql
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+mysqldump -ustudy_aid_v3 study_aid_v3 > $DIR/study_aid_v3.sql

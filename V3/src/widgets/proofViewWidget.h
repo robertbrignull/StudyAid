@@ -17,12 +17,8 @@ class ProofViewWidget : public QWidget
 public:
     ProofViewWidget(Proof proof, Model *model, ResizableStackedWidget *pageStack, QWidget *parent = 0);
 
-public slots:
-    void viewProofButtonClicked();
 
-    void proofEditedSlot(Proof proof);
-
-private:
+    
     Proof proof;
     Model *model;
     ResizableStackedWidget *pageStack;
@@ -30,4 +26,9 @@ private:
     ImageButton *viewProofButton;
     ResizableImage *bodyImage;
     QLabel *nameLabel;
+
+public slots:
+    void viewProofButtonClicked();
+
+    void proofEditedSlot(Proof proof);
 };

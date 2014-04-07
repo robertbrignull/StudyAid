@@ -16,16 +16,6 @@ class BreadCrumbs : public QWidget
 public:
     BreadCrumbs(int level, Model *model, ResizableStackedWidget *pageStack, QWidget *parent = 0);
 
-public slots:
-    void courseSelectedChangedSlot(Course course);
-    void factSelectedChangedSlot(Fact fact);
-    void proofSelectedChangedSlot(Proof proof);
-
-    void coursesLabelClicked();
-    void factsLabelClicked();
-    void proofsLabelClicked();
-
-private:
     QLabel *newSeperator();
 
 
@@ -37,4 +27,17 @@ private:
 
     ClickableQLabel *coursesLabel, *factsLabel, *proofsLabel;
     QLabel *currentCourseLabel, *currentFactLabel, *currentProofLabel;
+
+public slots:
+    void courseSelectedChangedSlot(Course course);
+    void factSelectedChangedSlot(Fact fact);
+    void proofSelectedChangedSlot(Proof proof);
+
+    void courseEditedSlot(Course course);
+    void factEditedSlot(Fact fact);
+    void proofEditedSlot(Proof proof);
+
+    void coursesLabelClicked();
+    void factsLabelClicked();
+    void proofsLabelClicked();
 };

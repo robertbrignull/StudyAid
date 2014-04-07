@@ -17,6 +17,7 @@ public:
     void setData(std::map<std::string, std::string> data);
     std::map<std::string, std::string> getData();
 
-private:
+
+
     QLineEdit *nameInput;
 };

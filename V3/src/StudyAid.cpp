@@ -5,6 +5,8 @@
 #include <QHBoxLayout>
 #include <QFont>
 
+#include <QtTest/QtTest>
+
 #include "model.h"
 #include "database/setup.h"
 #include "latex/latex.h"
@@ -14,6 +16,8 @@
 #include "pages/proofPage.h"
 #include "widgets/resizableStackedWidget.h"
 
+#include "test/runner.h"
+
 #include "StudyAid.h"
 
 StudyAid::StudyAid(QWidget *parent)
@@ -21,15 +25,20 @@ StudyAid::StudyAid(QWidget *parent)
 {
     QHBoxLayout *layout = new QHBoxLayout(this);
 
-    ResizableStackedWidget *stack = new ResizableStackedWidget();
+    stack = new ResizableStackedWidget();
     model = new Model();
+
+    rootPage = new RootPage(stack, model);
+    coursePage = new CoursePage(stack, model);
+    factPage = new FactPage(stack, model);
+    proofPage = new ProofPage(stack, model);
 
     layout->addWidget(stack);
 
-    stack->addWidget(new RootPage(stack, model));
-    stack->addWidget(new CoursePage(stack, model));
-    stack->addWidget(new FactPage(stack, model));
-    stack->addWidget(new ProofPage(stack, model));
+    stack->addWidget(rootPage);
+    stack->addWidget(coursePage);
+    stack->addWidget(factPage);
+    stack->addWidget(proofPage);
 
     showMaximized();
 }
@@ -41,9 +50,10 @@ StudyAid::~StudyAid()
 
 int main(int argc, char **argv)
 {
-    bool testMode = (argc >= 2 && strncmp(argv[1], "test", 4) != 0);
+    bool testMode = (argc >= 2 && strncmp(argv[1], "test", 4) == 0);
 
-    initialiseDatabase(testMode);
+    initialiseConnection(testMode);
+    initialiseBackup();
     initialiseLatex();
 
     QApplication app(argc, argv);
@@ -53,10 +63,17 @@ int main(int argc, char **argv)
     font.setPointSize(18);
     app.setFont(font);
 
-    StudyAid window;
+    if (testMode) {
+        runAllTests();
 
-    window.setWindowTitle("StudyAid");
-    window.show();
+        return 0;
+    }
+    else {
+        StudyAid window;
 
-    return app.exec();
+        window.setWindowTitle("StudyAid");
+        window.show();
+
+        return app.exec();
+    }
 }

@@ -20,11 +20,13 @@ public:
     FactListView(Course course, Model *model, ResizableStackedWidget *pageStack, QWidget *parent = 0);
     ~FactListView();
 
-public slots:
-    void selectSection(int id);
 
-private:
+
     Course course;
     std::map<int, FactList*> idFactListMap;
     QHBoxLayout *layout;
+    FactList *currentFactList;
+
+public slots:
+    void selectSection(int id);
 };

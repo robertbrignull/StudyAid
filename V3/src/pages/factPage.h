@@ -10,6 +10,7 @@
 class ResizableStackedWidget;
 class Model;
 class FactForm;
+class ProofForm;
 class FormDialog;
 class DeleteDialog;
 class ClickableQLabel;
@@ -21,6 +22,9 @@ class ResizableImage;
 class TrafficLight;
 class QScrollArea;
 class ProofViewWidget;
+class ImageButton;
+class BreadCrumbs;
+class QTimer;
 
 class FactPage : public QWidget
 {
@@ -28,6 +32,49 @@ class FactPage : public QWidget
 
 public:
     FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *parent = 0);
+
+
+
+    Model *model;
+    ResizableStackedWidget *pageStack;
+
+    BreadCrumbs *breadCrumbs;
+
+    ImageButton *editFactButton;
+    FactForm *factEditForm;
+    FormDialog *factEditDialog;
+
+    ImageButton *deleteFactButton;
+    DeleteDialog *factDeleteDialog;
+
+    ImageButton *addProofButton;
+    ProofForm *proofAddForm;
+    FormDialog *proofAddDialog;
+
+    // Contains the name of the current fact
+    QLabel *factLabel;
+
+    // The splitter
+    Splitter *splitter;
+
+    // Contains the current fact's statement
+    QTextEdit *statementTextEdit;
+
+    // For the timer that saves and renders the statement
+    QTimer *statementSaveTimer;
+
+    // The rendered statement
+    ResizableImage *statementImage;
+
+    // Shows whether the statement rendered without errors
+    TrafficLight *trafficLight;
+
+    // Contains the section on proofs
+    QScrollArea *proofsScrollArea;
+    QVBoxLayout *proofsScrollLayout;
+
+    // A map from ids to ProofViewWidgets
+    std::map<int, std::pair<Proof, ProofViewWidget*> > idProofViewWidgetMap;
 
 public slots:
     void factEditButtonClicked();
@@ -48,41 +95,4 @@ public slots:
 
 private:
     void insertProofViewWidget(Proof proof, ProofViewWidget *proofViewWidget);
-
-
-
-    Model *model;
-    ResizableStackedWidget *pageStack;
-
-    // The form and dialog for editing a fact
-    FactForm *factEditForm;
-    FormDialog *factEditDialog;
-
-    // Dialog for deleting a fact
-    DeleteDialog *factDeleteDialog;
-
-    // Dialog for adding a proof
-    FormDialog *proofAddDialog;
-
-    // Contains the name of the current fact
-    QLabel *factLabel;
-
-    // The splitter
-    Splitter *splitter;
-
-    // Contains the current fact's statement
-    QTextEdit *statementTextEdit;
-
-    // The rendered statement
-    ResizableImage *statementImage;
-
-    // Shows whether the statement rendered without errors
-    TrafficLight *trafficLight;
-
-    // Contains the section on proofs
-    QScrollArea *proofsScrollArea;
-    QVBoxLayout *proofsScrollLayout;
-
-    // A map from ids to ProofViewWidgets
-    std::map<int, std::pair<Proof, ProofViewWidget*> > idProofViewWidgetMap;
 };

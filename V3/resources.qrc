@@ -12,5 +12,11 @@
     <file>images/triangle_right_black.png</file>
     <file>images/triangle_up_black.png</file>
     <file>images/triangle_down_black.png</file>
+
+    <file>database/backup</file>
+    <file>database/restore</file>
+    <file>database/install</file>
+    <file>database/setupUsers.sql</file>
+    <file>database/setupDatabase.sql</file>
 </qresource>
 </RCC>

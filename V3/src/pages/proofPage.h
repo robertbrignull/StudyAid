@@ -14,6 +14,8 @@ class Splitter;
 class QTextEdit;
 class ResizableImage;
 class TrafficLight;
+class ImageButton;
+class BreadCrumbs;
 
 class ProofPage : public QWidget
 {
@@ -22,26 +24,18 @@ class ProofPage : public QWidget
 public:
     ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *parent = 0);
 
-public slots:
-    void proofEditButtonClicked();
-    void proofEditDialogCompleted(std::map<std::string, std::string> data);
 
-    void saveBody();
 
-    void proofDeleteDialogAccepted();
-
-    void proofSelectedChangedSlot(Proof proof);
-    void proofEditedSlot(Proof proof);
-
-private:
     Model *model;
     ResizableStackedWidget *pageStack;
 
-    // The form and dialog for editing a proof
+    BreadCrumbs *breadCrumbs;
+
+    ImageButton *editProofButton;
     ProofForm *proofEditForm;
     FormDialog *proofEditDialog;
 
-    // Dialog for deleting a proof
+    ImageButton *deleteProofButton;
     DeleteDialog *proofDeleteDialog;
 
     // Contains the name of the current proof
@@ -58,4 +52,15 @@ private:
 
     // Shows whether the statement rendered without errors
     TrafficLight *trafficLight;
+
+public slots:
+    void proofEditButtonClicked();
+    void proofEditDialogCompleted(std::map<std::string, std::string> data);
+
+    void saveBody();
+
+    void proofDeleteDialogAccepted();
+
+    void proofSelectedChangedSlot(Proof proof);
+    void proofEditedSlot(Proof proof);
 };

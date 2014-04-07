@@ -43,7 +43,8 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
     factDeleteDialog = new DeleteDialog(this, "Are you sure you want to delete this fact?");
 
-    proofAddDialog = new FormDialog(this, new ProofForm(), "Add a new proof...", "Add");
+    proofAddForm = new ProofForm();
+    proofAddDialog = new FormDialog(this, proofAddForm, "Add a new proof...", "Add");
 
 
 
@@ -65,7 +66,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
     QHBoxLayout *crumbBorderLayout = new QHBoxLayout();
 
-    BreadCrumbs *breadCrumbs = new BreadCrumbs(2, model, pageStack);
+    breadCrumbs = new BreadCrumbs(2, model, pageStack);
     breadCrumbs->setFixedWidth(700);
 
     crumbBorderLayout->addStretch(1);
@@ -97,17 +98,17 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     trafficLightVLayout->addSpacing(16);
     trafficLightVLayout->addWidget(trafficLight);
 
-    ImageButton *addProofButton = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(32, 32));
+    addProofButton = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(32, 32));
     QVBoxLayout *addProofVLayout = new QVBoxLayout();
     addProofVLayout->addSpacing(16);
     addProofVLayout->addWidget(addProofButton);
 
-    ImageButton *editFactButton = new ImageButton(QPixmap(":/images/pencil_black.png"), QSize(32, 32));
+    editFactButton = new ImageButton(QPixmap(":/images/pencil_black.png"), QSize(32, 32));
     QVBoxLayout *editFactVLayout = new QVBoxLayout();
     editFactVLayout->addSpacing(16);
     editFactVLayout->addWidget(editFactButton);
 
-    ImageButton *deleteFactButton = new ImageButton(QPixmap(":/images/trash_black.png"), QSize(32, 32));
+    deleteFactButton = new ImageButton(QPixmap(":/images/trash_black.png"), QSize(32, 32));
     QVBoxLayout *deleteFactVLayout = new QVBoxLayout();
     deleteFactVLayout->addSpacing(16);
     deleteFactVLayout->addWidget(deleteFactButton);
@@ -161,7 +162,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     statementTextEdit->setFont(font);
     splitter->addWidget(statementTextEdit);
 
-    QTimer *statementSaveTimer = new QTimer(this);
+    statementSaveTimer = new QTimer(this);
     statementSaveTimer->setSingleShot(true);
     statementSaveTimer->setInterval(200);
 
@@ -360,16 +361,11 @@ void FactPage::factSelectedChangedSlot(Fact fact)
 
         // Show the section
         proofsScrollArea->show();
+        addProofButton->show();
     }
     else {
         proofsScrollArea->hide();
-    }
-
-    if (fact.statement == "") {
-        splitter->setSizes(QList<int>{ 1, 1, 0 });
-    }
-    else {
-        splitter->setSizes(QList<int>{ 0, 1, 0 });
+        addProofButton->hide();
     }
 }
 

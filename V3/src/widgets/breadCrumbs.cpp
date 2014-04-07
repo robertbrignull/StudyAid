@@ -52,6 +52,7 @@ BreadCrumbs::BreadCrumbs(int level, Model *model, ResizableStackedWidget *pageSt
         layout->addWidget(currentCourseLabel);
 
         connect(model, SIGNAL(courseSelectedChanged(Course)), this, SLOT(courseSelectedChangedSlot(Course)));
+        connect(model, SIGNAL(courseEdited(Course)), this, SLOT(courseEditedSlot(Course)));
     }
     else if (level > 1) {
         factsLabel = new ClickableQLabel("");
@@ -62,6 +63,7 @@ BreadCrumbs::BreadCrumbs(int level, Model *model, ResizableStackedWidget *pageSt
         layout->addWidget(factsLabel);
 
         connect(model, SIGNAL(courseSelectedChanged(Course)), this, SLOT(courseSelectedChangedSlot(Course)));
+        connect(model, SIGNAL(courseEdited(Course)), this, SLOT(courseEditedSlot(Course)));
         connect(factsLabel, SIGNAL(clicked()), this, SLOT(factsLabelClicked()));
 
         if (level == 2) {
@@ -73,6 +75,7 @@ BreadCrumbs::BreadCrumbs(int level, Model *model, ResizableStackedWidget *pageSt
             layout->addWidget(currentFactLabel);
 
             connect(model, SIGNAL(factSelectedChanged(Fact)), this, SLOT(factSelectedChangedSlot(Fact)));
+            connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
         }
         else if (level > 2) {
             proofsLabel = new ClickableQLabel("");
@@ -83,6 +86,7 @@ BreadCrumbs::BreadCrumbs(int level, Model *model, ResizableStackedWidget *pageSt
             layout->addWidget(proofsLabel);
 
             connect(model, SIGNAL(factSelectedChanged(Fact)), this, SLOT(factSelectedChangedSlot(Fact)));
+            connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
             connect(proofsLabel, SIGNAL(clicked()), this, SLOT(proofsLabelClicked()));
 
             currentProofLabel = new QLabel("");
@@ -93,6 +97,7 @@ BreadCrumbs::BreadCrumbs(int level, Model *model, ResizableStackedWidget *pageSt
             layout->addWidget(currentProofLabel);
 
             connect(model, SIGNAL(proofSelectedChanged(Proof)), this, SLOT(proofSelectedChangedSlot(Proof)));
+            connect(model, SIGNAL(proofEdited(Proof)), this, SLOT(proofEditedSlot(Proof)));
         }
     }
 
@@ -123,6 +128,27 @@ void BreadCrumbs::proofSelectedChangedSlot(Proof proof)
 {
     if (level == 3) {
         currentProofLabel->setText(QString::fromStdString(proof.name));
+    }
+}
+
+void BreadCrumbs::courseEditedSlot(Course course)
+{
+    if (course.id == model->getCourseSelected().id) {
+        courseSelectedChangedSlot(course);
+    }
+}
+
+void BreadCrumbs::factEditedSlot(Fact fact)
+{
+    if (fact.id == model->getFactSelected().id) {
+        factSelectedChangedSlot(fact);
+    }
+}
+
+void BreadCrumbs::proofEditedSlot(Proof proof)
+{
+    if (proof.id == model->getProofSelected().id) {
+        proofSelectedChangedSlot(proof);
     }
 }
 
