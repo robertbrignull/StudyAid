@@ -14,14 +14,18 @@
 
 #include "views/sectionPickerWidget.h"
 
-SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStackedWidget *pageStack, FactForm *factAddForm, Dialog *factAddDialog, QWidget *parent)
+SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStackedWidget *pageStack, FactForm *factAddForm, Dialog *factAddDialog, FactForm *sectionEditForm, Dialog *sectionEditDialog, QWidget *parent)
     : QWidget(parent)
 {
     this->fact = fact;
     this->model = model;
     this->pageStack = pageStack;
+
     this->factAddForm = factAddForm;
     this->factAddDialog = factAddDialog;
+
+    this->sectionEditForm = sectionEditForm;
+    this->sectionEditDialog = sectionEditDialog;
 
 
 
@@ -32,10 +36,21 @@ SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStack
 
     QHBoxLayout *sectionLayout = new QHBoxLayout();
     sectionLabel = new ClickableQLabel((fact.parent != -1) ? fact.name : "All");
-    addFactButton = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(16, 16));
 
     sectionLayout->addWidget(sectionLabel);
     sectionLayout->addStretch(1);
+
+    if (fact.parent != -1) {
+        deleteSectionButton = new ImageButton(QPixmap(":/images/trash_black.png"), QSize(16, 16));
+        sectionLayout->addWidget(deleteSectionButton);
+
+        sectionDeleteDialog = new Dialog(this, nullptr, "Are you sure you want to delete this section?", "Delete", "Cancel");
+
+        editSectionButton = new ImageButton(QPixmap(":/images/pencil_black.png"), QSize(16, 16));
+        sectionLayout->addWidget(editSectionButton);
+    }
+
+    addFactButton = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(16, 16));
     sectionLayout->addWidget(addFactButton);
 
     layout->addLayout(sectionLayout);
@@ -57,6 +72,15 @@ SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStack
 
     connect(addFactButton, SIGNAL(clicked()), this, SLOT(factAddButtonClicked()));
 
+    if (fact.parent != -1) {
+        connect(deleteSectionButton, SIGNAL(clicked()), sectionDeleteDialog, SLOT(show()));
+
+        connect(sectionDeleteDialog, SIGNAL(cancelled()), sectionDeleteDialog, SLOT(close()));
+        connect(sectionDeleteDialog, SIGNAL(completed()), this, SLOT(sectionDeleteDialogAccepted()));
+
+        connect(editSectionButton, SIGNAL(clicked()), this, SLOT(sectionEditButtonClicked()));
+    }
+
     connect(model, SIGNAL(factAdded(Fact)), this, SLOT(factAddedSlot(Fact)));
     connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
     connect(model, SIGNAL(factDeleted(int)), this, SLOT(factDeletedSlot(int)));
@@ -77,6 +101,21 @@ void SectionPickerWidget::factAddButtonClicked()
     factAddDialog->show();
 }
 
+void SectionPickerWidget::sectionEditButtonClicked()
+{
+    sectionEditForm->setData(fact);
+
+    sectionEditDialog->show();
+}
+
+void SectionPickerWidget::sectionDeleteDialogAccepted()
+{
+    sectionDeleteDialog->close();
+    
+    deleteFact(fact.id);
+    model->deleteFact(fact.id);
+}
+
 void SectionPickerWidget::factAddedSlot(Fact fact)
 {
     if (fact.type == "Section" && fact.parent == this->fact.id) {
@@ -88,7 +127,7 @@ void SectionPickerWidget::factAddedSlot(Fact fact)
             }
         }
 
-        SectionPickerWidget *sectionPickerWidget = new SectionPickerWidget(fact, model, pageStack, factAddForm, factAddDialog);
+        SectionPickerWidget *sectionPickerWidget = new SectionPickerWidget(fact, model, pageStack, factAddForm, factAddDialog, sectionEditForm, sectionEditDialog);
         
         layout->addSpacing(5);
         layout->addWidget(sectionPickerWidget);
@@ -102,6 +141,7 @@ void SectionPickerWidget::factAddedSlot(Fact fact)
 void SectionPickerWidget::factEditedSlot(Fact fact)
 {
     if (fact.id == this->fact.id) {
+        this->fact = fact;
         sectionLabel->setText(QString::fromStdString(fact.name));
     }
 }

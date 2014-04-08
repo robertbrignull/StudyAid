@@ -41,6 +41,9 @@ public:
     FactForm *factAddForm;
     Dialog *factAddDialog;
 
+    FactForm *sectionEditForm;
+    Dialog *sectionEditDialog;
+
     // Both labels that hold the name of the current course
     QLabel *courseLabel;
 
@@ -58,6 +61,8 @@ public slots:
     void courseDeleteDialogAccepted();
 
     void factAddFormCompleted();
+
+    void sectionEditFormCompleted();
 
     void courseSelectedChangedSlot(Course course);
     void courseEditedSlot(Course course);

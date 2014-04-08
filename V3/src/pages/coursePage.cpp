@@ -41,6 +41,9 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
     factAddForm = new FactForm();
     factAddDialog = new Dialog(this, factAddForm, "Add a new fact...", "Add", "Cancel");
 
+    sectionEditForm = new FactForm();
+    sectionEditDialog = new Dialog(this, sectionEditForm, "Edit the section...", "Edit", "Cancel");
+
 
 
     QVBoxLayout *outerLayout = new QVBoxLayout(this);
@@ -186,6 +189,9 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
     connect(factAddDialog, SIGNAL(cancelled()), factAddDialog, SLOT(close()));
     connect(factAddDialog, SIGNAL(completed()), this, SLOT(factAddFormCompleted()));
 
+    connect(sectionEditDialog, SIGNAL(cancelled()), sectionEditDialog, SLOT(close()));
+    connect(sectionEditDialog, SIGNAL(completed()), this, SLOT(sectionEditFormCompleted()));
+
     connect(model, SIGNAL(courseSelectedChanged(Course)), this, SLOT(courseSelectedChangedSlot(Course)));
     connect(model, SIGNAL(courseEdited(Course)), this, SLOT(courseEditedSlot(Course)));
 }
@@ -240,6 +246,16 @@ void CoursePage::factAddFormCompleted()
     }
 }
 
+void CoursePage::sectionEditFormCompleted()
+{
+    Fact section = sectionEditForm->getData();
+
+    editFact(section);
+    model->editFact(section);
+
+    sectionEditDialog->close();
+}
+
 void CoursePage::courseSelectedChangedSlot(Course course)
 {
     // Update the labels with the name of the course
@@ -249,7 +265,7 @@ void CoursePage::courseSelectedChangedSlot(Course course)
     while (pickerScrollLayout->count() > 0) {
         delete pickerScrollLayout->takeAt(0)->widget();
     }
-    sectionPicker = new SectionPickerWidget(findFact(course.root_fact), model, pageStack, factAddForm, factAddDialog);
+    sectionPicker = new SectionPickerWidget(findFact(course.root_fact), model, pageStack, factAddForm, factAddDialog, sectionEditForm, sectionEditDialog);
     pickerScrollLayout->addWidget(sectionPicker);
     pickerScrollLayout->addStretch(1);
 
