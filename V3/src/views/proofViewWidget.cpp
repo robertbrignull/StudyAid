@@ -10,7 +10,7 @@
 #include "widgets/imageButton.h"
 #include "widgets/resizableImage.h"
 
-#include "widgets/proofViewWidget.h"
+#include "views/proofViewWidget.h"
 
 ProofViewWidget::ProofViewWidget(Proof proof, Model *model, ResizableStackedWidget *pageStack, QWidget *parent)
     : QWidget(parent)

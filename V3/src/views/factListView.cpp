@@ -3,9 +3,9 @@
 #include "model.h"
 #include "database/methods.h"
 #include "widgets/resizableStackedWidget.h"
-#include "widgets/factList.h"
+#include "views/factList.h"
 
-#include "widgets/factListView.h"
+#include "views/factListView.h"
 
 FactListView::FactListView(Course course, Model *model, ResizableStackedWidget *pageStack, QWidget *parent)
     : QWidget(parent)

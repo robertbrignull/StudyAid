@@ -20,10 +20,10 @@
 #include "widgets/clickableQLabel.h"
 #include "widgets/splitter.h"
 #include "widgets/resizableImage.h"
-#include "widgets/breadCrumbs.h"
 #include "widgets/trafficLight.h"
-#include "widgets/proofViewWidget.h"
 #include "widgets/dialog.h"
+#include "views/breadCrumbs.h"
+#include "views/proofViewWidget.h"
 #include "forms/factForm.h"
 #include "forms/proofForm.h"
 

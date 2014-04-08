@@ -12,11 +12,11 @@
 
 #include "model.h"
 #include "database/methods.h"
-#include "widgets/courseTitleWidget.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/horizontalSeperator.h"
 #include "widgets/imageButton.h"
 #include "widgets/dialog.h"
+#include "views/courseTitleWidget.h"
 #include "forms/courseForm.h"
 
 #include "pages/rootPage.h"

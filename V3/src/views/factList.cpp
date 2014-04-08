@@ -6,10 +6,10 @@
 
 #include "model.h"
 #include "database/methods.h"
-#include "widgets/expandingFactWidget.h"
+#include "views/expandingFactWidget.h"
 #include "widgets/resizableStackedWidget.h"
 
-#include "widgets/factList.h"
+#include "views/factList.h"
 
 FactList::FactList(Fact fact, Model *model, ResizableStackedWidget *pageStack, std::map<int, FactList*> *idFactListMap, QWidget *parent)
     : QWidget(parent)

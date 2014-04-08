@@ -13,7 +13,7 @@
 #include "widgets/resizableImage.h"
 #include "widgets/resizableStackedWidget.h"
 
-#include "widgets/expandingFactWidget.h"
+#include "views/expandingFactWidget.h"
 
 ExpandingFactWidget::ExpandingFactWidget(Fact fact, Model *model, ResizableStackedWidget *pageStack, QWidget *parent)
     : QWidget(parent)

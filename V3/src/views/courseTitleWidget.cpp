@@ -7,7 +7,7 @@
 
 #include "widgets/imageButton.h"
 
-#include "widgets/courseTitleWidget.h"
+#include "views/courseTitleWidget.h"
 
 CourseTitleWidget::CourseTitleWidget(Course course, QWidget *parent)
     : QWidget(parent)

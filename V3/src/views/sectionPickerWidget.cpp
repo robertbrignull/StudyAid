@@ -12,7 +12,7 @@
 #include "widgets/dialog.h"
 #include "forms/factForm.h"
 
-#include "widgets/sectionPickerWidget.h"
+#include "views/sectionPickerWidget.h"
 
 SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStackedWidget *pageStack, QWidget *parent)
     : QWidget(parent)

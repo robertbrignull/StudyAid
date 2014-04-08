@@ -8,7 +8,7 @@
 #include "widgets/imageButton.h"
 #include "widgets/dialog.h"
 
-#include "widgets/dependenciesWidget.h"
+#include "views/dependenciesWidget.h"
 
 DependenciesWidget::DependenciesWidget(QWidget *parent)
     : QWidget(parent)

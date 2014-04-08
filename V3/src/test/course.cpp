@@ -14,11 +14,11 @@
 #include "forms/courseForm.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/imageButton.h"
-#include "widgets/breadCrumbs.h"
-#include "widgets/courseTitleWidget.h"
-#include "widgets/factListView.h"
-#include "widgets/factList.h"
 #include "widgets/dialog.h"
+#include "views/breadCrumbs.h"
+#include "views/courseTitleWidget.h"
+#include "views/factListView.h"
+#include "views/factList.h"
 
 #include "test/testUtil.h"
 
