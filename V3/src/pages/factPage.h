@@ -11,8 +11,7 @@ class ResizableStackedWidget;
 class Model;
 class FactForm;
 class ProofForm;
-class FormDialog;
-class DeleteDialog;
+class Dialog;
 class ClickableQLabel;
 class QLabel;
 class Splitter;
@@ -42,14 +41,14 @@ public:
 
     ImageButton *editFactButton;
     FactForm *factEditForm;
-    FormDialog *factEditDialog;
+    Dialog *factEditDialog;
 
     ImageButton *deleteFactButton;
-    DeleteDialog *factDeleteDialog;
+    Dialog *factDeleteDialog;
 
     ImageButton *addProofButton;
     ProofForm *proofAddForm;
-    FormDialog *proofAddDialog;
+    Dialog *proofAddDialog;
 
     // Contains the name of the current fact
     QLabel *factLabel;
@@ -78,13 +77,13 @@ public:
 
 public slots:
     void factEditButtonClicked();
-    void factEditDialogCompleted(std::map<std::string, std::string> data);
+    void factEditDialogCompleted();
 
     void saveStatement();
 
     void factDeleteDialogAccepted();
 
-    void proofAddDialogCompleted(std::map<std::string, std::string> data);
+    void proofAddDialogCompleted();
 
     void factSelectedChangedSlot(Fact fact);
     void factEditedSlot(Fact fact);

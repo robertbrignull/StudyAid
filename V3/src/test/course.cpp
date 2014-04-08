@@ -11,8 +11,6 @@
 #include "database/setup.h"
 #include "pages/rootPage.h"
 #include "pages/coursePage.h"
-#include "dialogs/formDialog.h"
-#include "dialogs/deleteDialog.h"
 #include "forms/courseForm.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/imageButton.h"
@@ -20,6 +18,7 @@
 #include "widgets/courseTitleWidget.h"
 #include "widgets/factListView.h"
 #include "widgets/factList.h"
+#include "widgets/dialog.h"
 
 #include "test/testUtil.h"
 

@@ -5,8 +5,10 @@
 #include "forms/proofForm.h"
 
 ProofForm::ProofForm(QWidget *parent)
-    : Form(parent)
+    : QWidget(parent)
 {
+    proof = Proof();
+
     QHBoxLayout *layout = new QHBoxLayout(this);
 
     nameInput = new QLineEdit();
@@ -17,16 +19,16 @@ ProofForm::ProofForm(QWidget *parent)
     layout->addStretch(1);
 }
 
-void ProofForm::setData(std::map<std::string, std::string> data)
+void ProofForm::setData(Proof proof)
 {
-    nameInput->setText(QString::fromStdString(data.at("name")));
+    this->proof = proof;
+
+    nameInput->setText(QString::fromStdString(proof.name));
 }
 
-std::map<std::string, std::string> ProofForm::getData()
+Proof ProofForm::getData()
 {
-    std::map<std::string, std::string> data;
+    proof.name = nameInput->text().toStdString();
 
-    data.insert(std::pair<std::string, std::string>("name", nameInput->text().toStdString()));
-
-    return data;
+    return proof;
 }

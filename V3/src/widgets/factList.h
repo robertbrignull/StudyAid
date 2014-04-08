@@ -42,7 +42,8 @@ public:
     // A map from ids to FactLists that is controlled by the FactListView
     std::map<int, FactList*> *idFactListMap;
 
-    // A map from ids to FactLists, always contains all child sections of this section
+    // A map from ids to FactLists, always contains all child sections of
+    // this section whether or not the widget is currently built.
     std::map<int, std::pair<Fact, FactList*> > idChildSectionMap;
 
     // A map from ids to all of the children currently in the layout

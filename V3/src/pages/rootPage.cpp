@@ -16,7 +16,7 @@
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/horizontalSeperator.h"
 #include "widgets/imageButton.h"
-#include "dialogs/formDialog.h"
+#include "widgets/dialog.h"
 #include "forms/courseForm.h"
 
 #include "pages/rootPage.h"
@@ -30,7 +30,7 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
 
     courseAddForm = new CourseForm();
-    courseAddDialog = new FormDialog(this, courseAddForm, "Add a new course...", "Add");
+    courseAddDialog = new Dialog(this, courseAddForm, "Add a new course...", "Add", "Cancel");
 
 
 
@@ -140,7 +140,7 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
     connect(newCourseButton, SIGNAL(clicked()), courseAddDialog, SLOT(show()));
 
-    connect(courseAddDialog, SIGNAL(completed(std::map<std::string, std::string>)), this, SLOT(courseAddDialogCompleted(std::map<std::string, std::string>)));
+    connect(courseAddDialog, SIGNAL(completed()), this, SLOT(courseAddDialogCompleted()));
     connect(courseAddDialog, SIGNAL(cancelled()), courseAddDialog, SLOT(close()));
 
     connect(model, SIGNAL(courseAdded(Course)), this, SLOT(courseAddedSlot(Course)));
@@ -162,9 +162,9 @@ void RootPage::courseViewButtonClicked(Course course)
     pageStack->setCurrentIndex(1);
 }
 
-void RootPage::courseAddDialogCompleted(std::map<std::string, std::string> data)
+void RootPage::courseAddDialogCompleted()
 {
-    Course course = findCourse(addCourse(data.at("name")));
+    Course course = findCourse(addCourse(courseAddForm->getData().name));
         
     model->addCourse(course);
     model->setCourseSelected(course);

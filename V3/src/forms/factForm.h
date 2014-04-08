@@ -3,23 +3,26 @@
 #include <iostream>
 #include <map>
 
-#include "forms/form.h"
+#include <QWidget>
+
+#include "database/structures.h"
 
 class QLineEdit;
 class QComboBox;
 
-class FactForm : public Form
+class FactForm : public QWidget
 {
     Q_OBJECT
 
 public:
     FactForm(QWidget *parent = 0);
 
-    void setData(std::map<std::string, std::string> data);
-    std::map<std::string, std::string> getData();
+    void setData(Fact fact);
+    Fact getData();
 
 
 
+    Fact fact;
     QLineEdit *nameInput;
     QComboBox *typeInput;
 };

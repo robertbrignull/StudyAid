@@ -5,8 +5,10 @@
 #include "forms/courseForm.h"
 
 CourseForm::CourseForm(QWidget *parent)
-    : Form(parent)
+    : QWidget(parent)
 {
+    course = Course();
+
     QHBoxLayout *layout = new QHBoxLayout(this);
 
     nameInput = new QLineEdit();
@@ -17,16 +19,16 @@ CourseForm::CourseForm(QWidget *parent)
     layout->addStretch(1);
 }
 
-void CourseForm::setData(std::map<std::string, std::string> data)
+void CourseForm::setData(Course course)
 {
-    nameInput->setText(QString::fromStdString(data.at("name")));
+    this->course = course;
+
+    nameInput->setText(QString::fromStdString(course.name));
 }
 
-std::map<std::string, std::string> CourseForm::getData()
+Course CourseForm::getData()
 {
-    std::map<std::string, std::string> data;
+    course.name = nameInput->text().toStdString();
 
-    data.insert(std::pair<std::string, std::string>("name", nameInput->text().toStdString()));
-
-    return data;
+    return course;
 }

@@ -8,8 +8,7 @@ class ResizableStackedWidget;
 class Model;
 class BreadCrumbs;
 class CourseForm;
-class FormDialog;
-class DeleteDialog;
+class Dialog;
 class QLabel;
 class Splitter;
 class QVBoxLayout;
@@ -33,10 +32,10 @@ public:
 
     ImageButton *editCourseButton;
     CourseForm *courseEditForm;
-    FormDialog *courseEditDialog;
+    Dialog *courseEditDialog;
 
     ImageButton *deleteCourseButton;
-    DeleteDialog *courseDeleteDialog;
+    Dialog *courseDeleteDialog;
 
     // Both labels that hold the name of the current course
     QLabel *courseLabel;
@@ -50,7 +49,7 @@ public:
 
 public slots:
     void courseEditButtonClicked();
-    void courseEditDialogCompleted(std::map<std::string, std::string> data);
+    void courseEditDialogCompleted();
 
     void courseDeleteDialogAccepted();
 

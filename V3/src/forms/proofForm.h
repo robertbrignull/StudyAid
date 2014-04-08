@@ -3,21 +3,24 @@
 #include <iostream>
 #include <map>
 
-#include "forms/form.h"
+#include <QWidget>
+
+#include "database/structures.h"
 
 class QLineEdit;
 
-class ProofForm : public Form
+class ProofForm : public QWidget
 {
     Q_OBJECT
 
 public:
     ProofForm(QWidget *parent = 0);
 
-    void setData(std::map<std::string, std::string> data);
-    std::map<std::string, std::string> getData();
+    void setData(Proof proof);
+    Proof getData();
 
 
 
+    Proof proof;
     QLineEdit *nameInput;
 };

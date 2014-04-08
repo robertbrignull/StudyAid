@@ -17,8 +17,6 @@
 #include "pages/coursePage.h"
 #include "pages/factPage.h"
 #include "pages/proofPage.h"
-#include "dialogs/formDialog.h"
-#include "dialogs/deleteDialog.h"
 #include "forms/courseForm.h"
 #include "forms/factForm.h"
 #include "forms/proofForm.h"
@@ -31,6 +29,7 @@
 #include "widgets/expandingFactWidget.h"
 #include "widgets/resizableImage.h"
 #include "widgets/proofViewWidget.h"
+#include "widgets/dialog.h"
 
 #include "test/testUtil.h"
 

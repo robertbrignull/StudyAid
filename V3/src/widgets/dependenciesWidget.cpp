@@ -6,14 +6,14 @@
 
 #include "widgets/clickableQLabel.h"
 #include "widgets/imageButton.h"
-#include "dialogs/deleteDialog.h"
+#include "widgets/dialog.h"
 
 #include "widgets/dependenciesWidget.h"
 
 DependenciesWidget::DependenciesWidget(QWidget *parent)
     : QWidget(parent)
 {
-    DeleteDialog *depDeleteDialog = new DeleteDialog(this, "Are you sure you want to delete this dependency?");
+    Dialog *depDeleteDialog = new Dialog(this, nullptr, "Are you sure you want to delete this dependency?", "Delete", "Cancel");
 
     
 
@@ -66,11 +66,11 @@ DependenciesWidget::DependenciesWidget(QWidget *parent)
 
 
 
-    connect(depDeleteDialog, &DeleteDialog::cancelled, [=](){
+    connect(depDeleteDialog, &Dialog::cancelled, [=](){
         depDeleteDialog->close();
     });
 
-    connect(depDeleteDialog, &DeleteDialog::accepted, [=](){
+    connect(depDeleteDialog, &Dialog::completed, [=](){
         depDeleteDialog->close();
         std::cout << "Deleting dependency " << depBeingDeleted << std::endl;
     });

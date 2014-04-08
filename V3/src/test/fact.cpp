@@ -16,8 +16,6 @@
 #include "pages/rootPage.h"
 #include "pages/coursePage.h"
 #include "pages/factPage.h"
-#include "dialogs/formDialog.h"
-#include "dialogs/deleteDialog.h"
 #include "forms/courseForm.h"
 #include "forms/factForm.h"
 #include "widgets/resizableStackedWidget.h"
@@ -28,6 +26,7 @@
 #include "widgets/factList.h"
 #include "widgets/expandingFactWidget.h"
 #include "widgets/resizableImage.h"
+#include "widgets/dialog.h"
 
 #include "test/testUtil.h"
 

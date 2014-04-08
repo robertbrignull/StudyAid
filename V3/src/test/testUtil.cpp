@@ -17,8 +17,6 @@
 #include "pages/coursePage.h"
 #include "pages/factPage.h"
 #include "pages/proofPage.h"
-#include "dialogs/formDialog.h"
-#include "dialogs/deleteDialog.h"
 #include "forms/courseForm.h"
 #include "forms/factForm.h"
 #include "forms/proofForm.h"
@@ -30,6 +28,7 @@
 #include "widgets/factList.h"
 #include "widgets/sectionPickerWidget.h"
 #include "widgets/clickableQLabel.h"
+#include "widgets/dialog.h"
 
 #include "test/testUtil.h"
 
@@ -49,7 +48,7 @@ void TestUtil::addCourse(StudyAid *window, const char *name)
 
     QTest::mouseClick(rootPage->newCourseButton, Qt::LeftButton);
     rootPage->courseAddForm->nameInput->setText(name);
-    QTest::mouseClick(rootPage->courseAddDialog->completeButton, Qt::LeftButton);
+    QTest::mouseClick(rootPage->courseAddDialog->confirmButton, Qt::LeftButton);
 }
 
 void TestUtil::editCurrentCourse(StudyAid *window, const char *name)
@@ -58,7 +57,7 @@ void TestUtil::editCurrentCourse(StudyAid *window, const char *name)
 
     QTest::mouseClick(coursePage->editCourseButton, Qt::LeftButton);
     coursePage->courseEditForm->nameInput->setText(name);
-    QTest::mouseClick(coursePage->courseEditDialog->completeButton, Qt::LeftButton);
+    QTest::mouseClick(coursePage->courseEditDialog->confirmButton, Qt::LeftButton);
 }
 
 void TestUtil::deleteCurrentCourse(StudyAid *window)
@@ -66,7 +65,7 @@ void TestUtil::deleteCurrentCourse(StudyAid *window)
     CoursePage *coursePage = window->coursePage;
 
     QTest::mouseClick(coursePage->deleteCourseButton, Qt::LeftButton);
-    QTest::mouseClick(coursePage->courseDeleteDialog->acceptButton, Qt::LeftButton);
+    QTest::mouseClick(coursePage->courseDeleteDialog->confirmButton, Qt::LeftButton);
 }
 
 
@@ -90,7 +89,7 @@ void TestUtil::addFact(StudyAid *window, const char *name, const char *type)
     auto typeInput = coursePage->sectionPicker->factAddForm->typeInput;
     typeInput->setCurrentIndex(typeInput->findText(type));
 
-    QTest::mouseClick(coursePage->sectionPicker->factAddDialog->completeButton, Qt::LeftButton);
+    QTest::mouseClick(coursePage->sectionPicker->factAddDialog->confirmButton, Qt::LeftButton);
 }
 
 void TestUtil::editCurrentFact(StudyAid *window, const char *name, const char *type)
@@ -104,7 +103,7 @@ void TestUtil::editCurrentFact(StudyAid *window, const char *name, const char *t
     auto typeInput = factPage->factEditForm->typeInput;
     typeInput->setCurrentIndex(typeInput->findText(type));
 
-    QTest::mouseClick(factPage->factEditDialog->completeButton, Qt::LeftButton);
+    QTest::mouseClick(factPage->factEditDialog->confirmButton, Qt::LeftButton);
 }
 
 void TestUtil::editCurrentFactStatement(StudyAid *window, const char *statement)
@@ -120,7 +119,7 @@ void TestUtil::deleteCurrentFact(StudyAid *window)
     FactPage *factPage = window->factPage;
 
     QTest::mouseClick(factPage->deleteFactButton, Qt::LeftButton);
-    QTest::mouseClick(factPage->factDeleteDialog->acceptButton, Qt::LeftButton);
+    QTest::mouseClick(factPage->factDeleteDialog->confirmButton, Qt::LeftButton);
 }
 
 
@@ -141,7 +140,7 @@ void TestUtil::addProof(StudyAid *window, const char *name)
 
     factPage->proofAddForm->nameInput->setText(name);
 
-    QTest::mouseClick(factPage->proofAddDialog->completeButton, Qt::LeftButton);
+    QTest::mouseClick(factPage->proofAddDialog->confirmButton, Qt::LeftButton);
 }
 
 void TestUtil::editCurrentProof(StudyAid *window, const char *name)
@@ -152,7 +151,7 @@ void TestUtil::editCurrentProof(StudyAid *window, const char *name)
 
     proofPage->proofEditForm->nameInput->setText(name);
 
-    QTest::mouseClick(proofPage->proofEditDialog->completeButton, Qt::LeftButton);
+    QTest::mouseClick(proofPage->proofEditDialog->confirmButton, Qt::LeftButton);
 }
 
 void TestUtil::editCurrentProofBody(StudyAid *window, const char *body)
@@ -168,7 +167,7 @@ void TestUtil::deleteCurrentProof(StudyAid *window)
     ProofPage *proofPage = window->proofPage;
 
     QTest::mouseClick(proofPage->deleteProofButton, Qt::LeftButton);
-    QTest::mouseClick(proofPage->proofDeleteDialog->acceptButton, Qt::LeftButton);
+    QTest::mouseClick(proofPage->proofDeleteDialog->confirmButton, Qt::LeftButton);
 }
 
 
@@ -196,7 +195,7 @@ void TestUtil::addFactToSection(StudyAid *window, const char *factName, const ch
     auto typeInput = sectionPicker->factAddForm->typeInput;
     typeInput->setCurrentIndex(typeInput->findText(factType));
 
-    QTest::mouseClick(sectionPicker->factAddDialog->completeButton, Qt::LeftButton);
+    QTest::mouseClick(sectionPicker->factAddDialog->confirmButton, Qt::LeftButton);
 }
 
 void TestUtil::selectSection(StudyAid *window, const char *sectionName)

@@ -8,7 +8,7 @@ class ResizableStackedWidget;
 class Model;
 class ProofForm;
 class FormDialog;
-class DeleteDialog;
+class Dialog;
 class QLabel;
 class Splitter;
 class QTextEdit;
@@ -33,10 +33,10 @@ public:
 
     ImageButton *editProofButton;
     ProofForm *proofEditForm;
-    FormDialog *proofEditDialog;
+    Dialog *proofEditDialog;
 
     ImageButton *deleteProofButton;
-    DeleteDialog *proofDeleteDialog;
+    Dialog *proofDeleteDialog;
 
     // Contains the name of the current proof
     QLabel *proofLabel;
@@ -55,7 +55,7 @@ public:
 
 public slots:
     void proofEditButtonClicked();
-    void proofEditDialogCompleted(std::map<std::string, std::string> data);
+    void proofEditDialogCompleted();
 
     void saveBody();
 

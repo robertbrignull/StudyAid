@@ -19,8 +19,7 @@
 #include "widgets/sectionPickerWidget.h"
 #include "widgets/splitter.h"
 #include "widgets/breadCrumbs.h"
-#include "dialogs/deleteDialog.h"
-#include "dialogs/formDialog.h"
+#include "widgets/dialog.h"
 #include "forms/courseForm.h"
 #include "forms/factForm.h"
 
@@ -35,9 +34,9 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
 
 
     courseEditForm = new CourseForm();
-    courseEditDialog = new FormDialog(this, courseEditForm, "Edit the course...", "Change");
+    courseEditDialog = new Dialog(this, courseEditForm, "Edit the course...", "Change", "Cancel");
 
-    courseDeleteDialog = new DeleteDialog(this, "Are you sure you want to delete this course?");
+    courseDeleteDialog = new Dialog(this, nullptr, "Are you sure you want to delete this course?", "Delete", "Cancel");
 
 
 
@@ -173,12 +172,12 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
 
     connect(editCourseButton, SIGNAL(clicked()), this, SLOT(courseEditButtonClicked()));
 
+    connect(courseEditDialog, SIGNAL(completed()), this, SLOT(courseEditDialogCompleted()));
     connect(courseEditDialog, SIGNAL(cancelled()), courseEditDialog, SLOT(close()));
-    connect(courseEditDialog, SIGNAL(completed(std::map<std::string, std::string>)), this, SLOT(courseEditDialogCompleted(std::map<std::string, std::string>)));
 
     connect(deleteCourseButton, SIGNAL(clicked()), courseDeleteDialog, SLOT(show()));
 
-    connect(courseDeleteDialog, SIGNAL(accepted()), this, SLOT(courseDeleteDialogAccepted()));
+    connect(courseDeleteDialog, SIGNAL(completed()), this, SLOT(courseDeleteDialogAccepted()));
     connect(courseDeleteDialog, SIGNAL(cancelled()), courseDeleteDialog, SLOT(close()));
 
     connect(model, SIGNAL(courseSelectedChanged(Course)), this, SLOT(courseSelectedChangedSlot(Course)));
@@ -195,19 +194,15 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
 
 void CoursePage::courseEditButtonClicked()
 {
-    std::map<std::string, std::string> data;
-    data.insert(std::pair<std::string, std::string>("name", model->getCourseSelected().name));
-    courseEditForm->setData(data);
-
+    courseEditForm->setData(model->getCourseSelected());
     courseEditDialog->show();
 }
 
-void CoursePage::courseEditDialogCompleted(std::map<std::string, std::string> data)
+void CoursePage::courseEditDialogCompleted()
 {
-    Course course = model->getCourseSelected();
-    course.name = data.at("name");
+    Course course = courseEditForm->getData();
+    
     editCourse(course);
-
     model->editCourse(course);
 
     courseEditDialog->close();

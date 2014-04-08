@@ -4,11 +4,17 @@
 #include <QLineEdit>
 #include <QComboBox>
 
+#include "database/methods.h"
+
 #include "forms/factForm.h"
 
 FactForm::FactForm(QWidget *parent)
-    : Form(parent)
+    : QWidget(parent)
 {
+    fact = Fact();
+
+
+
     QHBoxLayout *outerLayout = new QHBoxLayout(this);
     QGridLayout *gridLayout = new QGridLayout();
 
@@ -22,15 +28,11 @@ FactForm::FactForm(QWidget *parent)
     QHBoxLayout *typeRightLayout = new QHBoxLayout();
 
     typeInput = new QComboBox();
-    typeInput->addItem("Section");
-    typeInput->addItem("Axiom");
-    typeInput->addItem("Definition");
-    typeInput->addItem("Proposition");
-    typeInput->addItem("Lemma");
-    typeInput->addItem("Theorem");
-    typeInput->addItem("Corollary");
-    typeInput->addItem("Example");
-    typeInput->addItem("Remark");
+
+    std::vector<FactType> types = findAllFactTypes();
+    for (auto it = types.begin(); it != types.end(); it++) {
+        typeInput->addItem(QString::fromStdString(it->fact_type));
+    }
 
     typeLeftLayout->addStretch(1);
     typeLeftLayout->addWidget(new QLabel("Type: "));
@@ -56,20 +58,20 @@ FactForm::FactForm(QWidget *parent)
     gridLayout->addLayout(nameRightLayout, 1, 1);
 }
 
-void FactForm::setData(std::map<std::string, std::string> data)
+void FactForm::setData(Fact fact)
 {
-    int i = typeInput->findText(QString::fromStdString(data.at("type")));
+    this->fact = fact;
+
+    int i = typeInput->findText(QString::fromStdString(fact.type));
     typeInput->setCurrentIndex((i != -1) ? i : 0);
 
-    nameInput->setText(QString::fromStdString(data.at("name")));
+    nameInput->setText(QString::fromStdString(fact.name));
 }
 
-std::map<std::string, std::string> FactForm::getData()
+Fact FactForm::getData()
 {
-    std::map<std::string, std::string> data;
+    fact.type = typeInput->currentText().toStdString();
+    fact.name = nameInput->text().toStdString();
 
-    data.insert(std::pair<std::string, std::string>("type", typeInput->currentText().toStdString()));
-    data.insert(std::pair<std::string, std::string>("name", nameInput->text().toStdString()));
-
-    return data;
+    return fact;
 }

@@ -22,8 +22,7 @@
 #include "widgets/dependenciesWidget.h"
 #include "widgets/breadCrumbs.h"
 #include "widgets/trafficLight.h"
-#include "dialogs/deleteDialog.h"
-#include "dialogs/formDialog.h"
+#include "widgets/dialog.h"
 #include "forms/proofForm.h"
 
 #include "pages/proofPage.h"
@@ -37,9 +36,9 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
 
 
     proofEditForm = new ProofForm();
-    proofEditDialog = new FormDialog(this, proofEditForm, "Edit the proof...", "Change");
+    proofEditDialog = new Dialog(this, proofEditForm, "Edit the proof...", "Change", "Cancel");
 
-    proofDeleteDialog = new DeleteDialog(this, "Are you sure you want to delete this proof?");
+    proofDeleteDialog = new Dialog(this, nullptr, "Are you sure you want to delete this proof?", "Delete", "Cancel");
 
 
 
@@ -200,12 +199,12 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
     connect(editProofButton, SIGNAL(clicked()), this, SLOT(proofEditButtonClicked()));
 
     connect(proofEditDialog, SIGNAL(cancelled()), proofEditDialog, SLOT(close()));
-    connect(proofEditDialog, SIGNAL(completed(std::map<std::string, std::string>)), this, SLOT(proofEditDialogCompleted(std::map<std::string, std::string>)));
+    connect(proofEditDialog, SIGNAL(completed()), this, SLOT(proofEditDialogCompleted()));
 
     connect(deleteProofButton, SIGNAL(clicked()), proofDeleteDialog, SLOT(show()));
 
     connect(proofDeleteDialog, SIGNAL(cancelled()), proofDeleteDialog, SLOT(close()));
-    connect(proofDeleteDialog, SIGNAL(accepted()), this, SLOT(proofDeleteDialogAccepted()));
+    connect(proofDeleteDialog, SIGNAL(completed()), this, SLOT(proofDeleteDialogAccepted()));
 
     connect(model, SIGNAL(proofSelectedChanged(Proof)), this, SLOT(proofSelectedChangedSlot(Proof)));
     connect(model, SIGNAL(proofEdited(Proof)), this, SLOT(proofEditedSlot(Proof)));
@@ -223,19 +222,15 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
 
 void ProofPage::proofEditButtonClicked()
 {
-    std::map<std::string, std::string> data;
-    data.insert(std::pair<std::string, std::string>("name", model->getProofSelected().name));
-    proofEditForm->setData(data);
-
+    proofEditForm->setData(model->getProofSelected());
     proofEditDialog->show();
 }
 
-void ProofPage::proofEditDialogCompleted(std::map<std::string, std::string> data)
+void ProofPage::proofEditDialogCompleted()
 {
-    Proof proof = model->getProofSelected();
-    proof.name = data.at("name");
-    editProof(proof);
+    Proof proof = proofEditForm->getData();
 
+    editProof(proof);
     model->editProof(proof);
 
     proofEditDialog->close();

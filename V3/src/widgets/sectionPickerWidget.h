@@ -11,7 +11,7 @@ class Model;
 class ResizableStackedWidget;
 class QVBoxLayout;
 class FactForm;
-class FormDialog;
+class Dialog;
 class ImageButton;
 class ClickableQLabel;
 
@@ -32,7 +32,7 @@ public:
     QVBoxLayout *layout;
 
     FactForm *factAddForm;
-    FormDialog *factAddDialog;
+    Dialog *factAddDialog;
     ImageButton *addFactButton;
 
     // The name of this section
@@ -47,7 +47,7 @@ signals:
 public slots:
     void sectionSelectedSlot(int id);
 
-    void factAddFormCompleted(std::map<std::string, std::string> data);
+    void factAddFormCompleted();
 
     void factAddedSlot(Fact fact);
     void factEditedSlot(Fact fact);

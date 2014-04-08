@@ -23,8 +23,7 @@
 #include "widgets/breadCrumbs.h"
 #include "widgets/trafficLight.h"
 #include "widgets/proofViewWidget.h"
-#include "dialogs/deleteDialog.h"
-#include "dialogs/formDialog.h"
+#include "widgets/dialog.h"
 #include "forms/factForm.h"
 #include "forms/proofForm.h"
 
@@ -39,12 +38,12 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
 
     factEditForm = new FactForm();
-    factEditDialog = new FormDialog(this, factEditForm, "Edit the fact...", "Change");
+    factEditDialog = new Dialog(this, factEditForm, "Edit the fact...", "Change", "Cancel");
 
-    factDeleteDialog = new DeleteDialog(this, "Are you sure you want to delete this fact?");
+    factDeleteDialog = new Dialog(this, nullptr, "Are you sure you want to delete this fact?", "Delete", "Cancel");
 
     proofAddForm = new ProofForm();
-    proofAddDialog = new FormDialog(this, proofAddForm, "Add a new proof...", "Add");
+    proofAddDialog = new Dialog(this, proofAddForm, "Add a new proof...", "Add", "Cancel");
 
 
 
@@ -238,17 +237,17 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     connect(addProofButton, SIGNAL(clicked()), proofAddDialog, SLOT(show()));
 
     connect(proofAddDialog, SIGNAL(cancelled()), proofAddDialog, SLOT(close()));
-    connect(proofAddDialog, SIGNAL(completed(std::map<std::string, std::string>)), this, SLOT(proofAddDialogCompleted(std::map<std::string, std::string>)));
+    connect(proofAddDialog, SIGNAL(completed()), this, SLOT(proofAddDialogCompleted()));
 
     connect(editFactButton, SIGNAL(clicked()), this, SLOT(factEditButtonClicked()));
 
     connect(factEditDialog, SIGNAL(cancelled()), factEditDialog, SLOT(close()));
-    connect(factEditDialog, SIGNAL(completed(std::map<std::string, std::string>)), this, SLOT(factEditDialogCompleted(std::map<std::string, std::string>)));
+    connect(factEditDialog, SIGNAL(completed()), this, SLOT(factEditDialogCompleted()));
 
     connect(deleteFactButton, SIGNAL(clicked()), factDeleteDialog, SLOT(show()));
 
     connect(factDeleteDialog, SIGNAL(cancelled()), factDeleteDialog, SLOT(close()));
-    connect(factDeleteDialog, SIGNAL(accepted()), this, SLOT(factDeleteDialogAccepted()));
+    connect(factDeleteDialog, SIGNAL(completed()), this, SLOT(factDeleteDialogAccepted()));
 
     connect(model, SIGNAL(factSelectedChanged(Fact)), this, SLOT(factSelectedChangedSlot(Fact)));
     connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
@@ -269,21 +268,15 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
 void FactPage::factEditButtonClicked()
 {
-    std::map<std::string, std::string> data;
-    data.insert(std::pair<std::string, std::string>("type", model->getFactSelected().type));
-    data.insert(std::pair<std::string, std::string>("name", model->getFactSelected().name));
-    factEditForm->setData(data);
-
+    factEditForm->setData(model->getFactSelected());
     factEditDialog->show();
 }
 
-void FactPage::factEditDialogCompleted(std::map<std::string, std::string> data)
+void FactPage::factEditDialogCompleted()
 {
-    Fact fact = model->getFactSelected();
-    fact.type = data.at("type");
-    fact.name = data.at("name");
-    editFact(fact);
+    Fact fact = factEditForm->getData();
 
+    editFact(fact);
     model->editFact(fact);
 
     factEditDialog->close();
@@ -318,9 +311,9 @@ void FactPage::factDeleteDialogAccepted()
     pageStack->setCurrentIndex(1);
 }
 
-void FactPage::proofAddDialogCompleted(std::map<std::string, std::string> data)
+void FactPage::proofAddDialogCompleted()
 {
-    Proof proof = findProof(addProof(model->getFactSelected().id, data.at("name")));
+    Proof proof = findProof(addProof(model->getFactSelected().id, proofAddForm->getData().name));
 
     model->addProof(proof);
     model->setProofSelected(proof);
