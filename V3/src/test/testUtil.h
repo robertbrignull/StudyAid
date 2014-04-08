@@ -1,5 +1,7 @@
 #pragma once
 
+class SectionPickerWidget;
+
 class TestUtil
 {
 public:
@@ -16,4 +18,8 @@ public:
     static void editCurrentProof(StudyAid *window, const char *name);
     static void editCurrentProofBody(StudyAid *window, const char *body);
     static void deleteCurrentProof(StudyAid *window);
+
+    static void addFactToSection(StudyAid *window, const char *factName, const char *factType, const char *sectionName);
+    static void selectSection(StudyAid *window, const char *sectionName);
+    static SectionPickerWidget *findSectionPicker(StudyAid *window, const char *name, SectionPickerWidget *searchRoot);
 };

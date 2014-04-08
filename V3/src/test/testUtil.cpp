@@ -29,6 +29,7 @@
 #include "widgets/factListView.h"
 #include "widgets/factList.h"
 #include "widgets/sectionPickerWidget.h"
+#include "widgets/clickableQLabel.h"
 
 #include "test/testUtil.h"
 
@@ -168,4 +169,59 @@ void TestUtil::deleteCurrentProof(StudyAid *window)
 
     QTest::mouseClick(proofPage->deleteProofButton, Qt::LeftButton);
     QTest::mouseClick(proofPage->proofDeleteDialog->acceptButton, Qt::LeftButton);
+}
+
+
+
+//   #####  ######  #####  ######## ####  #####  ##    ##
+//  ##   ## ##     ##   ##    ##     ##  ##   ## ###   ##
+//   ##     ##     ##         ##     ##  ##   ## ####  ##
+//    ###   ####   ##         ##     ##  ##   ## ## ## ##
+//      ##  ##     ##         ##     ##  ##   ## ##  ####
+//  ##   ## ##     ##   ##    ##     ##  ##   ## ##   ###
+//   #####  ######  #####     ##    ####  #####  ##    ##
+
+void TestUtil::addFactToSection(StudyAid *window, const char *factName, const char *factType, const char *sectionName)
+{
+    SectionPickerWidget *sectionPicker = findSectionPicker(window, sectionName, window->coursePage->sectionPicker);
+
+    if (sectionPicker == nullptr) {
+        return;
+    }
+
+    QTest::mouseClick(sectionPicker->addFactButton, Qt::LeftButton);
+
+    sectionPicker->factAddForm->nameInput->setText(factName);
+
+    auto typeInput = sectionPicker->factAddForm->typeInput;
+    typeInput->setCurrentIndex(typeInput->findText(factType));
+
+    QTest::mouseClick(sectionPicker->factAddDialog->completeButton, Qt::LeftButton);
+}
+
+void TestUtil::selectSection(StudyAid *window, const char *sectionName)
+{
+    SectionPickerWidget *sectionPicker = findSectionPicker(window, sectionName, window->coursePage->sectionPicker);
+
+    if (sectionPicker == nullptr) {
+        return;
+    }
+
+    QTest::mouseClick(sectionPicker->sectionLabel, Qt::LeftButton);
+}
+
+SectionPickerWidget *TestUtil::findSectionPicker(StudyAid *window, const char *name, SectionPickerWidget *searchRoot)
+{
+    if (searchRoot->sectionLabel->text() == name) {
+        return searchRoot;
+    }
+
+    for (auto it = searchRoot->idSectionPickerMap.begin(); it != searchRoot->idSectionPickerMap.end(); it++) {
+        auto picker = findSectionPicker(window, name, it->second.second);
+        if (picker != nullptr) {
+            return picker;
+        }
+    }
+
+    return nullptr;
 }

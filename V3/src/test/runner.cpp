@@ -5,6 +5,7 @@
 #include "test/course.h"
 #include "test/fact.h"
 #include "test/proof.h"
+#include "test/section.h"
 
 #include "test/runner.h"
 
@@ -18,4 +19,7 @@ void runAllTests()
 
     ProofTest proofTest;
     QTest::qExec(&proofTest);
+
+    SectionTest sectionTest;
+    QTest::qExec(&sectionTest);
 }

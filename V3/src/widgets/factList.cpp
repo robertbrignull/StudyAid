@@ -125,6 +125,8 @@ void FactList::destroyLayout()
 
     for (auto it = idChildSectionMap.begin(); it != idChildSectionMap.end(); it++) {
         layout->removeWidget(it->second.second);
+        it->second.second->setParent(0);
+
         idChildMap.erase(it->second.first.id);
         it->second.second->destroyLayout();
     }
