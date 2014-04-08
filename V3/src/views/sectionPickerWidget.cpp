@@ -14,16 +14,16 @@
 
 #include "views/sectionPickerWidget.h"
 
-SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStackedWidget *pageStack, QWidget *parent)
+SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStackedWidget *pageStack, FactForm *factAddForm, Dialog *factAddDialog, QWidget *parent)
     : QWidget(parent)
 {
     this->fact = fact;
     this->model = model;
     this->pageStack = pageStack;
+    this->factAddForm = factAddForm;
+    this->factAddDialog = factAddDialog;
 
 
-    factAddForm = new FactForm();
-    factAddDialog = new Dialog(this, factAddForm, "Add a new fact...", "Add", "Cancel");
 
     layout = new QVBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -55,10 +55,7 @@ SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStack
         emit sectionSelected(fact.id);
     });
 
-    connect(addFactButton, SIGNAL(clicked()), factAddDialog, SLOT(show()));
-
-    connect(factAddDialog, SIGNAL(cancelled()), factAddDialog, SLOT(close()));
-    connect(factAddDialog, SIGNAL(completed()), this, SLOT(factAddFormCompleted()));
+    connect(addFactButton, SIGNAL(clicked()), this, SLOT(factAddButtonClicked()));
 
     connect(model, SIGNAL(factAdded(Fact)), this, SLOT(factAddedSlot(Fact)));
     connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
@@ -70,20 +67,14 @@ void SectionPickerWidget::sectionSelectedSlot(int id)
     emit sectionSelected(id);
 }
 
-void SectionPickerWidget::factAddFormCompleted()
+void SectionPickerWidget::factAddButtonClicked()
 {
-    Fact data = factAddForm->getData();
+    Fact newFact = Fact();
+    newFact.parent = fact.id;
 
-    Fact newFact = findFact(addFact(fact.id, data.name, data.type));
+    factAddForm->setData(newFact);
 
-    model->addFact(newFact);
-
-    factAddDialog->close();
-
-    if (newFact.type != "Section") {
-        model->setFactSelected(newFact);
-        pageStack->setCurrentIndex(2);
-    }
+    factAddDialog->show();
 }
 
 void SectionPickerWidget::factAddedSlot(Fact fact)
@@ -97,7 +88,7 @@ void SectionPickerWidget::factAddedSlot(Fact fact)
             }
         }
 
-        SectionPickerWidget *sectionPickerWidget = new SectionPickerWidget(fact, model, pageStack);
+        SectionPickerWidget *sectionPickerWidget = new SectionPickerWidget(fact, model, pageStack, factAddForm, factAddDialog);
         
         layout->addSpacing(5);
         layout->addWidget(sectionPickerWidget);

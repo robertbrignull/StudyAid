@@ -20,7 +20,7 @@ class SectionPickerWidget : public QWidget
     Q_OBJECT
 
 public:
-    SectionPickerWidget(Fact fact, Model *model, ResizableStackedWidget *pageStack, QWidget *parent = 0);
+    SectionPickerWidget(Fact fact, Model *model, ResizableStackedWidget *pageStack, FactForm *factAddForm, Dialog *factAddDialog, QWidget *parent = 0);
 
 
 
@@ -31,9 +31,9 @@ public:
 
     QVBoxLayout *layout;
 
+    ImageButton *addFactButton;
     FactForm *factAddForm;
     Dialog *factAddDialog;
-    ImageButton *addFactButton;
 
     // The name of this section
     ClickableQLabel *sectionLabel;
@@ -47,7 +47,7 @@ signals:
 public slots:
     void sectionSelectedSlot(int id);
 
-    void factAddFormCompleted();
+    void factAddButtonClicked();
 
     void factAddedSlot(Fact fact);
     void factEditedSlot(Fact fact);

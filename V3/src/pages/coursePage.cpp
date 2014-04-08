@@ -38,6 +38,9 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
 
     courseDeleteDialog = new Dialog(this, nullptr, "Are you sure you want to delete this course?", "Delete", "Cancel");
 
+    factAddForm = new FactForm();
+    factAddDialog = new Dialog(this, factAddForm, "Add a new fact...", "Add", "Cancel");
+
 
 
     QVBoxLayout *outerLayout = new QVBoxLayout(this);
@@ -180,6 +183,9 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
     connect(courseDeleteDialog, SIGNAL(completed()), this, SLOT(courseDeleteDialogAccepted()));
     connect(courseDeleteDialog, SIGNAL(cancelled()), courseDeleteDialog, SLOT(close()));
 
+    connect(factAddDialog, SIGNAL(cancelled()), factAddDialog, SLOT(close()));
+    connect(factAddDialog, SIGNAL(completed()), this, SLOT(factAddFormCompleted()));
+
     connect(model, SIGNAL(courseSelectedChanged(Course)), this, SLOT(courseSelectedChangedSlot(Course)));
     connect(model, SIGNAL(courseEdited(Course)), this, SLOT(courseEditedSlot(Course)));
 }
@@ -218,6 +224,22 @@ void CoursePage::courseDeleteDialogAccepted()
     pageStack->setCurrentIndex(0);
 }
 
+void CoursePage::factAddFormCompleted()
+{
+    Fact data = factAddForm->getData();
+
+    Fact newFact = findFact(addFact(data.parent, data.name, data.type));
+
+    model->addFact(newFact);
+
+    factAddDialog->close();
+
+    if (newFact.type != "Section") {
+        model->setFactSelected(newFact);
+        pageStack->setCurrentIndex(2);
+    }
+}
+
 void CoursePage::courseSelectedChangedSlot(Course course)
 {
     // Update the labels with the name of the course
@@ -227,7 +249,7 @@ void CoursePage::courseSelectedChangedSlot(Course course)
     while (pickerScrollLayout->count() > 0) {
         delete pickerScrollLayout->takeAt(0)->widget();
     }
-    sectionPicker = new SectionPickerWidget(findFact(course.root_fact), model, pageStack);
+    sectionPicker = new SectionPickerWidget(findFact(course.root_fact), model, pageStack, factAddForm, factAddDialog);
     pickerScrollLayout->addWidget(sectionPicker);
     pickerScrollLayout->addStretch(1);
 

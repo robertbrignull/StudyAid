@@ -8,6 +8,7 @@ class ResizableStackedWidget;
 class Model;
 class BreadCrumbs;
 class CourseForm;
+class FactForm;
 class Dialog;
 class QLabel;
 class Splitter;
@@ -37,6 +38,9 @@ public:
     ImageButton *deleteCourseButton;
     Dialog *courseDeleteDialog;
 
+    FactForm *factAddForm;
+    Dialog *factAddDialog;
+
     // Both labels that hold the name of the current course
     QLabel *courseLabel;
 
@@ -52,6 +56,8 @@ public slots:
     void courseEditDialogCompleted();
 
     void courseDeleteDialogAccepted();
+
+    void factAddFormCompleted();
 
     void courseSelectedChangedSlot(Course course);
     void courseEditedSlot(Course course);
