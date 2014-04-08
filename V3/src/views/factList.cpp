@@ -6,8 +6,8 @@
 
 #include "model.h"
 #include "database/methods.h"
-#include "views/expandingFactWidget.h"
 #include "widgets/resizableStackedWidget.h"
+#include "views/expandingFactWidget.h"
 
 #include "views/factList.h"
 
@@ -46,7 +46,6 @@ FactList::FactList(Fact fact, Model *model, ResizableStackedWidget *pageStack, s
         if (facts[i].type == "Section") {
             FactList *factList = new FactList(facts[i], model, pageStack, idFactListMap);
             idChildSectionMap.insert(std::pair<int, std::pair<Fact, FactList*> >(facts[i].id, std::pair<Fact, FactList*>(facts[i], factList)));
-            idFactListMap->insert(std::pair<int, FactList*>(facts[i].id, factList));
         }
         else {
             ExpandingFactWidget *factWidget = new ExpandingFactWidget(facts[i], model, pageStack);
@@ -54,11 +53,19 @@ FactList::FactList(Fact fact, Model *model, ResizableStackedWidget *pageStack, s
         }
     }
 
+    // Add this widget into the master map
+    idFactListMap->insert(std::pair<int, FactList*>(fact.id, this));
+
 
 
     connect(model, SIGNAL(factAdded(Fact)), this, SLOT(factAddedSlot(Fact)));
     connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
     connect(model, SIGNAL(factDeleted(int)), this, SLOT(factDeletedSlot(int)));
+}
+
+FactList::~FactList()
+{
+    idFactListMap->erase(fact.id);
 }
 
 void FactList::paintEvent(QPaintEvent *)
@@ -90,45 +97,49 @@ void FactList::insertFactWidget(Fact fact, QWidget *factWidget)
 }
 
 void FactList::buildLayout()
-{
-    isCurrentlyBuilt = true;
+{  
+    if (!isCurrentlyBuilt) {
+        isCurrentlyBuilt = true;
 
-    for (auto it = idChildSectionMap.begin(); it != idChildSectionMap.end(); it++) {
-        it->second.second->buildLayout();
-        insertFactWidget(it->second.first, it->second.second);
+        for (auto it = idChildSectionMap.begin(); it != idChildSectionMap.end(); it++) {
+            it->second.second->buildLayout();
+            insertFactWidget(it->second.first, it->second.second);
+        }
+
+        for (auto it = idChildMap.begin(); it != idChildMap.end(); it++) {
+            it->second.second->show();
+        }
+
+        if (sectionNameLabel != nullptr) {
+            sectionNameLabel->show();
+        }
+
+        show();
     }
-
-    for (auto it = idChildMap.begin(); it != idChildMap.end(); it++) {
-        it->second.second->show();
-    }
-
-    if (sectionNameLabel != nullptr) {
-        sectionNameLabel->show();
-    }
-
-    show();
 }
 
 void FactList::destroyLayout()
 {
-    isCurrentlyBuilt = false;
+    if (isCurrentlyBuilt) {
+        isCurrentlyBuilt = false;
 
-    hide();
+        hide();
 
-    if (sectionNameLabel != nullptr) {
-        sectionNameLabel->hide();
-    }
+        if (sectionNameLabel != nullptr) {
+            sectionNameLabel->hide();
+        }
 
-    for (auto it = idChildMap.begin(); it != idChildMap.end(); it++) {
-        it->second.second->hide();
-    }
+        for (auto it = idChildMap.begin(); it != idChildMap.end(); it++) {
+            it->second.second->hide();
+        }
 
-    for (auto it = idChildSectionMap.begin(); it != idChildSectionMap.end(); it++) {
-        layout->removeWidget(it->second.second);
-        it->second.second->setParent(0);
+        for (auto it = idChildSectionMap.begin(); it != idChildSectionMap.end(); it++) {
+            layout->removeWidget(it->second.second);
+            it->second.second->setParent(0);
 
-        idChildMap.erase(it->second.first.id);
-        it->second.second->destroyLayout();
+            idChildMap.erase(it->second.first.id);
+            it->second.second->destroyLayout();
+        }
     }
 }
 
@@ -142,6 +153,7 @@ void FactList::factAddedSlot(Fact fact)
 
             if (isCurrentlyBuilt) {
                 insertFactWidget(fact, factWidget);
+                factWidget->buildLayout();
             }
         }
         else {

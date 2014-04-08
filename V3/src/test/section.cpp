@@ -61,13 +61,21 @@ void SectionTest::test_addSection_toRoot()
     // Check that the new section is shown in the section picker
     QVERIFY(coursePage->sectionPicker->idSectionPickerMap.size() == 1);
 
-    auto sectionPicker = coursePage->sectionPicker->idSectionPickerMap.begin()->second.second;
-
     // Check it has the correct name
+    auto sectionPicker = coursePage->sectionPicker->idSectionPickerMap.begin()->second.second;
     QVERIFY(sectionPicker->sectionLabel->text() == sectionName);
 
     // Check that the new section has no children
     QVERIFY(sectionPicker->idSectionPickerMap.size() == 0);
+
+    // Check that the fact list has updated
+    auto factList = coursePage->factListView->currentFactList;
+    QVERIFY(factList->idChildMap.size() == 1);
+
+    // Check that the section in the fact list has the correct name and no children
+    factList = (FactList*) factList->idChildMap.begin()->second.second;
+    QVERIFY(factList->sectionNameLabel->text() == sectionName);
+    QVERIFY(factList->idChildMap.size() == 0);
 }
 
 void SectionTest::test_addSection_toSection()
@@ -98,6 +106,18 @@ void SectionTest::test_addSection_toSection()
 
     QVERIFY(sectionPicker->sectionLabel->text() == childSectionName);
     QVERIFY(sectionPicker->idSectionPickerMap.size() == 0);
+
+    // Check that the fact list is correct
+    auto factList = coursePage->factListView->currentFactList;
+    QVERIFY(factList->idChildMap.size() == 1);
+
+    factList = (FactList*) factList->idChildMap.begin()->second.second;
+    QVERIFY(factList->sectionNameLabel->text() == parentSectionName);
+    QVERIFY(factList->idChildMap.size() == 1);
+
+    factList = (FactList*) factList->idChildMap.begin()->second.second;
+    QVERIFY(factList->sectionNameLabel->text() == childSectionName);
+    QVERIFY(factList->idChildMap.size() == 0);
 }
 
 void SectionTest::test_selectSection()

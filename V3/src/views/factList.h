@@ -19,6 +19,7 @@ class FactList : public QWidget
 
 public:
     FactList(Fact fact, Model *model, ResizableStackedWidget *pageStack, std::map<int, FactList*> *idFactListMap, QWidget *parent = 0);
+    ~FactList();
 
     void paintEvent(QPaintEvent *);
 

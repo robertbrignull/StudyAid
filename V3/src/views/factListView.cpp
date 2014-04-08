@@ -31,9 +31,7 @@ FactListView::~FactListView()
         layout->takeAt(0);
     }
 
-    for (auto it = idFactListMap.begin(); it != idFactListMap.end(); it++) {
-        delete it->second;
-    }
+    delete idFactListMap.at(course.root_fact);
 }
 
 void FactListView::selectSection(int id)

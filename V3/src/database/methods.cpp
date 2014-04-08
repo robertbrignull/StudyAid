@@ -134,11 +134,21 @@ void editCourse(Course course)
 void deleteCourse(int id)
 {
     mysqlpp::Connection *conn = getConn();
+    mysqlpp::Query query(conn, true);
 
-    mysqlpp::Query query(conn, true, "DELETE FROM course WHERE course_id = %0q");
+    query << "SELECT course_root_fact FROM course WHERE course_id = %0q";
     query.parse();
+    mysqlpp::StoreQueryResult storeResult = query.store(id);
 
+    query.reset();
+    query << "DELETE FROM course WHERE course_id = %0q";
+    query.parse();
     query.execute(id);
+
+    query.reset();
+    query << "DELETE FROM fact WHERE fact_id = %0q";
+    query.parse();
+    query.execute(storeResult[0]["course_root_fact"]);
 }
 
 //  #######    ##     #####  ########

@@ -34,7 +34,7 @@ CREATE TABLE fact (
 
     PRIMARY KEY fact_id_pkey (fact_id),
     FOREIGN KEY fact_type_fkey (fact_type) REFERENCES fact_type (fact_type),
-    FOREIGN KEY fact_parent_fkey (fact_parent) REFERENCES fact (fact_id)
+    FOREIGN KEY fact_parent_fkey (fact_parent) REFERENCES fact (fact_id) ON DELETE CASCADE
 ) engine=innodb;
 
 CREATE TABLE proof (
@@ -45,7 +45,7 @@ CREATE TABLE proof (
     proof_ordering INTEGER NOT NULL,
 
     PRIMARY KEY proof_id_pkey (proof_id),
-    FOREIGN KEY proof_fact_fkey (proof_fact) REFERENCES fact (fact_id)
+    FOREIGN KEY proof_fact_fkey (proof_fact) REFERENCES fact (fact_id) ON DELETE CASCADE
 ) engine=innodb;
 
 CREATE TABLE fact_dependency (
@@ -53,8 +53,8 @@ CREATE TABLE fact_dependency (
     fact_dependency_depender INTEGER NOT NULL,
 
     PRIMARY KEY fact_dependency_pkey (fact_dependency_dependency, fact_dependency_depender),
-    FOREIGN KEY fact_dependency_dependency_fkey (fact_dependency_dependency) REFERENCES fact (fact_id),
-    FOREIGN KEY fact_dependency_depender_fkey (fact_dependency_depender) REFERENCES fact (fact_id)
+    FOREIGN KEY fact_dependency_dependency_fkey (fact_dependency_dependency) REFERENCES fact (fact_id) ON DELETE CASCADE,
+    FOREIGN KEY fact_dependency_depender_fkey (fact_dependency_depender) REFERENCES fact (fact_id) ON DELETE CASCADE
 ) engine=innodb;
 
 CREATE TABLE proof_dependency (
@@ -62,8 +62,8 @@ CREATE TABLE proof_dependency (
     proof_dependency_depender INTEGER NOT NULL,
 
     PRIMARY KEY proof_dependency_pkey (proof_dependency_dependency, proof_dependency_depender),
-    FOREIGN KEY proof_dependency_dependency_fkey (proof_dependency_dependency) REFERENCES fact (fact_id),
-    FOREIGN KEY proof_dependency_depender_fkey (proof_dependency_depender) REFERENCES proof (proof_id)
+    FOREIGN KEY proof_dependency_dependency_fkey (proof_dependency_dependency) REFERENCES fact (fact_id) ON DELETE CASCADE,
+    FOREIGN KEY proof_dependency_depender_fkey (proof_dependency_depender) REFERENCES proof (proof_id) ON DELETE CASCADE
 ) engine=innodb;
 
 CREATE TABLE course (
