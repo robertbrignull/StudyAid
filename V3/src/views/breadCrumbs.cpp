@@ -10,7 +10,7 @@
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/clickableQLabel.h"
 
-#include "widgets/breadCrumbs.h"
+#include "views/breadCrumbs.h"
 
 BreadCrumbs::BreadCrumbs(int level, Model *model, ResizableStackedWidget *pageStack, QWidget *parent)
     : QWidget(parent)
