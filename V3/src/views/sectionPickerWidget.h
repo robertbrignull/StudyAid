@@ -11,6 +11,7 @@ class Model;
 class ResizableStackedWidget;
 class QVBoxLayout;
 class FactForm;
+class SectionForm;
 class Dialog;
 class ImageButton;
 class ClickableQLabel;
@@ -20,7 +21,7 @@ class SectionPickerWidget : public QWidget
     Q_OBJECT
 
 public:
-    SectionPickerWidget(Fact fact, Model *model, ResizableStackedWidget *pageStack, FactForm *factAddForm, Dialog *factAddDialog, FactForm *sectionEditForm, Dialog *sectionEditDialog, QWidget *parent = 0);
+    SectionPickerWidget(Fact fact, Model *model, ResizableStackedWidget *pageStack, FactForm *factAddForm, Dialog *factAddDialog, SectionForm *sectionEditForm, Dialog *sectionEditDialog, QWidget *parent = 0);
 
 
 
@@ -35,7 +36,7 @@ public:
     Dialog *sectionDeleteDialog;
 
     ImageButton *editSectionButton;
-    FactForm *sectionEditForm;
+    SectionForm *sectionEditForm;
     Dialog *sectionEditDialog;
 
     ImageButton *addFactButton;

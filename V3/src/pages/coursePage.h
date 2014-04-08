@@ -9,6 +9,7 @@ class Model;
 class BreadCrumbs;
 class CourseForm;
 class FactForm;
+class SectionForm;
 class Dialog;
 class QLabel;
 class Splitter;
@@ -41,7 +42,7 @@ public:
     FactForm *factAddForm;
     Dialog *factAddDialog;
 
-    FactForm *sectionEditForm;
+    SectionForm *sectionEditForm;
     Dialog *sectionEditDialog;
 
     // Both labels that hold the name of the current course

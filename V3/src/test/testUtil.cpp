@@ -19,6 +19,7 @@
 #include "pages/proofPage.h"
 #include "forms/courseForm.h"
 #include "forms/factForm.h"
+#include "forms/sectionForm.h"
 #include "forms/proofForm.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/imageButton.h"
@@ -196,6 +197,33 @@ void TestUtil::addFactToSection(StudyAid *window, const char *factName, const ch
     typeInput->setCurrentIndex(typeInput->findText(factType));
 
     QTest::mouseClick(sectionPicker->factAddDialog->confirmButton, Qt::LeftButton);
+}
+
+void TestUtil::editSection(StudyAid *window, const char *newSectionName, const char *oldSectionName)
+{
+    SectionPickerWidget *sectionPicker = findSectionPicker(window, oldSectionName, window->coursePage->sectionPicker);
+
+    if (sectionPicker == nullptr) {
+        return;
+    }
+
+    QTest::mouseClick(sectionPicker->editSectionButton, Qt::LeftButton);
+
+    sectionPicker->sectionEditForm->nameInput->setText(newSectionName);
+
+    QTest::mouseClick(sectionPicker->sectionEditDialog->confirmButton, Qt::LeftButton);
+}
+
+void TestUtil::deleteSection(StudyAid *window, const char *sectionName)
+{
+    SectionPickerWidget *sectionPicker = findSectionPicker(window, sectionName, window->coursePage->sectionPicker);
+
+    if (sectionPicker == nullptr) {
+        return;
+    }
+
+    QTest::mouseClick(sectionPicker->deleteSectionButton, Qt::LeftButton);
+    QTest::mouseClick(sectionPicker->sectionDeleteDialog->confirmButton, Qt::LeftButton);
 }
 
 void TestUtil::selectSection(StudyAid *window, const char *sectionName)

@@ -20,6 +20,8 @@ public:
     static void deleteCurrentProof(StudyAid *window);
 
     static void addFactToSection(StudyAid *window, const char *factName, const char *factType, const char *sectionName);
+    static void editSection(StudyAid *window, const char *newSectionName, const char *oldSectionName);
+    static void deleteSection(StudyAid *window, const char *sectionName);
     static void selectSection(StudyAid *window, const char *sectionName);
     static SectionPickerWidget *findSectionPicker(StudyAid *window, const char *name, SectionPickerWidget *searchRoot);
 };

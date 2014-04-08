@@ -17,6 +17,11 @@ private slots:
 
     void test_selectSection();
 
+    void test_editSection();
+
+    void test_deleteSection_empty();
+    void test_deleteSection_notEmpty();
+
 private:
     StudyAid *window;
 };

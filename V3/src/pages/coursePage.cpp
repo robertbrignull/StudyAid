@@ -22,6 +22,7 @@
 #include "views/breadCrumbs.h"
 #include "forms/courseForm.h"
 #include "forms/factForm.h"
+#include "forms/sectionForm.h"
 
 #include "pages/coursePage.h"
 
@@ -41,7 +42,7 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
     factAddForm = new FactForm();
     factAddDialog = new Dialog(this, factAddForm, "Add a new fact...", "Add", "Cancel");
 
-    sectionEditForm = new FactForm();
+    sectionEditForm = new SectionForm();
     sectionEditDialog = new Dialog(this, sectionEditForm, "Edit the section...", "Edit", "Cancel");
 
 

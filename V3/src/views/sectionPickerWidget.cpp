@@ -11,10 +11,11 @@
 #include "widgets/imageButton.h"
 #include "widgets/dialog.h"
 #include "forms/factForm.h"
+#include "forms/sectionForm.h"
 
 #include "views/sectionPickerWidget.h"
 
-SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStackedWidget *pageStack, FactForm *factAddForm, Dialog *factAddDialog, FactForm *sectionEditForm, Dialog *sectionEditDialog, QWidget *parent)
+SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStackedWidget *pageStack, FactForm *factAddForm, Dialog *factAddDialog, SectionForm *sectionEditForm, Dialog *sectionEditDialog, QWidget *parent)
     : QWidget(parent)
 {
     this->fact = fact;
@@ -111,7 +112,7 @@ void SectionPickerWidget::sectionEditButtonClicked()
 void SectionPickerWidget::sectionDeleteDialogAccepted()
 {
     sectionDeleteDialog->close();
-    
+
     deleteFact(fact.id);
     model->deleteFact(fact.id);
 }
