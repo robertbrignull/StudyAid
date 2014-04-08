@@ -14,25 +14,39 @@ FactListView::FactListView(Course course, Model *model, ResizableStackedWidget *
 
     idFactListMap = std::map<int, FactList*>();
 
-    FactList *rootFactList = new FactList(findFact(course.root_fact), model, pageStack, &idFactListMap);
+    currentFactList = new FactList(findFact(course.root_fact), model, pageStack, &idFactListMap);
+    idFactListMap.insert(std::pair<int, FactList*>(course.root_fact, currentFactList));
+
+    currentFactList->buildLayout();
 
     layout = new QHBoxLayout(this);
-
-    currentFactList = rootFactList;
     layout->addWidget(currentFactList);
 }
 
 FactListView::~FactListView()
 {
-    delete idFactListMap.at(course.root_fact);
+    currentFactList->destroyLayout();
+
+    while (layout->count() > 0) {
+        layout->takeAt(0);
+    }
+
+    for (auto it = idFactListMap.begin(); it != idFactListMap.end(); it++) {
+        delete it->second;
+    }
 }
 
 void FactListView::selectSection(int id)
 {
+    currentFactList->destroyLayout();
+    
     while (layout->count() > 0) {
-        layout->takeAt(0)->widget();
+        layout->takeAt(0);
     }
 
     currentFactList = idFactListMap.at(id);
+    currentFactList->buildLayout();
+
     layout->addWidget(currentFactList);
+    currentFactList->show();
 }

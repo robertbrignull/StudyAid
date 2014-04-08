@@ -11,6 +11,7 @@ class Model;
 class ResizableStackedWidget;
 class QVBoxLayout;
 class QLabel;
+class ExpandingFactWidget;
 
 class FactList : public QWidget
 {
@@ -21,7 +22,11 @@ public:
 
     void paintEvent(QPaintEvent *);
 
+    QWidget *generateFactListOrExpandingFactWidget(Fact fact);
     void insertFactWidget(Fact fact, QWidget *widget);
+
+    void buildLayout();
+    void destroyLayout();
 
 
 
@@ -29,12 +34,18 @@ public:
     Model *model;
     ResizableStackedWidget *pageStack;
 
+    // Is this list current built and visible
+    bool isCurrentlyBuilt;
+
     QVBoxLayout *layout;
 
     // A map from ids to FactLists that is controlled by the FactListView
     std::map<int, FactList*> *idFactListMap;
 
-    // A map from ids to FactLists that is only for children of this fact
+    // A map from ids to FactLists, always contains all child sections of this section
+    std::map<int, std::pair<Fact, FactList*> > idChildSectionMap;
+
+    // A map from ids to all of the children currently in the layout
     std::map<int, std::pair<Fact, QWidget*> > idChildMap;
 
     QLabel *sectionNameLabel;

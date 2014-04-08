@@ -247,9 +247,6 @@ void CoursePage::courseSelectedChangedSlot(Course course)
     // Connect the two together
     connect(sectionPicker, SIGNAL(sectionSelected(int)), factListView, SLOT(selectSection(int)));
 
-    // Set the starting view to everything
-    factListView->selectSection(course.root_fact);
-
     // Adjust the size of the splitter panes
     splitter->setSizes(QList<int>({pickerScrollLayout->sizeHint().width() + 50, splitter->width() - pickerScrollLayout->sizeHint().width() - 50}));
 }
