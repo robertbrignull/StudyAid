@@ -38,8 +38,10 @@ SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStack
     QHBoxLayout *sectionLayout = new QHBoxLayout();
     sectionLabel = new ClickableQLabel((fact.parent != -1) ? fact.name : "All");
 
+    sectionLabel->setWordWrap(true);
+    sectionLabel->setScaledContents(true);
+
     sectionLayout->addWidget(sectionLabel);
-    sectionLayout->addStretch(1);
 
     if (fact.parent != -1) {
         deleteSectionButton = new ImageButton(QPixmap(":/images/trash_black.png"), QSize(16, 16));

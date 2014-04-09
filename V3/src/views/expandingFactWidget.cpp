@@ -39,6 +39,7 @@ ExpandingFactWidget::ExpandingFactWidget(Fact fact, Model *model, ResizableStack
 
     nameLabel = new QLabel(QString::fromStdString(fact.name));
     nameLabel->setWordWrap(true);
+    nameLabel->setScaledContents(true);
 
     QFont font = nameLabel->font();
     font.setPointSize(18);
@@ -52,13 +53,12 @@ ExpandingFactWidget::ExpandingFactWidget(Fact fact, Model *model, ResizableStack
     ImageButton *viewButton = new ImageButton(QPixmap(":/images/arrow_right_white.png"), QSize(24, 24));
 
     headLayout->addWidget(nameLabel);
-    headLayout->addStretch(1);
     headLayout->addWidget(viewButton);
 
     headWidget->setParent(this);
     headWidget->show();
 
-    headWidgetHeight = headWidget->sizeHint().height();
+    headWidgetHeight = headWidget->heightForWidth(size().width());
     headWidget->setGeometry(0, 0, size().width(), headWidgetHeight);
 
     image = new ResizableImage(getFactImageFilename(fact), this);
@@ -98,6 +98,7 @@ void ExpandingFactWidget::setExpanded(bool expanded)
 
 void ExpandingFactWidget::resizeEvent(QResizeEvent *event)
 {
+    headWidgetHeight = headWidget->heightForWidth(event->size().width());
     headWidget->setGeometry(0, 0, event->size().width(), headWidgetHeight);
 
     image->setWidth(size().width() - border*2);
