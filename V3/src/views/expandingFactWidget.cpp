@@ -12,6 +12,7 @@
 #include "widgets/imageButton.h"
 #include "widgets/resizableImage.h"
 #include "widgets/resizableStackedWidget.h"
+#include "database/methods.h"
 
 #include "views/expandingFactWidget.h"
 
@@ -22,9 +23,8 @@ ExpandingFactWidget::ExpandingFactWidget(Fact fact, Model *model, ResizableStack
     this->pageStack = pageStack;
     this->fact = fact;
 
-    headColor = QColor(66, 139, 202);
+    headColor = QColor(QString::fromStdString(std::string("#") + findFactType(fact.type).colour));
     bodyColor = Qt::white;
-    borderColor = QColor(66, 139, 202);
     radius = 4;
     border = 16;
 
@@ -123,11 +123,11 @@ void ExpandingFactWidget::paintEvent(QPaintEvent *)
 
     painter.setRenderHint(QPainter::Antialiasing, true);
 
-    painter.setPen(QPen(QBrush(borderColor), 1));
+    painter.setPen(QPen(QBrush(headColor), 1));
     painter.setBrush(QBrush(bodyColor));
     painter.drawRoundedRect(1, headSize.height()-radius*2, totalSize.width()-2, totalSize.height()-headSize.height()+radius*2-2, radius, radius);
 
-    painter.setPen(QPen(QBrush(borderColor), 1));
+    painter.setPen(QPen(QBrush(headColor), 1));
     painter.setBrush(QBrush(headColor));
     painter.drawRoundedRect(1, 1, totalSize.width()-2, headSize.height()-2, radius, radius);
 }
@@ -142,8 +142,12 @@ void ExpandingFactWidget::factEditedSlot(Fact fact)
 {
     if (fact.id == this->fact.id) {
         this->fact = fact;
+
         nameLabel->setText(QString::fromStdString(fact.name));
         image->reloadImage();
+
+        headColor = QColor(QString::fromStdString(std::string("#") + findFactType(fact.type).colour));
+
         adjustSize();
     }
 }

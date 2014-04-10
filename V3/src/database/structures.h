@@ -6,6 +6,7 @@ typedef struct FactType
 {
     std::string fact_type;
     bool can_have_proof;
+    std::string colour;
 } FactType;
 
 typedef struct Fact

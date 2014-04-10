@@ -282,7 +282,7 @@ void CoursePage::courseSelectedChangedSlot(Course course)
     connect(sectionPicker, SIGNAL(sectionSelected(int)), factListView, SLOT(selectSection(int)));
 
     // Adjust the size of the splitter panes
-    splitter->setSizes(QList<int>({pickerScrollLayout->sizeHint().width() + 50, splitter->width() - pickerScrollLayout->sizeHint().width() - 50}));
+    splitter->setSizes(QList<int>({0, 1}));
 }
 
 void CoursePage::courseEditedSlot(Course course)

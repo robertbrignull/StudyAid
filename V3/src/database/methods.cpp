@@ -37,6 +37,7 @@ FactType loadFactType(mysqlpp::Row row)
     FactType factType;
     factType.fact_type = std::string(row["fact_type"].c_str());
     factType.can_have_proof = row["fact_type_can_have_proof"];
+    factType.colour = std::string(row["fact_type_colour"].c_str());
     return factType;
 }
 

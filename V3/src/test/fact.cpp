@@ -8,11 +8,14 @@
 #include <QScrollArea>
 #include <QComboBox>
 #include <QTextEdit>
+#include <QPixmap>
+#include <QImage>
 
 #include <QtTest/QtTest>
 
 #include "StudyAid.h"
 #include "database/setup.h"
+#include "database/methods.h"
 #include "pages/rootPage.h"
 #include "pages/coursePage.h"
 #include "pages/factPage.h"
@@ -330,4 +333,32 @@ void FactTest::test_deleteFact_one()
     // Check that the name is shown correctly on the course page
     auto it = coursePage->factListView->currentFactList->idChildMap.begin();
     QVERIFY(((ExpandingFactWidget*) it->second.second)->fact.name == otherFactName);
+}
+
+void FactTest::test_factColours()
+{
+    CoursePage *coursePage = window->coursePage;
+
+    const char *courseName = "Set Theory";
+
+    const int numTypes = 7;
+    const char *types[] = { "Definition", "Proposition", "Lemma", "Theorem", "Corollary", "Example", "Remark" };
+
+    // Add our course
+    TestUtil::addCourse(window, courseName);
+
+    // Add all of our facts
+    for (int i = 0; i < numTypes; i++) {
+        TestUtil::addFact(window, types[i], types[i]);
+    }
+
+    // Check that each fact on the course page has the correct colour
+    auto idChildMap = coursePage->factListView->currentFactList->idChildMap;
+    for (auto it = idChildMap.begin(); it != idChildMap.end(); it++) {
+        ExpandingFactWidget *factWidget = (ExpandingFactWidget*) it->second.second;
+
+        QColor colour = QColor(QString::fromStdString(std::string("#") + findFactType(factWidget->nameLabel->text().toStdString()).colour));
+
+        QVERIFY(QColor(factWidget->grab(QRect(40, 2, 1, 1)).toImage().pixel(0, 0)) == colour);
+    }
 }

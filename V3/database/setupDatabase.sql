@@ -11,18 +11,19 @@ DROP TABLE IF EXISTS fact_type;
 CREATE TABLE fact_type (
     fact_type VARCHAR(20) NOT NULL,
     fact_type_can_have_proof BOOLEAN NOT NULL,
+    fact_type_colour VARCHAR(6) NOT NULL,
 
     PRIMARY KEY fact_type_pkey (fact_type)
 ) engine=innodb;
-INSERT INTO fact_type (fact_type, fact_type_can_have_proof) VALUES ('Section', FALSE);
-INSERT INTO fact_type (fact_type, fact_type_can_have_proof) VALUES ('Axiom', FALSE);
-INSERT INTO fact_type (fact_type, fact_type_can_have_proof) VALUES ('Definition', FALSE);
-INSERT INTO fact_type (fact_type, fact_type_can_have_proof) VALUES ('Proposition', TRUE);
-INSERT INTO fact_type (fact_type, fact_type_can_have_proof) VALUES ('Lemma', TRUE);
-INSERT INTO fact_type (fact_type, fact_type_can_have_proof) VALUES ('Theorem', TRUE);
-INSERT INTO fact_type (fact_type, fact_type_can_have_proof) VALUES ('Corollary', TRUE);
-INSERT INTO fact_type (fact_type, fact_type_can_have_proof) VALUES ('Example', TRUE);
-INSERT INTO fact_type (fact_type, fact_type_can_have_proof) VALUES ('Remark', TRUE);
+INSERT INTO fact_type (fact_type, fact_type_can_have_proof, fact_type_colour) VALUES ('Section', FALSE, "000000");
+INSERT INTO fact_type (fact_type, fact_type_can_have_proof, fact_type_colour) VALUES ('Axiom', FALSE, "45A145");
+INSERT INTO fact_type (fact_type, fact_type_can_have_proof, fact_type_colour) VALUES ('Definition', FALSE, "5555A3");
+INSERT INTO fact_type (fact_type, fact_type_can_have_proof, fact_type_colour) VALUES ('Proposition', TRUE, "996E00");
+INSERT INTO fact_type (fact_type, fact_type_can_have_proof, fact_type_colour) VALUES ('Lemma', TRUE, "929900");
+INSERT INTO fact_type (fact_type, fact_type_can_have_proof, fact_type_colour) VALUES ('Theorem', TRUE, "990000");
+INSERT INTO fact_type (fact_type, fact_type_can_have_proof, fact_type_colour) VALUES ('Corollary', TRUE, "1A5C00");
+INSERT INTO fact_type (fact_type, fact_type_can_have_proof, fact_type_colour) VALUES ('Example', TRUE, "49C4C4");
+INSERT INTO fact_type (fact_type, fact_type_can_have_proof, fact_type_colour) VALUES ('Remark', TRUE, "009987");
 
 CREATE TABLE fact (
     fact_id INTEGER NOT NULL AUTO_INCREMENT,

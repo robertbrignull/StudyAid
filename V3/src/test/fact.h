@@ -25,6 +25,8 @@ private slots:
     void test_deleteFact_all();
     void test_deleteFact_one();
 
+    void test_factColours();
+
 private:
     StudyAid *window;
 };
