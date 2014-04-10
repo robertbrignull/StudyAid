@@ -21,6 +21,9 @@ private slots:
     void test_deleteProof_all();
     void test_deleteProof_one();
 
+    void test_viewProof_bodyEmpty();
+    void test_viewProof_bodyNotEmpty();
+
 private:
     StudyAid *window;
 };

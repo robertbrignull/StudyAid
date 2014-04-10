@@ -25,6 +25,7 @@
 #include "widgets/imageButton.h"
 #include "widgets/resizableImage.h"
 #include "widgets/dialog.h"
+#include "widgets/splitter.h"
 #include "views/breadCrumbs.h"
 #include "views/courseTitleWidget.h"
 #include "views/factListView.h"
@@ -288,6 +289,11 @@ void FactTest::test_editFact_statement()
 
     it = coursePage->factListView->currentFactList->idChildMap.begin();
     QVERIFY(((ExpandingFactWidget*) it->second.second)->image->image.height() > oldHeightOnCoursePage);
+
+    // Check that no part of the splitter is minimized
+    auto sizes = factPage->splitter->sizes();
+    QVERIFY(sizes.at(0) != 0);
+    QVERIFY(sizes.at(1) != 0);
 }
 
 void FactTest::test_deleteFact_all()
@@ -361,4 +367,68 @@ void FactTest::test_factColours()
 
         QVERIFY(QColor(factWidget->grab(QRect(40, 2, 1, 1)).toImage().pixel(0, 0)) == colour);
     }
+}
+
+void FactTest::test_viewFact_statementEmpty()
+{
+    CoursePage *coursePage = window->coursePage;
+    FactPage *factPage = window->factPage;
+
+    const char *courseName = "Set Theory";
+    const char *otherFactName = "The empty set is unique";
+    const char *otherFactType = "Theorem";
+    const char *factName = "ZF1 - Extensionality";
+    const char *factType = "Axiom";
+
+    // Add our course and fact
+    TestUtil::addCourse(window, courseName);
+    TestUtil::addFact(window, factName, factType);
+
+    // Leave the statement empty
+
+    // add another fact
+    TestUtil::addFact(window, otherFactName, otherFactType);
+
+    // Select the first fact again
+    ExpandingFactWidget* factWidget = (ExpandingFactWidget*) coursePage->factListView->currentFactList->idChildMap.begin()->second.second;
+    QVERIFY(factWidget->nameLabel->text() == factName);
+    QTest::mouseClick(factWidget->viewButton, Qt::LeftButton);
+
+    // Check that the statement text edit and image are visible
+    auto sizes = factPage->splitter->sizes();
+    QVERIFY(sizes.at(0) != 0);
+    QVERIFY(sizes.at(1) != 0);
+}
+
+void FactTest::test_viewFact_statementNotEmpty()
+{
+    CoursePage *coursePage = window->coursePage;
+    FactPage *factPage = window->factPage;
+
+    const char *courseName = "Set Theory";
+    const char *otherFactName = "The empty set is unique";
+    const char *otherFactType = "Theorem";
+    const char *factName = "ZF1 - Extensionality";
+    const char *factType = "Axiom";
+    const char *factStatement = "Statement text!!!";
+
+    // Add our course and fact
+    TestUtil::addCourse(window, courseName);
+    TestUtil::addFact(window, factName, factType);
+
+    // Change the statement to be non-empty
+    TestUtil::editCurrentFactStatement(window, factStatement);
+
+    // add another fact
+    TestUtil::addFact(window, otherFactName, otherFactType);
+
+    // Select the first fact again
+    ExpandingFactWidget* factWidget = (ExpandingFactWidget*) coursePage->factListView->currentFactList->idChildMap.begin()->second.second;
+    QVERIFY(factWidget->nameLabel->text() == factName);
+    QTest::mouseClick(factWidget->viewButton, Qt::LeftButton);
+
+    // Check that the statement text edit is not visible but the image is
+    auto sizes = factPage->splitter->sizes();
+    QVERIFY(sizes.at(0) == 0);
+    QVERIFY(sizes.at(1) != 0);
 }

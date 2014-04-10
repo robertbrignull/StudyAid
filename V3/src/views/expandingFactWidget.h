@@ -12,6 +12,7 @@ class ResizableStackedWidget;
 class QMouseEvent;
 class ResizableImage;
 class QLabel;
+class ImageButton;
 
 class ExpandingFactWidget : public QWidget
 {
@@ -34,6 +35,7 @@ public:
     bool expanded;
     double currentHeight;
     ResizableImage *image;
+    ImageButton *viewButton;
 
     QWidget *headWidget;
     int headWidgetHeight;

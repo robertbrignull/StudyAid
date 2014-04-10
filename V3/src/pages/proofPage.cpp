@@ -267,6 +267,31 @@ void ProofPage::proofDeleteDialogAccepted()
 
 void ProofPage::proofSelectedChangedSlot(Proof proof)
 {
+    reloadProofDetails(proof);
+
+    if (proof.body == "") {
+        splitter->setSizes({ 1, 1, 0 });
+    }
+    else {
+        splitter->setSizes({ 0, 1, 0 });
+    }
+}
+
+void ProofPage::proofEditedSlot(Proof proof)
+{
+    reloadProofDetails(proof);
+}
+
+//  ##      ## ####### ######## ##    ##  #####  #####    #####
+//  ###    ### ##         ##    ##    ## ##   ## ##  ### ##   ##
+//  ####  #### ##         ##    ##    ## ##   ## ##   ##  ##
+//  ## #### ## #####      ##    ######## ##   ## ##   ##   ###
+//  ##  ##  ## ##         ##    ##    ## ##   ## ##   ##     ##
+//  ##      ## ##         ##    ##    ## ##   ## ##  ### ##   ##
+//  ##      ## #######    ##    ##    ##  #####  #####    #####
+
+void ProofPage::reloadProofDetails(Proof proof)
+{
     // Set labels with the proof and body
     proofLabel->setText(QString::fromStdString(proof.name));
 
@@ -277,9 +302,4 @@ void ProofPage::proofSelectedChangedSlot(Proof proof)
 
         trafficLight->setState(TrafficLight::AMBER);
     }
-}
-
-void ProofPage::proofEditedSlot(Proof proof)
-{
-    proofSelectedChangedSlot(proof);
 }

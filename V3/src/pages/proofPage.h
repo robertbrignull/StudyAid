@@ -63,4 +63,7 @@ public slots:
 
     void proofSelectedChangedSlot(Proof proof);
     void proofEditedSlot(Proof proof);
+
+private:
+    void reloadProofDetails(Proof proof);
 };

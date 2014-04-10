@@ -27,6 +27,9 @@ private slots:
 
     void test_factColours();
 
+    void test_viewFact_statementEmpty();
+    void test_viewFact_statementNotEmpty();
+
 private:
     StudyAid *window;
 };

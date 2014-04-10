@@ -94,4 +94,6 @@ public slots:
 
 private:
     void insertProofViewWidget(Proof proof, ProofViewWidget *proofViewWidget);
+
+    void reloadFactDetails(Fact fact);
 };

@@ -50,7 +50,7 @@ ExpandingFactWidget::ExpandingFactWidget(Fact fact, Model *model, ResizableStack
     pal.setColor(QPalette::Text, Qt::white);
     nameLabel->setPalette(pal);
 
-    ImageButton *viewButton = new ImageButton(QPixmap(":/images/arrow_right_white.png"), QSize(24, 24));
+    viewButton = new ImageButton(QPixmap(":/images/arrow_right_white.png"), QSize(24, 24));
 
     headLayout->addWidget(nameLabel);
     headLayout->addWidget(viewButton);

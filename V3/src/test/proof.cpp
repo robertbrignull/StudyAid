@@ -24,6 +24,7 @@
 #include "widgets/imageButton.h"
 #include "widgets/resizableImage.h"
 #include "widgets/dialog.h"
+#include "widgets/splitter.h"
 #include "views/breadCrumbs.h"
 #include "views/courseTitleWidget.h"
 #include "views/factListView.h"
@@ -257,4 +258,70 @@ void ProofTest::test_deleteProof_one()
 
     // Check that the name is correct on the fact page
     QVERIFY(factPage->idProofViewWidgetMap.begin()->second.second->nameLabel->text() == otherProofName);
+}
+
+void ProofTest::test_viewProof_bodyEmpty()
+{
+    FactPage *factPage = window->factPage;
+    ProofPage *proofPage = window->proofPage;
+
+    const char *courseName = "Set Theory";
+    const char *factName = "ZF1 - Extensionality";
+    const char *factType = "Axiom";
+    const char *proofName = "Proof 1";
+    const char *otherProofName = "Proof 2";
+
+    // Add our course and fact and proof
+    TestUtil::addCourse(window, courseName);
+    TestUtil::addFact(window, factName, factType);
+    TestUtil::addProof(window, proofName);
+
+    // Leave the body empty
+
+    // add another proof
+    TestUtil::addProof(window, otherProofName);
+
+    // Select the first proof again
+    ProofViewWidget *proofViewWidget = factPage->idProofViewWidgetMap.begin()->second.second;
+    QVERIFY(proofViewWidget->nameLabel->text() == proofName);
+    QTest::mouseClick(proofViewWidget->viewProofButton, Qt::LeftButton);
+
+    // Check that the body text edit and image are visible
+    auto sizes = proofPage->splitter->sizes();
+    QVERIFY(sizes.at(0) != 0);
+    QVERIFY(sizes.at(1) != 0);
+}
+
+void ProofTest::test_viewProof_bodyNotEmpty()
+{
+    FactPage *factPage = window->factPage;
+    ProofPage *proofPage = window->proofPage;
+
+    const char *courseName = "Set Theory";
+    const char *factName = "ZF1 - Extensionality";
+    const char *factType = "Axiom";
+    const char *proofName = "Proof 1";
+    const char *otherProofName = "Proof 2";
+    const char *proofBody = "Proof body text!!!";
+
+    // Add our course and fact and proof
+    TestUtil::addCourse(window, courseName);
+    TestUtil::addFact(window, factName, factType);
+    TestUtil::addProof(window, proofName);
+
+    // Change the body to something non-empty
+    TestUtil::editCurrentProofBody(window, proofBody);
+
+    // add another proof
+    TestUtil::addProof(window, otherProofName);
+
+    // Select the first proof again
+    ProofViewWidget *proofViewWidget = factPage->idProofViewWidgetMap.begin()->second.second;
+    QVERIFY(proofViewWidget->nameLabel->text() == proofName);
+    QTest::mouseClick(proofViewWidget->viewProofButton, Qt::LeftButton);
+
+    // Check that the body text edit is not visible but the image is
+    auto sizes = proofPage->splitter->sizes();
+    QVERIFY(sizes.at(0) == 0);
+    QVERIFY(sizes.at(1) != 0);
 }

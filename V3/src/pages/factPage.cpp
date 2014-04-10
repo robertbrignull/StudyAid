@@ -324,6 +324,72 @@ void FactPage::proofAddDialogCompleted()
 
 void FactPage::factSelectedChangedSlot(Fact fact)
 {
+    reloadFactDetails(fact);
+
+    if (fact.statement == "") {
+        splitter->setSizes({ 1, 1, 0 });
+    }
+    else {
+        splitter->setSizes({ 0, 1, 0 });
+    }
+}
+
+void FactPage::factEditedSlot(Fact fact)
+{
+    if (fact.id == model->getFactSelected().id) {
+        reloadFactDetails(fact);
+    }
+}
+
+void FactPage::proofAddedSlot(Proof proof)
+{
+    insertProofViewWidget(proof, new ProofViewWidget(proof, model, pageStack));
+}
+
+void FactPage::proofEditedSlot(Proof proof)
+{
+    auto item = idProofViewWidgetMap.at(proof.id);
+
+    proofsScrollLayout->removeWidget(item.second);
+    idProofViewWidgetMap.erase(proof.id);
+
+    insertProofViewWidget(proof, item.second);
+}
+
+void FactPage::proofDeletedSlot(int id)
+{
+    auto item = idProofViewWidgetMap.at(id);
+
+    proofsScrollLayout->removeWidget(item.second);
+    idProofViewWidgetMap.erase(id);
+    delete item.second;
+}
+
+//  ##      ## ####### ######## ##    ##  #####  #####    #####
+//  ###    ### ##         ##    ##    ## ##   ## ##  ### ##   ##
+//  ####  #### ##         ##    ##    ## ##   ## ##   ##  ##
+//  ## #### ## #####      ##    ######## ##   ## ##   ##   ###
+//  ##  ##  ## ##         ##    ##    ## ##   ## ##   ##     ##
+//  ##      ## ##         ##    ##    ## ##   ## ##  ### ##   ##
+//  ##      ## #######    ##    ##    ##  #####  #####    #####
+
+void FactPage::insertProofViewWidget(Proof proof, ProofViewWidget *proofViewWidget)
+{
+    int position = idProofViewWidgetMap.size();
+
+    for (auto it = idProofViewWidgetMap.begin(); it != idProofViewWidgetMap.end(); it++) {
+        if (it->second.first.ordering > proof.ordering) {
+            position = std::min(position, proofsScrollLayout->indexOf(it->second.second));
+        }
+    }
+
+    proofsScrollLayout->insertWidget(position, proofViewWidget);
+
+    idProofViewWidgetMap.insert(std::pair<int, std::pair<Proof, ProofViewWidget*> >(proof.id, std::pair<Proof, ProofViewWidget*>(proof, proofViewWidget)));
+}
+
+void FactPage::reloadFactDetails(Fact fact)
+{
     // Set labels with the name and statement
     factLabel->setText(QString::fromStdString(fact.name));
 
@@ -360,50 +426,4 @@ void FactPage::factSelectedChangedSlot(Fact fact)
         proofsScrollArea->hide();
         addProofButton->hide();
     }
-}
-
-void FactPage::factEditedSlot(Fact fact)
-{
-    if (fact.id == model->getFactSelected().id) {
-        factSelectedChangedSlot(fact);
-    }
-}
-
-void FactPage::proofAddedSlot(Proof proof)
-{
-    insertProofViewWidget(proof, new ProofViewWidget(proof, model, pageStack));
-}
-
-void FactPage::proofEditedSlot(Proof proof)
-{
-    auto item = idProofViewWidgetMap.at(proof.id);
-
-    proofsScrollLayout->removeWidget(item.second);
-    idProofViewWidgetMap.erase(proof.id);
-
-    insertProofViewWidget(proof, item.second);
-}
-
-void FactPage::proofDeletedSlot(int id)
-{
-    auto item = idProofViewWidgetMap.at(id);
-
-    proofsScrollLayout->removeWidget(item.second);
-    idProofViewWidgetMap.erase(id);
-    delete item.second;
-}
-
-void FactPage::insertProofViewWidget(Proof proof, ProofViewWidget *proofViewWidget)
-{
-    int position = idProofViewWidgetMap.size();
-
-    for (auto it = idProofViewWidgetMap.begin(); it != idProofViewWidgetMap.end(); it++) {
-        if (it->second.first.ordering > proof.ordering) {
-            position = std::min(position, proofsScrollLayout->indexOf(it->second.second));
-        }
-    }
-
-    proofsScrollLayout->insertWidget(position, proofViewWidget);
-
-    idProofViewWidgetMap.insert(std::pair<int, std::pair<Proof, ProofViewWidget*> >(proof.id, std::pair<Proof, ProofViewWidget*>(proof, proofViewWidget)));
 }
