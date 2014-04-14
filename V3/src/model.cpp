@@ -38,6 +38,11 @@ void Model::editCourse(Course course)
     emit courseEdited(course);
 }
 
+void Model::editCourseOrdering(Course course)
+{
+    emit courseOrderingEdited(course);
+}
+
 void Model::deleteCourse(int id)
 {
     emit courseDeleted(id);
@@ -74,6 +79,11 @@ void Model::editFact(Fact fact)
     emit factEdited(fact);
 }
 
+void Model::editFactOrdering(Fact fact)
+{
+    emit factOrderingEdited(fact);
+}
+
 void Model::deleteFact(int id)
 {
     emit factDeleted(id);
@@ -108,6 +118,11 @@ void Model::editProof(Proof proof)
     }
 
     emit proofEdited(proof);
+}
+
+void Model::editProofOrdering(Proof proof)
+{
+    emit proofOrderingEdited(proof);
 }
 
 void Model::deleteProof(int id)

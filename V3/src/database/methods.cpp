@@ -126,10 +126,25 @@ void editCourse(Course course)
 {
     mysqlpp::Connection *conn = getConn();
 
-    mysqlpp::Query query(conn, true, "UPDATE course SET course_name = %0q, course_ordering = %1q, course_root_fact = %2q WHERE course_id = %3q");
+    mysqlpp::Query query(conn, true, "UPDATE course SET course_name = %0q WHERE course_id = %1q");
     query.parse();
 
-    query.execute(course.name, course.ordering, course.root_fact, course.id);
+    query.execute(course.name, course.id);
+}
+
+void editCourseOrdering(Course course)
+{
+    mysqlpp::Connection *conn = getConn();
+    mysqlpp::Query query(conn, true);
+
+    query << "UPDATE course SET course_ordering = course_ordering + 1 WHERE course_ordering >= %0q";
+    query.parse();
+    query.execute(course.ordering);
+
+    query.reset();
+    query << "UPDATE course SET course_ordering = %0q WHERE course_id = %1q";
+    query.parse();
+    query.execute(course.ordering, course.id);
 }
 
 void deleteCourse(int id)
@@ -237,15 +252,25 @@ void editFact(Fact fact)
 {
     mysqlpp::Connection *conn = getConn();
 
-    mysqlpp::Query query(conn, true, "UPDATE fact SET fact_parent = %0q, fact_name = %1q, fact_type = %2q, fact_statement = %3q, fact_ordering = %4q WHERE fact_id = %5q");
+    mysqlpp::Query query(conn, true, "UPDATE fact SET fact_name = %0q, fact_type = %1q, fact_statement = %2q WHERE fact_id = %3q");
     query.parse();
 
-    if (fact.parent != -1) {
-        query.execute(fact.parent, fact.name, fact.type, fact.statement, fact.ordering, fact.id);
-    }
-    else {
-        query.execute(mysqlpp::null, fact.name, fact.type, fact.statement, fact.ordering, fact.id);
-    }
+    query.execute(fact.name, fact.type, fact.statement, fact.id);
+}
+
+void editFactOrdering(Fact fact)
+{
+    mysqlpp::Connection *conn = getConn();
+    mysqlpp::Query query(conn, true);
+
+    query << "UPDATE fact SET fact_ordering = fact_ordering + 1 WHERE fact_parent = %0q AND fact_ordering >= %1q";
+    query.parse();
+    query.execute(fact.parent, fact.ordering);
+
+    query.reset();
+    query << "UPDATE fact SET fact_parent = %0q, fact_ordering = %1q WHERE fact_id = %2q";
+    query.parse();
+    query.execute(fact.parent, fact.ordering, fact.id);
 }
 
 void deleteFact(int id)
@@ -369,10 +394,25 @@ void editProof(Proof proof)
 {
     mysqlpp::Connection *conn = getConn();
 
-    mysqlpp::Query query(conn, true, "UPDATE proof SET proof_fact = %0q, proof_name = %1q, proof_body = %2q, proof_ordering = %3q WHERE proof_id = %4q");
+    mysqlpp::Query query(conn, true, "UPDATE proof SET proof_name = %0q, proof_body = %1q WHERE proof_id = %2q");
     query.parse();
 
-    query.execute(proof.fact, proof.name, proof.body, proof.ordering, proof.id);
+    query.execute(proof.name, proof.body, proof.id);
+}
+
+void editProofOrdering(Proof proof)
+{
+    mysqlpp::Connection *conn = getConn();
+    mysqlpp::Query query(conn, true);
+
+    query << "UPDATE proof SET proof_ordering = proof_ordering + 1 WHERE proof_fact = %0q AND proof_ordering >= %1q";
+    query.parse();
+    query.execute(proof.fact, proof.ordering);
+
+    query.reset();
+    query << "UPDATE proof SET proof_ordering = %1q WHERE proof_id = %2q";
+    query.parse();
+    query.execute(proof.ordering, proof.id);
 }
 
 void deleteProof(int id)
