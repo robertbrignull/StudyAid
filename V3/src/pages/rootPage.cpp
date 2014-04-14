@@ -144,7 +144,6 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     connect(courseAddDialog, SIGNAL(cancelled()), courseAddDialog, SLOT(close()));
 
     connect(model, SIGNAL(courseAdded(Course)), this, SLOT(courseAddedSlot(Course)));
-    connect(model, SIGNAL(courseEdited(Course)), this, SLOT(courseEditedSlot(Course)));
     connect(model, SIGNAL(courseDeleted(int)), this, SLOT(courseDeletedSlot(int)));
 }
 
@@ -183,18 +182,12 @@ void RootPage::courseAddedSlot(Course course)
         }
     }
 
-    CourseTitleWidget *courseTitleWidget = new CourseTitleWidget(course);
+    CourseTitleWidget *courseTitleWidget = new CourseTitleWidget(course, model);
     scrollLayout->insertWidget(position, courseTitleWidget);
 
     idCourseMap.insert(std::pair<int, std::pair<Course, CourseTitleWidget*> >(course.id, std::pair<Course, CourseTitleWidget*>(course, courseTitleWidget)));
 
     connect(courseTitleWidget, SIGNAL(viewButtonClicked(Course)), this, SLOT(courseViewButtonClicked(Course)));
-}
-
-void RootPage::courseEditedSlot(Course course)
-{
-    courseDeletedSlot(course.id);
-    courseAddedSlot(course);
 }
 
 void RootPage::courseDeletedSlot(int id)

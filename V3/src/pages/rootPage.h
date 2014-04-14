@@ -42,6 +42,5 @@ public slots:
     void courseAddDialogCompleted();
 
     void courseAddedSlot(Course course);
-    void courseEditedSlot(Course course);
     void courseDeletedSlot(int id);
 };

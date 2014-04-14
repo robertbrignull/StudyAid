@@ -5,11 +5,12 @@
 #include <QPainter>
 #include <QLabel>
 
+#include "model.h"
 #include "widgets/imageButton.h"
 
 #include "views/courseTitleWidget.h"
 
-CourseTitleWidget::CourseTitleWidget(Course course, QWidget *parent)
+CourseTitleWidget::CourseTitleWidget(Course course, Model *model, QWidget *parent)
     : QWidget(parent)
 {
     this->course = course;
@@ -23,26 +24,28 @@ CourseTitleWidget::CourseTitleWidget(Course course, QWidget *parent)
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(16, 8, 16, 8);
 
-    QLabel *label = new QLabel(QString::fromStdString(course.name));
-    label->setWordWrap(true);
+    courseNameLabel = new QLabel(QString::fromStdString(course.name));
+    courseNameLabel->setWordWrap(true);
 
-    QFont font = label->font();
+    QFont font = courseNameLabel->font();
     font.setPointSize(18);
-    label->setFont(font);
+    courseNameLabel->setFont(font);
 
-    QPalette pal = label->palette();
+    QPalette pal = courseNameLabel->palette();
     pal.setColor(QPalette::WindowText, Qt::white);
     pal.setColor(QPalette::Text, Qt::white);
-    label->setPalette(pal);
+    courseNameLabel->setPalette(pal);
 
-    ImageButton *viewButton = new ImageButton(QPixmap(":/images/arrow_right_white.png"), QSize(24, 24));
+    viewCourseButton = new ImageButton(QPixmap(":/images/arrow_right_white.png"), QSize(24, 24));
 
-    layout->addWidget(label);
-    layout->addWidget(viewButton);
+    layout->addWidget(courseNameLabel);
+    layout->addWidget(viewCourseButton);
 
 
 
-    connect(viewButton, SIGNAL(clicked()), this, SLOT(viewButtonClickedSlot()));
+    connect(viewCourseButton, SIGNAL(clicked()), this, SLOT(viewButtonClickedSlot()));
+
+    connect(model, SIGNAL(courseEdited(Course)), this, SLOT(courseEditedSlot(Course)));
 }
 
 void CourseTitleWidget::paintEvent(QPaintEvent *)
@@ -59,4 +62,13 @@ void CourseTitleWidget::paintEvent(QPaintEvent *)
 void CourseTitleWidget::viewButtonClickedSlot()
 {
     emit viewButtonClicked(course);
+}
+
+void CourseTitleWidget::courseEditedSlot(Course course)
+{
+    if (course.id == this->course.id) {
+        this->course = course;
+
+        courseNameLabel->setText(QString::fromStdString(course.name));
+    }
 }

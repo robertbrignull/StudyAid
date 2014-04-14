@@ -252,7 +252,6 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     connect(model, SIGNAL(factSelectedChanged(Fact)), this, SLOT(factSelectedChangedSlot(Fact)));
     connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
     connect(model, SIGNAL(proofAdded(Proof)), this, SLOT(proofAddedSlot(Proof)));
-    connect(model, SIGNAL(proofEdited(Proof)), this, SLOT(proofEditedSlot(Proof)));
     connect(model, SIGNAL(proofDeleted(int)), this, SLOT(proofDeletedSlot(int)));
 }
 
@@ -344,16 +343,6 @@ void FactPage::factEditedSlot(Fact fact)
 void FactPage::proofAddedSlot(Proof proof)
 {
     insertProofViewWidget(proof, new ProofViewWidget(proof, model, pageStack));
-}
-
-void FactPage::proofEditedSlot(Proof proof)
-{
-    auto item = idProofViewWidgetMap.at(proof.id);
-
-    proofsScrollLayout->removeWidget(item.second);
-    idProofViewWidgetMap.erase(proof.id);
-
-    insertProofViewWidget(proof, item.second);
 }
 
 void FactPage::proofDeletedSlot(int id)

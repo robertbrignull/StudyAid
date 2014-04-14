@@ -89,7 +89,6 @@ public slots:
     void factEditedSlot(Fact fact);
 
     void proofAddedSlot(Proof proof);
-    void proofEditedSlot(Proof proof);
     void proofDeletedSlot(int id);
 
 private:

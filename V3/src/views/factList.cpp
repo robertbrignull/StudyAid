@@ -166,30 +166,7 @@ void FactList::factAddedSlot(Fact fact)
 void FactList::factEditedSlot(Fact fact)
 {
     if (fact.id == this->fact.id) {
-        // Possibly just change the name shown
         sectionNameLabel->setText(QString::fromStdString(fact.name));
-    }
-    else if (fact.parent == this->fact.id) {
-        // Or possibly have to move widgets around because
-        // the order might have changed
-
-        if (idChildSectionMap.count(fact.id) > 0) {
-            auto item = idChildSectionMap.at(fact.id);
-
-            idChildSectionMap.erase(fact.id);
-            idChildSectionMap.insert(std::pair<int, std::pair<Fact, FactList*> >(fact.id, std::pair<Fact, FactList*>(fact, item.second)));
-        }
-
-        if (idChildMap.count(fact.id)) {
-            auto item = idChildMap.at(fact.id);
-
-            item.second->hide();
-            layout->removeWidget(item.second);
-            idChildMap.erase(fact.id);
-
-            insertFactWidget(fact, item.second);
-            idChildMap.insert(std::pair<int, std::pair<Fact, QWidget*> >(fact.id, std::pair<Fact, QWidget*>(fact, item.second)));
-        }
     }
 }
 
