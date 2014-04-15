@@ -120,7 +120,7 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
     // Load every course from the database and build up idCourseMap
     std::vector<Course> courses = findAllCourses();
-    idCourseMap = std::map<int, std::pair<Course, CourseTitleWidget*> >();
+    idCourseMap = std::map<int, CourseTitleWidget*>();
 
     for (size_t i = 0; i < courses.size(); ++i) {
         courseAddedSlot(courses[i]);
@@ -144,6 +144,7 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     connect(courseAddDialog, SIGNAL(cancelled()), courseAddDialog, SLOT(close()));
 
     connect(model, SIGNAL(courseAdded(Course)), this, SLOT(courseAddedSlot(Course)));
+    connect(model, SIGNAL(courseOrderingEdited(Course)), this, SLOT(courseOrderingEditedSlot(Course)));
     connect(model, SIGNAL(courseDeleted(int)), this, SLOT(courseDeletedSlot(int)));
 }
 
@@ -174,28 +175,67 @@ void RootPage::courseAddDialogCompleted()
 
 void RootPage::courseAddedSlot(Course course)
 {
-    int position = idCourseMap.size();
+    insertCourseTitleWidget(new CourseTitleWidget(course, model));
+}
 
+void RootPage::courseOrderingEditedSlot(Course course)
+{
+    // Update orderings on children
     for (auto it = idCourseMap.begin(); it != idCourseMap.end(); it++) {
-        if (it->second.first.ordering > course.ordering) {
-            position = std::min(position, scrollLayout->indexOf(it->second.second));
+        if (it->second->course.id == course.id) {
+            it->second->course = course;
+        }
+        else if (it->second->course.ordering >= course.ordering) {
+            it->second->course.ordering += 1;
         }
     }
 
-    CourseTitleWidget *courseTitleWidget = new CourseTitleWidget(course, model);
-    scrollLayout->insertWidget(position, courseTitleWidget);
+    // Remove the edited CourseTitleWidget and re-add it
+    CourseTitleWidget *courseTitleWidget = idCourseMap.at(course.id);
 
-    idCourseMap.insert(std::pair<int, std::pair<Course, CourseTitleWidget*> >(course.id, std::pair<Course, CourseTitleWidget*>(course, courseTitleWidget)));
+    scrollLayout->removeWidget(courseTitleWidget);
+    idCourseMap.erase(course.id);
 
-    connect(courseTitleWidget, SIGNAL(viewButtonClicked(Course)), this, SLOT(courseViewButtonClicked(Course)));
+    insertCourseTitleWidget(courseTitleWidget);
 }
 
 void RootPage::courseDeletedSlot(int id)
 {
-    auto pair = idCourseMap.at(id);
+    CourseTitleWidget *courseTitleWidget = idCourseMap.at(id);
 
-    scrollLayout->removeWidget(pair.second);
-    delete pair.second;
+    scrollLayout->removeWidget(courseTitleWidget);
+    delete courseTitleWidget;
 
     idCourseMap.erase(id);
+}
+
+//  ##      ## ####### ######## ##    ##  #####  #####    #####
+//  ###    ### ##         ##    ##    ## ##   ## ##  ### ##   ##
+//  ####  #### ##         ##    ##    ## ##   ## ##   ##  ##
+//  ## #### ## #####      ##    ######## ##   ## ##   ##   ###
+//  ##  ##  ## ##         ##    ##    ## ##   ## ##   ##     ##
+//  ##      ## ##         ##    ##    ## ##   ## ##  ### ##   ##
+//  ##      ## #######    ##    ##    ##  #####  #####    #####
+
+void RootPage::insertCourseTitleWidget(CourseTitleWidget *courseTitleWidget)
+{
+    int position = idCourseMap.size();
+
+    for (auto it = idCourseMap.begin(); it != idCourseMap.end(); it++) {
+        if (it->second->course.ordering > courseTitleWidget->course.ordering) {
+            position = std::min(position, scrollLayout->indexOf(it->second));
+        }
+    }
+
+    scrollLayout->insertWidget(position, courseTitleWidget);
+
+    idCourseMap.insert(std::pair<int, CourseTitleWidget*>(courseTitleWidget->course.id, courseTitleWidget));
+
+    connect(courseTitleWidget, SIGNAL(viewButtonClicked(Course)), this, SLOT(courseViewButtonClicked(Course)));
+
+    connect(courseTitleWidget, SIGNAL(moveButtonClicked(Course)), this, SIGNAL(moveButtonClicked(Course)));
+    connect(courseTitleWidget, SIGNAL(moveCompleted()), this, SIGNAL(moveCompleted()));
+
+    connect(this, SIGNAL(moveButtonClicked(Course)), courseTitleWidget, SLOT(activateMoveMode(Course)));
+    connect(this, SIGNAL(moveCompleted()), courseTitleWidget, SLOT(deactivateMoveMode()));
 }

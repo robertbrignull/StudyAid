@@ -34,7 +34,11 @@ public:
     QVBoxLayout *scrollLayout;
     
     // Maps from ids to Courses and CourseTitleWidgets
-    std::map<int, std::pair<Course, CourseTitleWidget*> > idCourseMap;
+    std::map<int, CourseTitleWidget*> idCourseMap;
+
+signals:
+    void moveButtonClicked(Course course);
+    void moveCompleted();
 
 public slots:
     void courseViewButtonClicked(Course course);
@@ -42,5 +46,9 @@ public slots:
     void courseAddDialogCompleted();
 
     void courseAddedSlot(Course course);
+    void courseOrderingEditedSlot(Course course);
     void courseDeletedSlot(int id);
+
+private:
+    void insertCourseTitleWidget(CourseTitleWidget *courseTitleWidget);
 };

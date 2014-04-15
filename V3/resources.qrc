@@ -4,6 +4,12 @@
     <file>images/default_image.png</file>
     <file>images/arrow_right_white.png</file>
     <file>images/arrow_right_black.png</file>
+    <file>images/arrow_up_white.png</file>
+    <file>images/arrow_up_black.png</file>
+    <file>images/arrow_down_white.png</file>
+    <file>images/arrow_down_black.png</file>
+    <file>images/move_white.png</file>
+    <file>images/move_black.png</file>
     <file>images/plus_black.png</file>
     <file>images/cross_black.png</file>
     <file>images/pencil_black.png</file>

@@ -7,6 +7,7 @@
 
 #include "model.h"
 #include "widgets/imageButton.h"
+#include "database/methods.h"
 
 #include "views/courseTitleWidget.h"
 
@@ -14,6 +15,7 @@ CourseTitleWidget::CourseTitleWidget(Course course, Model *model, QWidget *paren
     : QWidget(parent)
 {
     this->course = course;
+    this->model = model;
 
     headColor = QColor(66, 139, 202);
     borderColor = QColor(66, 139, 202);
@@ -38,12 +40,25 @@ CourseTitleWidget::CourseTitleWidget(Course course, Model *model, QWidget *paren
 
     viewCourseButton = new ImageButton(QPixmap(":/images/arrow_right_white.png"), QSize(24, 24));
 
+    moveButton = new ImageButton(QPixmap(":/images/move_white.png"), QSize(24, 24));
+    moveAboveButton = new ImageButton(QPixmap(":/images/arrow_up_white.png"), QSize(24, 24));
+    moveBelowButton = new ImageButton(QPixmap(":/images/arrow_down_white.png"), QSize(24, 24));
+
     layout->addWidget(courseNameLabel);
+    layout->addWidget(moveBelowButton);
+    layout->addWidget(moveAboveButton);
+    layout->addWidget(moveButton);
     layout->addWidget(viewCourseButton);
+
+    deactivateMoveMode();
 
 
 
     connect(viewCourseButton, SIGNAL(clicked()), this, SLOT(viewButtonClickedSlot()));
+
+    connect(moveButton, SIGNAL(clicked()), this, SLOT(moveButtonClickedSlot()));
+    connect(moveAboveButton, SIGNAL(clicked()), this, SLOT(moveAboveButtonClickedSlot()));
+    connect(moveBelowButton, SIGNAL(clicked()), this, SLOT(moveBelowButtonClickedSlot()));
 
     connect(model, SIGNAL(courseEdited(Course)), this, SLOT(courseEditedSlot(Course)));
 }
@@ -62,6 +77,49 @@ void CourseTitleWidget::paintEvent(QPaintEvent *)
 void CourseTitleWidget::viewButtonClickedSlot()
 {
     emit viewButtonClicked(course);
+}
+
+void CourseTitleWidget::moveButtonClickedSlot()
+{
+    emit moveButtonClicked(course);
+}
+
+void CourseTitleWidget::moveAboveButtonClickedSlot()
+{
+    moveCourse.ordering = course.ordering;
+
+    editCourseOrdering(moveCourse);
+    model->editCourseOrdering(moveCourse);
+
+    emit moveCompleted();
+}
+
+void CourseTitleWidget::moveBelowButtonClickedSlot()
+{
+    moveCourse.ordering = course.ordering + 1;
+
+    editCourseOrdering(moveCourse);
+    model->editCourseOrdering(moveCourse);
+
+    emit moveCompleted();
+}
+
+void CourseTitleWidget::activateMoveMode(Course course)
+{
+    moveCourse = course;
+
+    viewCourseButton->hide();
+    moveButton->hide();
+    moveAboveButton->show();
+    moveBelowButton->show();
+}
+
+void CourseTitleWidget::deactivateMoveMode()
+{
+    viewCourseButton->show();
+    moveButton->show();
+    moveAboveButton->hide();
+    moveBelowButton->hide();
 }
 
 void CourseTitleWidget::courseEditedSlot(Course course)
