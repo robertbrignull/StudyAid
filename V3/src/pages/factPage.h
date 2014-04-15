@@ -73,7 +73,11 @@ public:
     QVBoxLayout *proofsScrollLayout;
 
     // A map from ids to ProofViewWidgets
-    std::map<int, std::pair<Proof, ProofViewWidget*> > idProofViewWidgetMap;
+    std::map<int, ProofViewWidget*> idProofViewWidgetMap;
+
+signals:
+    void moveButtonClicked(Proof proof);
+    void moveCompleted();
 
 public slots:
     void factEditButtonClicked();
@@ -89,10 +93,11 @@ public slots:
     void factEditedSlot(Fact fact);
 
     void proofAddedSlot(Proof proof);
+    void proofOrderingEditedSlot(Proof proof);
     void proofDeletedSlot(int id);
 
 private:
-    void insertProofViewWidget(Proof proof, ProofViewWidget *proofViewWidget);
+    void insertProofViewWidget(ProofViewWidget *proofViewWidget);
 
     void reloadFactDetails(Fact fact);
 };

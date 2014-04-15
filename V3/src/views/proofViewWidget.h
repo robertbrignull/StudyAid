@@ -27,8 +27,22 @@ public:
     ResizableImage *bodyImage;
     QLabel *nameLabel;
 
+    Proof moveProof;
+    ImageButton *moveButton, *moveAboveButton, *moveBelowButton;
+
+signals:
+    void moveButtonClicked(Proof proof);
+    void moveCompleted();
+
 public slots:
     void viewProofButtonClicked();
+
+    void moveButtonClickedSlot();
+    void moveAboveButtonClickedSlot();
+    void moveBelowButtonClickedSlot();
+
+    void activateMoveMode(Proof proof);
+    void deactivateMoveMode();
 
     void proofEditedSlot(Proof proof);
 };

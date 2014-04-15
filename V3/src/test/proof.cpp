@@ -26,7 +26,7 @@
 #include "widgets/dialog.h"
 #include "widgets/splitter.h"
 #include "views/breadCrumbs.h"
-#include "views/courseTitleWidget.h"
+#include "views/proofViewWidget.h"
 #include "views/factListView.h"
 #include "views/factList.h"
 #include "views/expandingFactWidget.h"
@@ -86,7 +86,7 @@ void ProofTest::test_addProof()
     QVERIFY(factPage->proofsScrollLayout->count() == 2);
 
     // Check that the name is correct on the fact page
-    QVERIFY(factPage->idProofViewWidgetMap.begin()->second.second->nameLabel->text() == proofName);
+    QVERIFY(factPage->idProofViewWidgetMap.begin()->second->nameLabel->text() == proofName);
 }
 
 void ProofTest::test_addProof_multiple()
@@ -121,10 +121,10 @@ void ProofTest::test_addProof_multiple()
 
     // Check that the name is correct on the fact page
     auto it = factPage->idProofViewWidgetMap.begin();
-    QVERIFY(it->second.second->nameLabel->text() == otherProofName);
+    QVERIFY(it->second->nameLabel->text() == otherProofName);
 
     it++;
-    QVERIFY(it->second.second->nameLabel->text() == proofName);
+    QVERIFY(it->second->nameLabel->text() == proofName);
 }
 
 void ProofTest::test_editProof()
@@ -160,7 +160,7 @@ void ProofTest::test_editProof()
     QVERIFY(factPage->proofsScrollLayout->count() == 2);
 
     // Check that the name is correct on the fact page
-    QVERIFY(factPage->idProofViewWidgetMap.begin()->second.second->nameLabel->text() == newProofName);
+    QVERIFY(factPage->idProofViewWidgetMap.begin()->second->nameLabel->text() == newProofName);
 }
 
 void ProofTest::test_editProof_body()
@@ -192,7 +192,7 @@ void ProofTest::test_editProof_body()
 
     // Record the size of the images
     int oldHeightOnProofPage = proofPage->bodyImage->image.height();
-    int oldHeightOnFactPage = factPage->idProofViewWidgetMap.begin()->second.second->bodyImage->image.height();
+    int oldHeightOnFactPage = factPage->idProofViewWidgetMap.begin()->second->bodyImage->image.height();
 
     // Change the body to something longer
     TestUtil::editCurrentProofBody(window, longProofBody);
@@ -202,7 +202,153 @@ void ProofTest::test_editProof_body()
 
     // Check the size of the rendered images have increased
     QVERIFY(proofPage->bodyImage->image.height() > oldHeightOnProofPage);
-    QVERIFY(factPage->idProofViewWidgetMap.begin()->second.second->bodyImage->image.height() > oldHeightOnFactPage);
+    QVERIFY(factPage->idProofViewWidgetMap.begin()->second->bodyImage->image.height() > oldHeightOnFactPage);
+}
+
+void ProofTest::test_editProofOrdering_moveMode()
+{
+    FactPage *factPage = window->factPage;
+
+    const char *courseName = "Set Theory";
+    const char *factName = "The empty set is unique";
+    const char *factType = "Theorem";
+    const char *proofName = "Direct proof";
+
+    // Add the course, fact and proof
+    TestUtil::addCourse(window, courseName);
+    TestUtil::addFact(window, factName, factType);
+    TestUtil::addProof(window, proofName);
+
+    // Check that the correct buttons are visible
+    auto proofViewWidget = factPage->idProofViewWidgetMap.begin()->second;
+    QVERIFY(proofViewWidget->moveButton->isHidden() == false);
+    QVERIFY(proofViewWidget->viewProofButton->isHidden() == false);
+    QVERIFY(proofViewWidget->moveAboveButton->isHidden() == true);
+    QVERIFY(proofViewWidget->moveBelowButton->isHidden() == true);
+
+    // Click the move button
+    QTest::mouseClick(proofViewWidget->moveButton, Qt::LeftButton);
+
+    // Check that the other buttons are visible
+    QVERIFY(proofViewWidget->moveButton->isHidden() == true);
+    QVERIFY(proofViewWidget->viewProofButton->isHidden() == true);
+    QVERIFY(proofViewWidget->moveAboveButton->isHidden() == false);
+    QVERIFY(proofViewWidget->moveBelowButton->isHidden() == false);
+
+    // Click the moveAboveButton
+    QTest::mouseClick(proofViewWidget->moveAboveButton, Qt::LeftButton);
+
+    // Check that the original buttons are visible
+    QVERIFY(proofViewWidget->moveButton->isHidden() == false);
+    QVERIFY(proofViewWidget->viewProofButton->isHidden() == false);
+    QVERIFY(proofViewWidget->moveAboveButton->isHidden() == true);
+    QVERIFY(proofViewWidget->moveBelowButton->isHidden() == true);
+
+    // Click the move button
+    QTest::mouseClick(proofViewWidget->moveButton, Qt::LeftButton);
+
+    // Check that the other buttons are visible
+    QVERIFY(proofViewWidget->moveButton->isHidden() == true);
+    QVERIFY(proofViewWidget->viewProofButton->isHidden() == true);
+    QVERIFY(proofViewWidget->moveAboveButton->isHidden() == false);
+    QVERIFY(proofViewWidget->moveBelowButton->isHidden() == false);
+
+    // Click the moveBelowButton
+    QTest::mouseClick(proofViewWidget->moveAboveButton, Qt::LeftButton);
+
+    // Check that the original buttons are visible
+    QVERIFY(proofViewWidget->moveButton->isHidden() == false);
+    QVERIFY(proofViewWidget->viewProofButton->isHidden() == false);
+    QVERIFY(proofViewWidget->moveAboveButton->isHidden() == true);
+    QVERIFY(proofViewWidget->moveBelowButton->isHidden() == true);
+}
+
+void ProofTest::test_editProofOrdering_moveAbove()
+{
+    FactPage *factPage = window->factPage;
+
+    const char *courseName = "Set Theory";
+    const char *factName = "The empty set is unique";
+    const char *factType = "Theorem";
+    const char *proofName1 = "Proof 1";
+    const char *proofName2 = "Proof 2";
+
+    // Add the course, fact and proofs
+    TestUtil::addCourse(window, courseName);
+    TestUtil::addFact(window, factName, factType);
+    TestUtil::addProof(window, proofName1);
+    TestUtil::addProof(window, proofName2);
+
+    // Move the second proof above the first
+    QTest::mouseClick(((ProofViewWidget*) factPage->proofsScrollLayout->itemAt(1)->widget())->moveButton, Qt::LeftButton);
+    QTest::mouseClick(((ProofViewWidget*) factPage->proofsScrollLayout->itemAt(0)->widget())->moveAboveButton, Qt::LeftButton);
+
+    // Check that the proofs are now in the correct order
+    QVERIFY(((ProofViewWidget*) factPage->proofsScrollLayout->itemAt(0)->widget())->proof.name == proofName2);
+    QVERIFY(((ProofViewWidget*) factPage->proofsScrollLayout->itemAt(1)->widget())->proof.name == proofName1);
+
+    // Check that the orderings are valid
+    QVERIFY(((ProofViewWidget*) factPage->proofsScrollLayout->itemAt(0)->widget())->proof.ordering < ((ProofViewWidget*) factPage->proofsScrollLayout->itemAt(1)->widget())->proof.ordering);
+}
+
+void ProofTest::test_editProofOrdering_moveBelow()
+{
+    FactPage *factPage = window->factPage;
+
+    const char *courseName = "Set Theory";
+    const char *factName = "The empty set is unique";
+    const char *factType = "Theorem";
+    const char *proofName1 = "Proof 1";
+    const char *proofName2 = "Proof 2";
+
+    // Add our course, fact and proofs
+    TestUtil::addCourse(window, courseName);
+    TestUtil::addFact(window, factName, factType);
+    TestUtil::addProof(window, proofName1);
+    TestUtil::addProof(window, proofName2);
+
+    // Move the first proof below the second
+    QTest::mouseClick(((ProofViewWidget*) factPage->proofsScrollLayout->itemAt(0)->widget())->moveButton, Qt::LeftButton);
+    QTest::mouseClick(((ProofViewWidget*) factPage->proofsScrollLayout->itemAt(1)->widget())->moveBelowButton, Qt::LeftButton);
+
+    // Check that the proofs are now in the correct order
+    QVERIFY(((ProofViewWidget*) factPage->proofsScrollLayout->itemAt(0)->widget())->proof.name == proofName2);
+    QVERIFY(((ProofViewWidget*) factPage->proofsScrollLayout->itemAt(1)->widget())->proof.name == proofName1);
+
+    // Check that the orderings are valid
+    QVERIFY(((ProofViewWidget*) factPage->proofsScrollLayout->itemAt(0)->widget())->proof.ordering < ((ProofViewWidget*) factPage->proofsScrollLayout->itemAt(1)->widget())->proof.ordering);
+}
+
+void ProofTest::test_editProofOrdering_moveBetween()
+{
+    FactPage *factPage = window->factPage;
+
+    const char *courseName = "Set Theory";
+    const char *factName = "The empty set is unique";
+    const char *factType = "Theorem";
+    const char *proofName1 = "Proof 1";
+    const char *proofName2 = "Proof 2";
+    const char *proofName3 = "Proof 3";
+
+    // Add our course, fact and proofs
+    TestUtil::addCourse(window, courseName);
+    TestUtil::addFact(window, factName, factType);
+    TestUtil::addProof(window, proofName1);
+    TestUtil::addProof(window, proofName2);
+    TestUtil::addProof(window, proofName3);
+
+    // Move the first proof below the second
+    QTest::mouseClick(((ProofViewWidget*) factPage->proofsScrollLayout->itemAt(0)->widget())->moveButton, Qt::LeftButton);
+    QTest::mouseClick(((ProofViewWidget*) factPage->proofsScrollLayout->itemAt(1)->widget())->moveBelowButton, Qt::LeftButton);
+
+    // Check that the proofs are now in the correct order
+    QVERIFY(((ProofViewWidget*) factPage->proofsScrollLayout->itemAt(0)->widget())->proof.name == proofName2);
+    QVERIFY(((ProofViewWidget*) factPage->proofsScrollLayout->itemAt(1)->widget())->proof.name == proofName1);
+    QVERIFY(((ProofViewWidget*) factPage->proofsScrollLayout->itemAt(2)->widget())->proof.name == proofName3);
+
+    // Check that the orderings are valid
+    QVERIFY(((ProofViewWidget*) factPage->proofsScrollLayout->itemAt(0)->widget())->proof.ordering < ((ProofViewWidget*) factPage->proofsScrollLayout->itemAt(1)->widget())->proof.ordering);
+    QVERIFY(((ProofViewWidget*) factPage->proofsScrollLayout->itemAt(1)->widget())->proof.ordering < ((ProofViewWidget*) factPage->proofsScrollLayout->itemAt(2)->widget())->proof.ordering);
 }
 
 void ProofTest::test_deleteProof_all()
@@ -257,7 +403,7 @@ void ProofTest::test_deleteProof_one()
     QVERIFY(factPage->proofsScrollLayout->count() == 2);
 
     // Check that the name is correct on the fact page
-    QVERIFY(factPage->idProofViewWidgetMap.begin()->second.second->nameLabel->text() == otherProofName);
+    QVERIFY(factPage->idProofViewWidgetMap.begin()->second->nameLabel->text() == otherProofName);
 }
 
 void ProofTest::test_viewProof_bodyEmpty()
@@ -282,7 +428,7 @@ void ProofTest::test_viewProof_bodyEmpty()
     TestUtil::addProof(window, otherProofName);
 
     // Select the first proof again
-    ProofViewWidget *proofViewWidget = factPage->idProofViewWidgetMap.begin()->second.second;
+    ProofViewWidget *proofViewWidget = factPage->idProofViewWidgetMap.begin()->second;
     QVERIFY(proofViewWidget->nameLabel->text() == proofName);
     QTest::mouseClick(proofViewWidget->viewProofButton, Qt::LeftButton);
 
@@ -316,7 +462,7 @@ void ProofTest::test_viewProof_bodyNotEmpty()
     TestUtil::addProof(window, otherProofName);
 
     // Select the first proof again
-    ProofViewWidget *proofViewWidget = factPage->idProofViewWidgetMap.begin()->second.second;
+    ProofViewWidget *proofViewWidget = factPage->idProofViewWidgetMap.begin()->second;
     QVERIFY(proofViewWidget->nameLabel->text() == proofName);
     QTest::mouseClick(proofViewWidget->viewProofButton, Qt::LeftButton);
 

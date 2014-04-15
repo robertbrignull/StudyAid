@@ -41,8 +41,6 @@ signals:
     void moveCompleted();
 
 public slots:
-    void courseViewButtonClicked(Course course);
-
     void courseAddDialogCompleted();
 
     void courseAddedSlot(Course course);

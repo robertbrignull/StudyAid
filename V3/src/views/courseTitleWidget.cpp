@@ -7,15 +7,17 @@
 
 #include "model.h"
 #include "widgets/imageButton.h"
+#include "widgets/resizableStackedWidget.h"
 #include "database/methods.h"
 
 #include "views/courseTitleWidget.h"
 
-CourseTitleWidget::CourseTitleWidget(Course course, Model *model, QWidget *parent)
+CourseTitleWidget::CourseTitleWidget(Course course, Model *model, ResizableStackedWidget *pageStack, QWidget *parent)
     : QWidget(parent)
 {
     this->course = course;
     this->model = model;
+    this->pageStack = pageStack;
 
     headColor = QColor(66, 139, 202);
     borderColor = QColor(66, 139, 202);
@@ -76,7 +78,8 @@ void CourseTitleWidget::paintEvent(QPaintEvent *)
 
 void CourseTitleWidget::viewButtonClickedSlot()
 {
-    emit viewButtonClicked(course);
+    model->setCourseSelected(course);
+    pageStack->setCurrentIndex(1);
 }
 
 void CourseTitleWidget::moveButtonClickedSlot()

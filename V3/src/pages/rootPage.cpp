@@ -156,12 +156,6 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 //  ##   ## ##      ##   ##    ##    ##   ##
 //   #####  #######  #####     ##     #####
 
-void RootPage::courseViewButtonClicked(Course course)
-{
-    model->setCourseSelected(course);
-    pageStack->setCurrentIndex(1);
-}
-
 void RootPage::courseAddDialogCompleted()
 {
     Course course = findCourse(addCourse(courseAddForm->getData().name));
@@ -175,7 +169,7 @@ void RootPage::courseAddDialogCompleted()
 
 void RootPage::courseAddedSlot(Course course)
 {
-    insertCourseTitleWidget(new CourseTitleWidget(course, model));
+    insertCourseTitleWidget(new CourseTitleWidget(course, model, pageStack));
 }
 
 void RootPage::courseOrderingEditedSlot(Course course)
@@ -230,8 +224,6 @@ void RootPage::insertCourseTitleWidget(CourseTitleWidget *courseTitleWidget)
     scrollLayout->insertWidget(position, courseTitleWidget);
 
     idCourseMap.insert(std::pair<int, CourseTitleWidget*>(courseTitleWidget->course.id, courseTitleWidget));
-
-    connect(courseTitleWidget, SIGNAL(viewButtonClicked(Course)), this, SLOT(courseViewButtonClicked(Course)));
 
     connect(courseTitleWidget, SIGNAL(moveButtonClicked(Course)), this, SIGNAL(moveButtonClicked(Course)));
     connect(courseTitleWidget, SIGNAL(moveCompleted()), this, SIGNAL(moveCompleted()));

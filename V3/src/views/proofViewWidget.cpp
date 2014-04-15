@@ -9,6 +9,7 @@
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/imageButton.h"
 #include "widgets/resizableImage.h"
+#include "database/methods.h"
 
 #include "views/proofViewWidget.h"
 
@@ -23,12 +24,20 @@ ProofViewWidget::ProofViewWidget(Proof proof, Model *model, ResizableStackedWidg
 
     QVBoxLayout *outerLayout = new QVBoxLayout(this);
 
-    viewProofButton = new ImageButton(QPixmap(":/images/arrow_right_black.png"), QSize(24, 24));
     nameLabel = new QLabel(QString::fromStdString(proof.name));
+
+    viewProofButton = new ImageButton(QPixmap(":/images/arrow_right_black.png"), QSize(24, 24));
+
+    moveButton = new ImageButton(QPixmap(":/images/move_black.png"), QSize(24, 24));
+    moveAboveButton = new ImageButton(QPixmap(":/images/arrow_up_black.png"), QSize(24, 24));
+    moveBelowButton = new ImageButton(QPixmap(":/images/arrow_down_black.png"), QSize(24, 24));
 
     QHBoxLayout *topLayout = new QHBoxLayout();
     topLayout->addWidget(nameLabel);
     topLayout->addStretch(1);
+    topLayout->addWidget(moveBelowButton);
+    topLayout->addWidget(moveAboveButton);
+    topLayout->addWidget(moveButton);
     topLayout->addWidget(viewProofButton);
     outerLayout->addLayout(topLayout);
 
@@ -42,7 +51,16 @@ ProofViewWidget::ProofViewWidget(Proof proof, Model *model, ResizableStackedWidg
 
 
 
+    deactivateMoveMode();
+
+
+
     connect(viewProofButton, SIGNAL(clicked()), this, SLOT(viewProofButtonClicked()));
+
+    connect(moveButton, SIGNAL(clicked()), this, SLOT(moveButtonClickedSlot()));
+    connect(moveAboveButton, SIGNAL(clicked()), this, SLOT(moveAboveButtonClickedSlot()));
+    connect(moveBelowButton, SIGNAL(clicked()), this, SLOT(moveBelowButtonClickedSlot()));
+
     connect(model, SIGNAL(proofEdited(Proof)), this, SLOT(proofEditedSlot(Proof)));
 }
 
@@ -50,6 +68,49 @@ void ProofViewWidget::viewProofButtonClicked()
 {
     model->setProofSelected(proof);
     pageStack->setCurrentIndex(3);
+}
+
+void ProofViewWidget::moveButtonClickedSlot()
+{
+    emit moveButtonClicked(proof);
+}
+
+void ProofViewWidget::moveAboveButtonClickedSlot()
+{
+    moveProof.ordering = proof.ordering;
+
+    editProofOrdering(moveProof);
+    model->editProofOrdering(moveProof);
+
+    emit moveCompleted();
+}
+
+void ProofViewWidget::moveBelowButtonClickedSlot()
+{
+    moveProof.ordering = proof.ordering + 1;
+
+    editProofOrdering(moveProof);
+    model->editProofOrdering(moveProof);
+
+    emit moveCompleted();
+}
+
+void ProofViewWidget::activateMoveMode(Proof proof)
+{
+    moveProof = proof;
+
+    viewProofButton->hide();
+    moveButton->hide();
+    moveAboveButton->show();
+    moveBelowButton->show();
+}
+
+void ProofViewWidget::deactivateMoveMode()
+{
+    viewProofButton->show();
+    moveButton->show();
+    moveAboveButton->hide();
+    moveBelowButton->hide();
 }
 
 void ProofViewWidget::proofEditedSlot(Proof proof)

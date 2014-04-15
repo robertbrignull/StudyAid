@@ -410,7 +410,7 @@ void editProofOrdering(Proof proof)
     query.execute(proof.fact, proof.ordering);
 
     query.reset();
-    query << "UPDATE proof SET proof_ordering = %1q WHERE proof_id = %2q";
+    query << "UPDATE proof SET proof_ordering = %0q WHERE proof_id = %1q";
     query.parse();
     query.execute(proof.ordering, proof.id);
 }

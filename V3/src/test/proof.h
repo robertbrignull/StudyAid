@@ -18,6 +18,11 @@ private slots:
     void test_editProof();
     void test_editProof_body();
 
+    void test_editProofOrdering_moveMode();
+    void test_editProofOrdering_moveAbove();
+    void test_editProofOrdering_moveBelow();
+    void test_editProofOrdering_moveBetween();
+
     void test_deleteProof_all();
     void test_deleteProof_one();
 

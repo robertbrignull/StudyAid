@@ -8,6 +8,7 @@
 #include "database/structures.h"
 
 class Model;
+class ResizableStackedWidget;
 class QLabel;
 class ImageButton;
 
@@ -16,7 +17,7 @@ class CourseTitleWidget : public QWidget
     Q_OBJECT
 
 public:
-    CourseTitleWidget(Course course, Model *model, QWidget *parent = 0);
+    CourseTitleWidget(Course course, Model *model, ResizableStackedWidget *pageStack, QWidget *parent = 0);
 
     void paintEvent(QPaintEvent *);
 
@@ -24,6 +25,7 @@ public:
 
     Course course;
     Model *model;
+    ResizableStackedWidget *pageStack;
 
     int radius;
     QColor headColor, borderColor;
@@ -35,8 +37,6 @@ public:
     ImageButton *moveButton, *moveAboveButton, *moveBelowButton;
 
 signals:
-    void viewButtonClicked(Course course);
-
     void moveButtonClicked(Course course);
     void moveCompleted();
 

@@ -218,7 +218,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     proofsScrollLayout = new QVBoxLayout();
     proofsScrollLayout->addStretch(1);
 
-    idProofViewWidgetMap = std::map<int, std::pair<Proof, ProofViewWidget*> >();
+    idProofViewWidgetMap = std::map<int, ProofViewWidget*>();
 
     proofsWidget->setLayout(proofsScrollLayout);
     proofsScrollArea->setWidget(proofsWidget);
@@ -252,6 +252,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     connect(model, SIGNAL(factSelectedChanged(Fact)), this, SLOT(factSelectedChangedSlot(Fact)));
     connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
     connect(model, SIGNAL(proofAdded(Proof)), this, SLOT(proofAddedSlot(Proof)));
+    connect(model, SIGNAL(proofOrderingEdited(Proof)), this, SLOT(proofOrderingEditedSlot(Proof)));
     connect(model, SIGNAL(proofDeleted(int)), this, SLOT(proofDeletedSlot(int)));
 }
 
@@ -342,16 +343,37 @@ void FactPage::factEditedSlot(Fact fact)
 
 void FactPage::proofAddedSlot(Proof proof)
 {
-    insertProofViewWidget(proof, new ProofViewWidget(proof, model, pageStack));
+    insertProofViewWidget(new ProofViewWidget(proof, model, pageStack));
+}
+
+void FactPage::proofOrderingEditedSlot(Proof proof)
+{
+    // Update orderings on children
+    for (auto it = idProofViewWidgetMap.begin(); it != idProofViewWidgetMap.end(); it++) {
+        if (it->second->proof.id == proof.id) {
+            it->second->proof = proof;
+        }
+        else if (it->second->proof.ordering >= proof.ordering) {
+            it->second->proof.ordering += 1;
+        }
+    }
+
+    // Remove the edited ProofViewWidget and re-add it
+    ProofViewWidget *proofViewWidget = idProofViewWidgetMap.at(proof.id);
+
+    proofsScrollLayout->removeWidget(proofViewWidget);
+    idProofViewWidgetMap.erase(proof.id);
+
+    insertProofViewWidget(proofViewWidget);
 }
 
 void FactPage::proofDeletedSlot(int id)
 {
     auto item = idProofViewWidgetMap.at(id);
 
-    proofsScrollLayout->removeWidget(item.second);
+    proofsScrollLayout->removeWidget(item);
     idProofViewWidgetMap.erase(id);
-    delete item.second;
+    delete item;
 }
 
 //  ##      ## ####### ######## ##    ##  #####  #####    #####
@@ -362,19 +384,25 @@ void FactPage::proofDeletedSlot(int id)
 //  ##      ## ##         ##    ##    ## ##   ## ##  ### ##   ##
 //  ##      ## #######    ##    ##    ##  #####  #####    #####
 
-void FactPage::insertProofViewWidget(Proof proof, ProofViewWidget *proofViewWidget)
+void FactPage::insertProofViewWidget(ProofViewWidget *proofViewWidget)
 {
     int position = idProofViewWidgetMap.size();
 
     for (auto it = idProofViewWidgetMap.begin(); it != idProofViewWidgetMap.end(); it++) {
-        if (it->second.first.ordering > proof.ordering) {
-            position = std::min(position, proofsScrollLayout->indexOf(it->second.second));
+        if (it->second->proof.ordering > proofViewWidget->proof.ordering) {
+            position = std::min(position, proofsScrollLayout->indexOf(it->second));
         }
     }
 
     proofsScrollLayout->insertWidget(position, proofViewWidget);
 
-    idProofViewWidgetMap.insert(std::pair<int, std::pair<Proof, ProofViewWidget*> >(proof.id, std::pair<Proof, ProofViewWidget*>(proof, proofViewWidget)));
+    idProofViewWidgetMap.insert(std::pair<int, ProofViewWidget*>(proofViewWidget->proof.id, proofViewWidget));
+
+    connect(proofViewWidget, SIGNAL(moveButtonClicked(Proof)), this, SIGNAL(moveButtonClicked(Proof)));
+    connect(proofViewWidget, SIGNAL(moveCompleted()), this, SIGNAL(moveCompleted()));
+
+    connect(this, SIGNAL(moveButtonClicked(Proof)), proofViewWidget, SLOT(activateMoveMode(Proof)));
+    connect(this, SIGNAL(moveCompleted()), proofViewWidget, SLOT(deactivateMoveMode()));
 }
 
 void FactPage::reloadFactDetails(Fact fact)
@@ -394,9 +422,8 @@ void FactPage::reloadFactDetails(Fact fact)
     if (findFactType(fact.type).can_have_proof) {
         // Remove all old proofs
         for (auto it = idProofViewWidgetMap.begin(); it != idProofViewWidgetMap.end(); it++) {
-            auto item = it->second;
-            proofsScrollLayout->removeWidget(item.second);
-            delete item.second;
+            proofsScrollLayout->removeWidget(it->second);
+            delete it->second;
         }
         idProofViewWidgetMap.clear();
 
