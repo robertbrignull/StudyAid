@@ -1,12 +1,14 @@
 #include <iostream>
 
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QPainter>
 
 #include "model.h"
 #include "database/methods.h"
 #include "widgets/resizableStackedWidget.h"
+#include "widgets/imageButton.h"
 #include "views/expandingFactWidget.h"
 #include "views/factListView.h"
 
@@ -25,14 +27,32 @@ FactList::FactList(Fact fact, Model *model, ResizableStackedWidget *pageStack, F
     layout = new QVBoxLayout(this);
     layout->setContentsMargins(11, 0, 0, 11);
 
+    
+
     // If this is not the root fact, then add a label
     // showing the name of the section
     if (fact.parent != -1) {
         sectionNameLabel = new QLabel(QString::fromStdString(fact.name));
-        layout->addWidget(sectionNameLabel);
+
+        moveButton = new ImageButton(QPixmap(":/images/move_black.png"), QSize(24, 24));
+        moveAboveButton = new ImageButton(QPixmap(":/images/arrow_up_black.png"), QSize(24, 24));
+        moveBelowButton = new ImageButton(QPixmap(":/images/arrow_down_black.png"), QSize(24, 24));
+
+        QHBoxLayout *headLayout = new QHBoxLayout();
+
+        headLayout->addWidget(sectionNameLabel);
+        headLayout->addStretch(1);
+        headLayout->addWidget(moveBelowButton);
+        headLayout->addWidget(moveAboveButton);
+        headLayout->addWidget(moveButton);
+
+        layout->addLayout(headLayout);
+
+        deactivateMoveMode();
     }
     else {
         sectionNameLabel = nullptr;
+        moveButton = moveAboveButton = moveBelowButton = nullptr;
     }
 
     // Populate the list of children but don't add to the layout
@@ -60,6 +80,18 @@ FactList::FactList(Fact fact, Model *model, ResizableStackedWidget *pageStack, F
     factListView->idFactListMap.insert(std::pair<int, FactList*>(fact.id, this));
 
 
+
+    if (fact.parent != -1) {
+        connect(moveButton, SIGNAL(clicked()), this, SLOT(moveButtonClickedSlot()));
+        connect(moveAboveButton, SIGNAL(clicked()), this, SLOT(moveAboveButtonClickedSlot()));
+        connect(moveBelowButton, SIGNAL(clicked()), this, SLOT(moveBelowButtonClickedSlot()));
+
+        connect(this, SIGNAL(moveButtonClicked(Fact)), factListView, SIGNAL(moveButtonClicked(Fact)));
+        connect(this, SIGNAL(moveCompleted()), factListView, SIGNAL(moveCompleted()));
+
+        connect(factListView, SIGNAL(moveButtonClicked(Fact)), this, SLOT(activateMoveMode(Fact)));
+        connect(factListView, SIGNAL(moveCompleted()), this, SLOT(deactivateMoveMode()));
+    }
 
     connect(model, SIGNAL(factAdded(Fact)), this, SLOT(factAddedSlot(Fact)));
     connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
@@ -145,6 +177,68 @@ void FactList::destroyLayout()
             it->second->destroyLayout();
         }
     }
+}
+
+void FactList::moveButtonClickedSlot()
+{
+    emit moveButtonClicked(fact);
+}
+
+void FactList::moveAboveButtonClickedSlot()
+{
+    moveFact.parent = fact.parent;
+    moveFact.ordering = fact.ordering;
+
+    editFactOrdering(moveFact);
+    model->editFactOrdering(moveFact);
+
+    emit moveCompleted();
+}
+
+void FactList::moveBelowButtonClickedSlot()
+{
+    moveFact.parent = fact.parent;
+    moveFact.ordering = fact.ordering + 1;
+
+    editFactOrdering(moveFact);
+    model->editFactOrdering(moveFact);
+
+    emit moveCompleted();
+}
+
+void FactList::activateMoveMode(Fact fact)
+{
+    // Very important we don't enter move mode if it's one of our ancestors
+    // being moved. Making a section its own parent causes problems!
+    bool isAncestor = false;
+    Fact currentFact = this->fact;
+
+    while (currentFact.parent != -1) {
+        FactList *factList = factListView->idFactListMap.at(currentFact.parent);
+        if (factList->fact.id == fact.id) {
+            isAncestor = true;
+            break;
+        }
+        currentFact = factList->fact;
+    }
+
+
+
+    moveButton->hide();
+
+    if (!isAncestor) {
+        moveFact = fact;
+
+        moveAboveButton->show();
+        moveBelowButton->show();
+    }
+}
+
+void FactList::deactivateMoveMode()
+{
+    moveButton->show();
+    moveAboveButton->hide();
+    moveBelowButton->hide();
 }
 
 void FactList::factAddedSlot(Fact fact)

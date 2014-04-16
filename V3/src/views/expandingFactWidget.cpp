@@ -13,6 +13,7 @@
 #include "widgets/resizableImage.h"
 #include "widgets/resizableStackedWidget.h"
 #include "views/factListView.h"
+#include "views/factList.h"
 #include "database/methods.h"
 
 #include "views/expandingFactWidget.h"
@@ -203,12 +204,31 @@ void ExpandingFactWidget::moveBelowButtonClickedSlot()
 
 void ExpandingFactWidget::activateMoveMode(Fact fact)
 {
-    moveFact = fact;
+    // Very important we don't enter move mode if it's one of our ancestors
+    // being moved. Making a section its own parent causes problems!
+    bool isAncestor = false;
+    Fact currentFact = this->fact;
+
+    while (currentFact.parent != -1) {
+        FactList *factList = factListView->idFactListMap.at(currentFact.parent);
+        if (factList->fact.id == fact.id) {
+            isAncestor = true;
+            break;
+        }
+        currentFact = factList->fact;
+    }
+
+
 
     viewButton->hide();
     moveButton->hide();
-    moveAboveButton->show();
-    moveBelowButton->show();
+
+    if (!isAncestor) {
+        moveFact = fact;
+
+        moveAboveButton->show();
+        moveBelowButton->show();
+    }
 }
 
 void ExpandingFactWidget::deactivateMoveMode()

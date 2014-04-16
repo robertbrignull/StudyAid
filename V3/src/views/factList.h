@@ -13,6 +13,7 @@ class FactListView;
 class QVBoxLayout;
 class QLabel;
 class ExpandingFactWidget;
+class ImageButton;
 
 class FactList : public QWidget
 {
@@ -57,7 +58,21 @@ public:
 
     QLabel *sectionNameLabel;
 
+    Fact moveFact;
+    ImageButton *moveButton, *moveAboveButton, *moveBelowButton;
+
+signals:
+    void moveButtonClicked(Fact fact);
+    void moveCompleted();
+
 public slots:
+    void moveButtonClickedSlot();
+    void moveAboveButtonClickedSlot();
+    void moveBelowButtonClickedSlot();
+
+    void activateMoveMode(Fact fact);
+    void deactivateMoveMode();
+
     void factAddedSlot(Fact fact);
     void factEditedSlot(Fact fact);
     void factOrderingEditedSlot(Fact fact);
