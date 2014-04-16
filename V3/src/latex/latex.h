@@ -4,7 +4,7 @@
 
 #include "database/structures.h"
 
-void initialiseLatex();
+void initialiseLatex(bool testMode);
 
 /* Return the path to the file where this fact or
  * proof's rendered image should be stored.
@@ -19,3 +19,8 @@ std::string getProofImageFilename(Proof proof);
  */
 int renderFact(Fact fact);
 int renderProof(Proof proof);
+
+/* Removes all rendered images and renders
+ * everything from scratch.
+ */
+void renderAll();

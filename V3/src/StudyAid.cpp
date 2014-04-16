@@ -54,7 +54,11 @@ int main(int argc, char **argv)
 
     initialiseConnection(testMode);
     initialiseBackup();
-    initialiseLatex();
+    initialiseLatex(testMode);
+
+    if (argc >= 2 && strncmp(argv[1], "--render-all", 12) == 0) {
+        renderAll();
+    }
 
     QApplication app(argc, argv);
 

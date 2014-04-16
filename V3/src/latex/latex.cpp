@@ -8,6 +8,8 @@
 #include <fstream>
 #include <sstream>
 
+#include "database/methods.h"
+
 #include "latex/latex.h"
 
 std::string imageDir;
@@ -19,11 +21,15 @@ std::string toString(int value)
     return oss.str();
 }
 
-void initialiseLatex()
+void initialiseLatex(bool testMode)
 {
     struct passwd *pw = getpwuid(getuid());
 
     imageDir = std::string(pw->pw_dir) + "/.StudyAidV3/";
+
+    if (testMode) {
+        imageDir += "test/";
+    }
 }
 
 std::string getFactImageFilename(Fact fact)
@@ -119,4 +125,37 @@ int renderFact(Fact fact)
 int renderProof(Proof proof)
 {
     return renderText(proof.body, imageDir + "proof/", toString(proof.id));
+}
+
+void recursivelyRenderFact(Fact fact)
+{
+    if (fact.type == "Section") {
+        std::vector<Fact> facts = findChildFacts(fact.id);
+        for (size_t i = 0; i < facts.size(); i++) {
+            recursivelyRenderFact(facts[i]);
+        }
+    }
+    else {
+        std::cout << "Rendering fact " << fact.id << std::endl;
+
+        renderFact(fact);
+
+        std::vector<Proof> proofs = findProofsForFact(fact.id);
+        for (size_t i = 0; i < proofs.size(); i++) {
+            renderProof(proofs[i]);
+        }
+    }
+}
+
+void renderAll()
+{
+    // First delete any rendered images
+    if (system((std::string("rm -f ") + imageDir + "/fact/* " + imageDir + "/proof.*").c_str())) {
+        std::cout << "Could not delete rendered images" << std::endl;
+    }
+
+    std::vector<Course> courses = findAllCourses();
+    for (size_t i = 0; i < courses.size(); i++) {
+        recursivelyRenderFact(findFact(courses[i].root_fact));
+    }
 }
