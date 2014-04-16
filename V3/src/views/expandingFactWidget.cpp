@@ -61,13 +61,14 @@ ExpandingFactWidget::ExpandingFactWidget(Fact fact, Model *model, ResizableStack
     headWidgetHeight = headWidget->heightForWidth(size().width());
     headWidget->setGeometry(0, 0, size().width(), headWidgetHeight);
 
-    image = new ResizableImage(getFactImageFilename(fact), this);
-    image->setWidth(size().width() - border*2);
-    image->setGeometry((size().width() - image->sizeHint().width()) / 2, headWidgetHeight + border, image->sizeHint().width(), image->sizeHint().height());
+    image = QPixmap(QString::fromStdString(getFactImageFilename(fact)));
+    imageWidth = std::min(width() - border*2, 1000);
+    imageHeight = (image.width() == 0) ? 0 : image.height() * imageWidth / image.width();
+    imageNeedsScaling = true;
 
 
 
-    setFixedHeight(headWidgetHeight + (image->sizeHint().height() + border*2) * currentHeight);
+    setFixedHeight(headWidgetHeight);
 
 
 
@@ -88,7 +89,7 @@ void ExpandingFactWidget::setExpanded(bool expanded)
 
         connect(animation, &QVariantAnimation::valueChanged, [=](QVariant value){
             currentHeight = value.toFloat();
-            setFixedHeight(headWidgetHeight + (image->sizeHint().height() + border*2) * currentHeight);
+            setFixedHeight(headWidgetHeight + (imageHeight + border*2) * currentHeight);
             repaint();
         });
 
@@ -101,10 +102,11 @@ void ExpandingFactWidget::resizeEvent(QResizeEvent *event)
     headWidgetHeight = headWidget->heightForWidth(event->size().width());
     headWidget->setGeometry(0, 0, event->size().width(), headWidgetHeight);
 
-    image->setWidth(size().width() - border*2);
-    image->setGeometry((size().width() - image->sizeHint().width()) / 2, headWidgetHeight + border, image->sizeHint().width(), image->sizeHint().height());
+    imageWidth = std::min(width() - border*2, 1000);
+    imageHeight = (image.width() == 0) ? 0 : image.height() * imageWidth / image.width();
+    imageNeedsScaling = true;
 
-    setFixedHeight(headWidgetHeight + (image->sizeHint().height() + border*2) * currentHeight);
+    setFixedHeight(headWidgetHeight + (imageHeight + border*2) * currentHeight);
 }
 
 void ExpandingFactWidget::mousePressEvent(QMouseEvent *event)
@@ -121,7 +123,9 @@ void ExpandingFactWidget::paintEvent(QPaintEvent *)
     QSize headSize = headWidget->size();
     QSize totalSize = size();
 
-    painter.setRenderHint(QPainter::Antialiasing, true);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setRenderHint(QPainter::HighQualityAntialiasing);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform);
 
     painter.setPen(QPen(QBrush(headColor), 1));
     painter.setBrush(QBrush(bodyColor));
@@ -130,6 +134,16 @@ void ExpandingFactWidget::paintEvent(QPaintEvent *)
     painter.setPen(QPen(QBrush(headColor), 1));
     painter.setBrush(QBrush(headColor));
     painter.drawRoundedRect(1, 1, totalSize.width()-2, headSize.height()-2, radius, radius);
+
+
+
+    if (image.width() != 0) {
+        if (imageNeedsScaling) {
+            scaledImage = image.scaledToWidth(imageWidth, Qt::SmoothTransformation);
+        }
+
+        painter.drawPixmap((width() - imageWidth) / 2, headWidgetHeight + border, scaledImage);
+    }
 }
 
 void ExpandingFactWidget::viewButtonClicked()
@@ -144,7 +158,11 @@ void ExpandingFactWidget::factEditedSlot(Fact fact)
         this->fact = fact;
 
         nameLabel->setText(QString::fromStdString(fact.name));
-        image->reloadImage();
+        
+        image = QPixmap(QString::fromStdString(getFactImageFilename(fact)));
+        imageWidth = std::min(width() - border*2, 1000);
+        imageHeight = (image.width() == 0) ? 0 : image.height() * imageWidth / image.width();
+        imageNeedsScaling = true;
 
         headColor = QColor(QString::fromStdString(std::string("#") + findFactType(fact.type).colour));
 

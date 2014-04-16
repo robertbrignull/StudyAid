@@ -276,7 +276,7 @@ void FactTest::test_editFact_statement()
     int oldHeightOnFactPage = factPage->statementImage->image.height();
 
     auto it = coursePage->factListView->currentFactList->idChildMap.begin();
-    int oldHeightOnCoursePage = ((ExpandingFactWidget*) it->second.second)->image->image.height();
+    int oldHeightOnCoursePage = ((ExpandingFactWidget*) it->second.second)->imageHeight;
 
     // Change the statement to something longer
     TestUtil::editCurrentFactStatement(window, longFactStatement);
@@ -288,7 +288,7 @@ void FactTest::test_editFact_statement()
     QVERIFY(factPage->statementImage->image.height() > oldHeightOnFactPage);
 
     it = coursePage->factListView->currentFactList->idChildMap.begin();
-    QVERIFY(((ExpandingFactWidget*) it->second.second)->image->image.height() > oldHeightOnCoursePage);
+    QVERIFY(((ExpandingFactWidget*) it->second.second)->imageHeight > oldHeightOnCoursePage);
 
     // Check that no part of the splitter is minimized
     auto sizes = factPage->splitter->sizes();

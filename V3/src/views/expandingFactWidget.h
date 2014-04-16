@@ -34,8 +34,11 @@ public:
 
     bool expanded;
     double currentHeight;
-    ResizableImage *image;
     ImageButton *viewButton;
+
+    QPixmap image, scaledImage;
+    int imageWidth, imageHeight;
+    bool imageNeedsScaling;
 
     QWidget *headWidget;
     int headWidgetHeight;
