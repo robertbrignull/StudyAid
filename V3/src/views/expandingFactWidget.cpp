@@ -177,7 +177,12 @@ void ExpandingFactWidget::viewButtonClicked()
 
 void ExpandingFactWidget::moveButtonClickedSlot()
 {
-    emit moveButtonClicked(fact);
+    if (inMoveMode) {
+        emit moveCompleted();
+    }
+    else {
+        emit moveButtonClicked(fact);
+    }
 }
 
 void ExpandingFactWidget::moveAboveButtonClickedSlot()
@@ -220,19 +225,35 @@ void ExpandingFactWidget::activateMoveMode(Fact fact)
 
 
 
-    viewButton->hide();
-    moveButton->hide();
+    inMoveMode = true;
 
-    if (!isAncestor) {
-        moveFact = fact;
+    if (fact.id == this->fact.id) {
+        moveButton->show();
+        viewButton->hide();
+        moveAboveButton->hide();
+        moveBelowButton->hide();
+    }
+    else {
+        moveButton->hide();
+        viewButton->hide();
 
-        moveAboveButton->show();
-        moveBelowButton->show();
+        if (!isAncestor) {
+            moveFact = fact;
+
+            moveAboveButton->show();
+            moveBelowButton->show();
+        }
+        else {
+            moveAboveButton->hide();
+            moveBelowButton->hide();
+        }
     }
 }
 
 void ExpandingFactWidget::deactivateMoveMode()
 {
+    inMoveMode = false;
+
     viewButton->show();
     moveButton->show();
     moveAboveButton->hide();

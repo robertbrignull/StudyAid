@@ -11,14 +11,14 @@
 
 void runAllTests()
 {
-    // CourseTest courseTest;
-    // QTest::qExec(&courseTest);
+    CourseTest courseTest;
+    QTest::qExec(&courseTest);
 
-    // FactTest factTest;
-    // QTest::qExec(&factTest);
+    FactTest factTest;
+    QTest::qExec(&factTest);
 
-    // ProofTest proofTest;
-    // QTest::qExec(&proofTest);
+    ProofTest proofTest;
+    QTest::qExec(&proofTest);
 
     SectionTest sectionTest;
     QTest::qExec(&sectionTest);

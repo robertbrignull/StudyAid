@@ -84,7 +84,12 @@ void CourseTitleWidget::viewButtonClickedSlot()
 
 void CourseTitleWidget::moveButtonClickedSlot()
 {
-    emit moveButtonClicked(course);
+    if (inMoveMode) {
+        emit moveCompleted();
+    }
+    else {
+        emit moveButtonClicked(course);
+    }
 }
 
 void CourseTitleWidget::moveAboveButtonClickedSlot()
@@ -109,16 +114,27 @@ void CourseTitleWidget::moveBelowButtonClickedSlot()
 
 void CourseTitleWidget::activateMoveMode(Course course)
 {
+    inMoveMode = true;
     moveCourse = course;
 
     viewCourseButton->hide();
-    moveButton->hide();
-    moveAboveButton->show();
-    moveBelowButton->show();
+
+    if (course.id == this->course.id) {
+        moveButton->show();
+        moveAboveButton->hide();
+        moveBelowButton->hide();
+    }
+    else {
+        moveButton->hide();
+        moveAboveButton->show();
+        moveBelowButton->show();
+    }
 }
 
 void CourseTitleWidget::deactivateMoveMode()
 {
+    inMoveMode = false;
+
     viewCourseButton->show();
     moveButton->show();
     moveAboveButton->hide();

@@ -18,6 +18,7 @@ private slots:
     void test_editCourse();
 
     void test_editCourseOrdering_moveMode();
+    void test_editCourseOrdering_cancel();
     void test_editCourseOrdering_moveAbove();
     void test_editCourseOrdering_moveBelow();
     void test_editCourseOrdering_moveBetween();

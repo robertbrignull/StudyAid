@@ -52,6 +52,7 @@ public:
 
     Fact moveFact;
     ImageButton *moveButton, *moveAboveButton, *moveBelowButton;
+    bool inMoveMode;
 
 signals:
     void moveButtonClicked(Fact fact);

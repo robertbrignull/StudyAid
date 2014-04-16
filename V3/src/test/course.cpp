@@ -147,53 +147,100 @@ void CourseTest::test_editCourseOrdering_moveMode()
 {
     RootPage *rootPage = window->rootPage;
 
-    const char *courseName = "Set Theory";
+    const char *courseName1 = "Set Theory";
+    const char *courseName2 = "Linear Algebra";
 
     // Add the course
-    TestUtil::addCourse(window, courseName);
+    TestUtil::addCourse(window, courseName1);
+    TestUtil::addCourse(window, courseName2);
 
     // Check that the correct buttons are visible
-    auto courseTitleWidget = rootPage->idCourseMap.begin()->second;
-    QVERIFY(courseTitleWidget->moveButton->isHidden() == false);
-    QVERIFY(courseTitleWidget->viewCourseButton->isHidden() == false);
-    QVERIFY(courseTitleWidget->moveAboveButton->isHidden() == true);
-    QVERIFY(courseTitleWidget->moveBelowButton->isHidden() == true);
+    auto it = rootPage->idCourseMap.begin();
+    auto courseTitleWidget1 = it->second;
+    it++;
+    auto courseTitleWidget2 = it->second;
+
+    QVERIFY(courseTitleWidget1->moveButton->isHidden() == false);
+    QVERIFY(courseTitleWidget1->viewCourseButton->isHidden() == false);
+    QVERIFY(courseTitleWidget1->moveAboveButton->isHidden() == true);
+    QVERIFY(courseTitleWidget1->moveBelowButton->isHidden() == true);
 
     // Click the move button
-    QTest::mouseClick(courseTitleWidget->moveButton, Qt::LeftButton);
+    QTest::mouseClick(courseTitleWidget2->moveButton, Qt::LeftButton);
 
     // Check that the other buttons are visible
-    QVERIFY(courseTitleWidget->moveButton->isHidden() == true);
-    QVERIFY(courseTitleWidget->viewCourseButton->isHidden() == true);
-    QVERIFY(courseTitleWidget->moveAboveButton->isHidden() == false);
-    QVERIFY(courseTitleWidget->moveBelowButton->isHidden() == false);
+    QVERIFY(courseTitleWidget1->moveButton->isHidden() == true);
+    QVERIFY(courseTitleWidget1->viewCourseButton->isHidden() == true);
+    QVERIFY(courseTitleWidget1->moveAboveButton->isHidden() == false);
+    QVERIFY(courseTitleWidget1->moveBelowButton->isHidden() == false);
 
     // Click the moveAboveButton
-    QTest::mouseClick(courseTitleWidget->moveAboveButton, Qt::LeftButton);
+    QTest::mouseClick(courseTitleWidget2->moveAboveButton, Qt::LeftButton);
 
     // Check that the original buttons are visible
-    QVERIFY(courseTitleWidget->moveButton->isHidden() == false);
-    QVERIFY(courseTitleWidget->viewCourseButton->isHidden() == false);
-    QVERIFY(courseTitleWidget->moveAboveButton->isHidden() == true);
-    QVERIFY(courseTitleWidget->moveBelowButton->isHidden() == true);
+    QVERIFY(courseTitleWidget1->moveButton->isHidden() == false);
+    QVERIFY(courseTitleWidget1->viewCourseButton->isHidden() == false);
+    QVERIFY(courseTitleWidget1->moveAboveButton->isHidden() == true);
+    QVERIFY(courseTitleWidget1->moveBelowButton->isHidden() == true);
 
     // Click the move button
-    QTest::mouseClick(courseTitleWidget->moveButton, Qt::LeftButton);
+    QTest::mouseClick(courseTitleWidget2->moveButton, Qt::LeftButton);
 
     // Check that the other buttons are visible
-    QVERIFY(courseTitleWidget->moveButton->isHidden() == true);
-    QVERIFY(courseTitleWidget->viewCourseButton->isHidden() == true);
-    QVERIFY(courseTitleWidget->moveAboveButton->isHidden() == false);
-    QVERIFY(courseTitleWidget->moveBelowButton->isHidden() == false);
+    QVERIFY(courseTitleWidget1->moveButton->isHidden() == true);
+    QVERIFY(courseTitleWidget1->viewCourseButton->isHidden() == true);
+    QVERIFY(courseTitleWidget1->moveAboveButton->isHidden() == false);
+    QVERIFY(courseTitleWidget1->moveBelowButton->isHidden() == false);
 
     // Click the moveBelowButton
-    QTest::mouseClick(courseTitleWidget->moveAboveButton, Qt::LeftButton);
+    QTest::mouseClick(courseTitleWidget2->moveAboveButton, Qt::LeftButton);
 
     // Check that the original buttons are visible
-    QVERIFY(courseTitleWidget->moveButton->isHidden() == false);
-    QVERIFY(courseTitleWidget->viewCourseButton->isHidden() == false);
-    QVERIFY(courseTitleWidget->moveAboveButton->isHidden() == true);
-    QVERIFY(courseTitleWidget->moveBelowButton->isHidden() == true);
+    QVERIFY(courseTitleWidget1->moveButton->isHidden() == false);
+    QVERIFY(courseTitleWidget1->viewCourseButton->isHidden() == false);
+    QVERIFY(courseTitleWidget1->moveAboveButton->isHidden() == true);
+    QVERIFY(courseTitleWidget1->moveBelowButton->isHidden() == true);
+
+    // Click the move button
+    QTest::mouseClick(courseTitleWidget1->moveButton, Qt::LeftButton);
+
+    // Check that only the move button is visible
+    QVERIFY(courseTitleWidget1->moveButton->isHidden() == false);
+    QVERIFY(courseTitleWidget1->viewCourseButton->isHidden() == true);
+    QVERIFY(courseTitleWidget1->moveAboveButton->isHidden() == true);
+    QVERIFY(courseTitleWidget1->moveBelowButton->isHidden() == true);
+
+    // Click the move cancel button
+    QTest::mouseClick(courseTitleWidget2->moveButton, Qt::LeftButton);
+
+    // Check that the original buttons are visible
+    QVERIFY(courseTitleWidget1->moveButton->isHidden() == false);
+    QVERIFY(courseTitleWidget1->viewCourseButton->isHidden() == false);
+    QVERIFY(courseTitleWidget1->moveAboveButton->isHidden() == true);
+    QVERIFY(courseTitleWidget1->moveBelowButton->isHidden() == true);
+}
+
+void CourseTest::test_editCourseOrdering_cancel()
+{
+    RootPage *rootPage = window->rootPage;
+
+    const char *courseName1 = "Set Theory";
+    const char *courseName2 = "Linear Algebra";
+
+    // Add our course
+    TestUtil::addCourse(window, courseName1);
+    TestUtil::addCourse(window, courseName2);
+
+    // Move the second course above the first
+    QTest::mouseClick(((CourseTitleWidget*) rootPage->scrollLayout->itemAt(1)->widget())->moveButton, Qt::LeftButton);
+    QTest::mouseClick(((CourseTitleWidget*) rootPage->scrollLayout->itemAt(1)->widget())->moveButton, Qt::LeftButton);
+
+    // Check that the courses are now in the correct order
+    QVERIFY(((CourseTitleWidget*) rootPage->scrollLayout->itemAt(0)->widget())->course.name == courseName1);
+    QVERIFY(((CourseTitleWidget*) rootPage->scrollLayout->itemAt(1)->widget())->course.name == courseName2);
+
+    // Check that the orderings are valid
+    QVERIFY(((CourseTitleWidget*) rootPage->scrollLayout->itemAt(0)->widget())->course.ordering < ((CourseTitleWidget*) rootPage->scrollLayout->itemAt(1)->widget())->course.ordering);
 }
 
 void CourseTest::test_editCourseOrdering_moveAbove()

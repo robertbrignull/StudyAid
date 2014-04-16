@@ -29,6 +29,7 @@ public:
 
     Proof moveProof;
     ImageButton *moveButton, *moveAboveButton, *moveBelowButton;
+    bool inMoveMode;
 
 signals:
     void moveButtonClicked(Proof proof);

@@ -212,55 +212,79 @@ void ProofTest::test_editProofOrdering_moveMode()
     const char *courseName = "Set Theory";
     const char *factName = "The empty set is unique";
     const char *factType = "Theorem";
-    const char *proofName = "Direct proof";
+    const char *proofName1 = "Direct proof";
+    const char *proofName2 = "Other proof type";
 
     // Add the course, fact and proof
     TestUtil::addCourse(window, courseName);
     TestUtil::addFact(window, factName, factType);
-    TestUtil::addProof(window, proofName);
+    TestUtil::addProof(window, proofName1);
+    TestUtil::addProof(window, proofName2);
 
     // Check that the correct buttons are visible
-    auto proofViewWidget = factPage->idProofViewWidgetMap.begin()->second;
-    QVERIFY(proofViewWidget->moveButton->isHidden() == false);
-    QVERIFY(proofViewWidget->viewProofButton->isHidden() == false);
-    QVERIFY(proofViewWidget->moveAboveButton->isHidden() == true);
-    QVERIFY(proofViewWidget->moveBelowButton->isHidden() == true);
+    auto it = factPage->idProofViewWidgetMap.begin();
+    auto proofViewWidget1 = it->second;
+    it++;
+    auto proofViewWidget2 = it->second;
+
+    QVERIFY(proofViewWidget1->moveButton->isHidden() == false);
+    QVERIFY(proofViewWidget1->viewProofButton->isHidden() == false);
+    QVERIFY(proofViewWidget1->moveAboveButton->isHidden() == true);
+    QVERIFY(proofViewWidget1->moveBelowButton->isHidden() == true);
 
     // Click the move button
-    QTest::mouseClick(proofViewWidget->moveButton, Qt::LeftButton);
+    QTest::mouseClick(proofViewWidget2->moveButton, Qt::LeftButton);
 
     // Check that the other buttons are visible
-    QVERIFY(proofViewWidget->moveButton->isHidden() == true);
-    QVERIFY(proofViewWidget->viewProofButton->isHidden() == true);
-    QVERIFY(proofViewWidget->moveAboveButton->isHidden() == false);
-    QVERIFY(proofViewWidget->moveBelowButton->isHidden() == false);
+    QVERIFY(proofViewWidget1->moveButton->isHidden() == true);
+    QVERIFY(proofViewWidget1->viewProofButton->isHidden() == true);
+    QVERIFY(proofViewWidget1->moveAboveButton->isHidden() == false);
+    QVERIFY(proofViewWidget1->moveBelowButton->isHidden() == false);
 
     // Click the moveAboveButton
-    QTest::mouseClick(proofViewWidget->moveAboveButton, Qt::LeftButton);
+    QTest::mouseClick(proofViewWidget2->moveAboveButton, Qt::LeftButton);
 
     // Check that the original buttons are visible
-    QVERIFY(proofViewWidget->moveButton->isHidden() == false);
-    QVERIFY(proofViewWidget->viewProofButton->isHidden() == false);
-    QVERIFY(proofViewWidget->moveAboveButton->isHidden() == true);
-    QVERIFY(proofViewWidget->moveBelowButton->isHidden() == true);
+    QVERIFY(proofViewWidget1->moveButton->isHidden() == false);
+    QVERIFY(proofViewWidget1->viewProofButton->isHidden() == false);
+    QVERIFY(proofViewWidget1->moveAboveButton->isHidden() == true);
+    QVERIFY(proofViewWidget1->moveBelowButton->isHidden() == true);
 
     // Click the move button
-    QTest::mouseClick(proofViewWidget->moveButton, Qt::LeftButton);
+    QTest::mouseClick(proofViewWidget2->moveButton, Qt::LeftButton);
 
     // Check that the other buttons are visible
-    QVERIFY(proofViewWidget->moveButton->isHidden() == true);
-    QVERIFY(proofViewWidget->viewProofButton->isHidden() == true);
-    QVERIFY(proofViewWidget->moveAboveButton->isHidden() == false);
-    QVERIFY(proofViewWidget->moveBelowButton->isHidden() == false);
+    QVERIFY(proofViewWidget1->moveButton->isHidden() == true);
+    QVERIFY(proofViewWidget1->viewProofButton->isHidden() == true);
+    QVERIFY(proofViewWidget1->moveAboveButton->isHidden() == false);
+    QVERIFY(proofViewWidget1->moveBelowButton->isHidden() == false);
 
     // Click the moveBelowButton
-    QTest::mouseClick(proofViewWidget->moveAboveButton, Qt::LeftButton);
+    QTest::mouseClick(proofViewWidget2->moveAboveButton, Qt::LeftButton);
 
     // Check that the original buttons are visible
-    QVERIFY(proofViewWidget->moveButton->isHidden() == false);
-    QVERIFY(proofViewWidget->viewProofButton->isHidden() == false);
-    QVERIFY(proofViewWidget->moveAboveButton->isHidden() == true);
-    QVERIFY(proofViewWidget->moveBelowButton->isHidden() == true);
+    QVERIFY(proofViewWidget1->moveButton->isHidden() == false);
+    QVERIFY(proofViewWidget1->viewProofButton->isHidden() == false);
+    QVERIFY(proofViewWidget1->moveAboveButton->isHidden() == true);
+    QVERIFY(proofViewWidget1->moveBelowButton->isHidden() == true);
+
+    // Click the move button
+    QTest::mouseClick(proofViewWidget2->moveButton, Qt::LeftButton);
+
+    // Check that only the move button is visible
+    QVERIFY(proofViewWidget2->moveButton->isHidden() == false);
+    QVERIFY(proofViewWidget2->viewProofButton->isHidden() == true);
+    QVERIFY(proofViewWidget2->moveAboveButton->isHidden() == true);
+    QVERIFY(proofViewWidget2->moveBelowButton->isHidden() == true);
+
+    // Click the move cancel button
+    QTest::mouseClick(proofViewWidget2->moveButton, Qt::LeftButton);
+
+    // Check that the original buttons are visible
+    QVERIFY(proofViewWidget2->moveButton->isHidden() == false);
+    QVERIFY(proofViewWidget2->viewProofButton->isHidden() == false);
+    QVERIFY(proofViewWidget2->moveAboveButton->isHidden() == true);
+    QVERIFY(proofViewWidget2->moveBelowButton->isHidden() == true);
 }
 
 void ProofTest::test_editProofOrdering_moveAbove()

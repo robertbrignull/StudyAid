@@ -242,49 +242,71 @@ void SectionTest::test_editSectionOrdering_moveMode()
     CoursePage *coursePage = window->coursePage;
 
     const char *courseName = "Set Theory";
-    const char *sectionName = "section 1";
+    const char *sectionName1 = "section 1";
+    const char *sectionName2 = "section 2";
 
     // Add the course and section
     TestUtil::addCourse(window, courseName);
-    TestUtil::addFact(window, sectionName, "Section");
+    TestUtil::addFact(window, sectionName1, "Section");
+    TestUtil::addFact(window, sectionName2, "Section");
 
     // Check that the correct buttons are visible
-    auto factList = coursePage->factListView->currentFactList->idChildSectionMap.begin()->second;
-    QVERIFY(factList->moveButton->isHidden() == false);
-    QVERIFY(factList->moveAboveButton->isHidden() == true);
-    QVERIFY(factList->moveBelowButton->isHidden() == true);
+    auto it = coursePage->factListView->currentFactList->idChildSectionMap.begin();
+    auto factList1 = it->second;
+    it++;
+    auto factList2 = it->second;
+
+    QVERIFY(factList1->moveButton->isHidden() == false);
+    QVERIFY(factList1->moveAboveButton->isHidden() == true);
+    QVERIFY(factList1->moveBelowButton->isHidden() == true);
 
     // Click the move button
-    QTest::mouseClick(factList->moveButton, Qt::LeftButton);
+    QTest::mouseClick(factList2->moveButton, Qt::LeftButton);
 
     // Check that the other buttons are visible
-    QVERIFY(factList->moveButton->isHidden() == true);
-    QVERIFY(factList->moveAboveButton->isHidden() == false);
-    QVERIFY(factList->moveBelowButton->isHidden() == false);
+    QVERIFY(factList1->moveButton->isHidden() == true);
+    QVERIFY(factList1->moveAboveButton->isHidden() == false);
+    QVERIFY(factList1->moveBelowButton->isHidden() == false);
 
     // Click the moveAboveButton
-    QTest::mouseClick(factList->moveAboveButton, Qt::LeftButton);
+    QTest::mouseClick(factList2->moveAboveButton, Qt::LeftButton);
 
     // Check that the original buttons are visible
-    QVERIFY(factList->moveButton->isHidden() == false);
-    QVERIFY(factList->moveAboveButton->isHidden() == true);
-    QVERIFY(factList->moveBelowButton->isHidden() == true);
+    QVERIFY(factList1->moveButton->isHidden() == false);
+    QVERIFY(factList1->moveAboveButton->isHidden() == true);
+    QVERIFY(factList1->moveBelowButton->isHidden() == true);
 
     // Click the move button
-    QTest::mouseClick(factList->moveButton, Qt::LeftButton);
+    QTest::mouseClick(factList2->moveButton, Qt::LeftButton);
 
     // Check that the other buttons are visible
-    QVERIFY(factList->moveButton->isHidden() == true);
-    QVERIFY(factList->moveAboveButton->isHidden() == false);
-    QVERIFY(factList->moveBelowButton->isHidden() == false);
+    QVERIFY(factList1->moveButton->isHidden() == true);
+    QVERIFY(factList1->moveAboveButton->isHidden() == false);
+    QVERIFY(factList1->moveBelowButton->isHidden() == false);
 
     // Click the moveBelowButton
-    QTest::mouseClick(factList->moveAboveButton, Qt::LeftButton);
+    QTest::mouseClick(factList2->moveAboveButton, Qt::LeftButton);
 
     // Check that the original buttons are visible
-    QVERIFY(factList->moveButton->isHidden() == false);
-    QVERIFY(factList->moveAboveButton->isHidden() == true);
-    QVERIFY(factList->moveBelowButton->isHidden() == true);
+    QVERIFY(factList1->moveButton->isHidden() == false);
+    QVERIFY(factList1->moveAboveButton->isHidden() == true);
+    QVERIFY(factList1->moveBelowButton->isHidden() == true);
+
+    // Click the move button
+    QTest::mouseClick(factList2->moveButton, Qt::LeftButton);
+
+    // Check that only the move button is visible
+    QVERIFY(factList2->moveButton->isHidden() == false);
+    QVERIFY(factList2->moveAboveButton->isHidden() == true);
+    QVERIFY(factList2->moveBelowButton->isHidden() == true);
+
+    // Click the move cancel button
+    QTest::mouseClick(factList2->moveAboveButton, Qt::LeftButton);
+
+    // Check that the original buttons are visible
+    QVERIFY(factList2->moveButton->isHidden() == false);
+    QVERIFY(factList2->moveAboveButton->isHidden() == true);
+    QVERIFY(factList2->moveBelowButton->isHidden() == true);
 }
 
 void SectionTest::test_editSectionOrdering_moveAbove()

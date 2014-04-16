@@ -72,7 +72,12 @@ void ProofViewWidget::viewProofButtonClicked()
 
 void ProofViewWidget::moveButtonClickedSlot()
 {
-    emit moveButtonClicked(proof);
+    if (inMoveMode) {
+        emit moveCompleted();
+    }
+    else {
+        emit moveButtonClicked(proof);
+    }
 }
 
 void ProofViewWidget::moveAboveButtonClickedSlot()
@@ -97,16 +102,27 @@ void ProofViewWidget::moveBelowButtonClickedSlot()
 
 void ProofViewWidget::activateMoveMode(Proof proof)
 {
+    inMoveMode = true;
     moveProof = proof;
 
-    viewProofButton->hide();
-    moveButton->hide();
-    moveAboveButton->show();
-    moveBelowButton->show();
+    if (proof.id == this->proof.id) {
+        viewProofButton->hide();
+        moveButton->show();
+        moveAboveButton->hide();
+        moveBelowButton->hide();
+    }
+    else {
+        viewProofButton->hide();
+        moveButton->hide();
+        moveAboveButton->show();
+        moveBelowButton->show();
+    }
 }
 
 void ProofViewWidget::deactivateMoveMode()
 {
+    inMoveMode = false;
+
     viewProofButton->show();
     moveButton->show();
     moveAboveButton->hide();

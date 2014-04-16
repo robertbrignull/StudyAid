@@ -35,6 +35,7 @@ public:
 
     Course moveCourse;
     ImageButton *moveButton, *moveAboveButton, *moveBelowButton;
+    bool inMoveMode;
 
 signals:
     void moveButtonClicked(Course course);

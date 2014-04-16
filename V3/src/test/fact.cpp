@@ -309,55 +309,80 @@ void FactTest::test_editFactOrdering_moveMode()
     CoursePage *coursePage = window->coursePage;
 
     const char *courseName = "Set Theory";
-    const char *factName = "The empty set is unique";
-    const char *factType = "Theorem";
+    const char *factName1 = "ZF1 - Extensionality";
+    const char *factType1 = "Axiom";
+    const char *factName2 = "The empty set is unique";
+    const char *factType2 = "Theorem";
 
     // Add the course, fact and proof
     TestUtil::addCourse(window, courseName);
-    TestUtil::addFact(window, factName, factType);
+    TestUtil::addFact(window, factName1, factType1);
+    TestUtil::addFact(window, factName2, factType2);
 
     // Check that the correct buttons are visible
-    auto factWidget = coursePage->factListView->currentFactList->idChildFactMap.begin()->second;
-    QVERIFY(factWidget->moveButton->isHidden() == false);
-    QVERIFY(factWidget->viewButton->isHidden() == false);
-    QVERIFY(factWidget->moveAboveButton->isHidden() == true);
-    QVERIFY(factWidget->moveBelowButton->isHidden() == true);
+    auto it = coursePage->factListView->currentFactList->idChildFactMap.begin();
+    auto factWidget1 = it->second;
+    it++;
+    auto factWidget2 = it->second;
+
+    QVERIFY(factWidget1->moveButton->isHidden() == false);
+    QVERIFY(factWidget1->viewButton->isHidden() == false);
+    QVERIFY(factWidget1->moveAboveButton->isHidden() == true);
+    QVERIFY(factWidget1->moveBelowButton->isHidden() == true);
 
     // Click the move button
-    QTest::mouseClick(factWidget->moveButton, Qt::LeftButton);
+    QTest::mouseClick(factWidget2->moveButton, Qt::LeftButton);
 
     // Check that the other buttons are visible
-    QVERIFY(factWidget->moveButton->isHidden() == true);
-    QVERIFY(factWidget->viewButton->isHidden() == true);
-    QVERIFY(factWidget->moveAboveButton->isHidden() == false);
-    QVERIFY(factWidget->moveBelowButton->isHidden() == false);
+    QVERIFY(factWidget1->moveButton->isHidden() == true);
+    QVERIFY(factWidget1->viewButton->isHidden() == true);
+    QVERIFY(factWidget1->moveAboveButton->isHidden() == false);
+    QVERIFY(factWidget1->moveBelowButton->isHidden() == false);
 
     // Click the moveAboveButton
-    QTest::mouseClick(factWidget->moveAboveButton, Qt::LeftButton);
+    QTest::mouseClick(factWidget2->moveAboveButton, Qt::LeftButton);
 
     // Check that the original buttons are visible
-    QVERIFY(factWidget->moveButton->isHidden() == false);
-    QVERIFY(factWidget->viewButton->isHidden() == false);
-    QVERIFY(factWidget->moveAboveButton->isHidden() == true);
-    QVERIFY(factWidget->moveBelowButton->isHidden() == true);
+    QVERIFY(factWidget1->moveButton->isHidden() == false);
+    QVERIFY(factWidget1->viewButton->isHidden() == false);
+    QVERIFY(factWidget1->moveAboveButton->isHidden() == true);
+    QVERIFY(factWidget1->moveBelowButton->isHidden() == true);
 
     // Click the move button
-    QTest::mouseClick(factWidget->moveButton, Qt::LeftButton);
+    QTest::mouseClick(factWidget2->moveButton, Qt::LeftButton);
 
     // Check that the other buttons are visible
-    QVERIFY(factWidget->moveButton->isHidden() == true);
-    QVERIFY(factWidget->viewButton->isHidden() == true);
-    QVERIFY(factWidget->moveAboveButton->isHidden() == false);
-    QVERIFY(factWidget->moveBelowButton->isHidden() == false);
+    QVERIFY(factWidget1->moveButton->isHidden() == true);
+    QVERIFY(factWidget1->viewButton->isHidden() == true);
+    QVERIFY(factWidget1->moveAboveButton->isHidden() == false);
+    QVERIFY(factWidget1->moveBelowButton->isHidden() == false);
 
     // Click the moveBelowButton
-    QTest::mouseClick(factWidget->moveAboveButton, Qt::LeftButton);
+    QTest::mouseClick(factWidget2->moveAboveButton, Qt::LeftButton);
 
     // Check that the original buttons are visible
-    QVERIFY(factWidget->moveButton->isHidden() == false);
-    QVERIFY(factWidget->viewButton->isHidden() == false);
-    QVERIFY(factWidget->moveAboveButton->isHidden() == true);
-    QVERIFY(factWidget->moveBelowButton->isHidden() == true);
+    QVERIFY(factWidget1->moveButton->isHidden() == false);
+    QVERIFY(factWidget1->viewButton->isHidden() == false);
+    QVERIFY(factWidget1->moveAboveButton->isHidden() == true);
+    QVERIFY(factWidget1->moveBelowButton->isHidden() == true);
+
+    // Click the move button
+    QTest::mouseClick(factWidget2->moveButton, Qt::LeftButton);
+
+    // Check that only the move button is visible
+    QVERIFY(factWidget2->moveButton->isHidden() == false);
+    QVERIFY(factWidget2->viewButton->isHidden() == true);
+    QVERIFY(factWidget2->moveAboveButton->isHidden() == true);
+    QVERIFY(factWidget2->moveBelowButton->isHidden() == true);
+
+    // Click the move cancel button
+    QTest::mouseClick(factWidget2->moveButton, Qt::LeftButton);
+
+    // Check that the original buttons are visible
+    QVERIFY(factWidget2->moveButton->isHidden() == false);
+    QVERIFY(factWidget2->viewButton->isHidden() == false);
+    QVERIFY(factWidget2->moveAboveButton->isHidden() == true);
+    QVERIFY(factWidget2->moveBelowButton->isHidden() == true);
 }
 
 void FactTest::test_editFactOrdering_moveAbove()

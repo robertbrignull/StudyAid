@@ -181,7 +181,12 @@ void FactList::destroyLayout()
 
 void FactList::moveButtonClickedSlot()
 {
-    emit moveButtonClicked(fact);
+    if (inMoveMode) {
+        emit moveCompleted();
+    }
+    else {
+        emit moveButtonClicked(fact);
+    }
 }
 
 void FactList::moveAboveButtonClickedSlot()
@@ -224,18 +229,33 @@ void FactList::activateMoveMode(Fact fact)
 
 
 
-    moveButton->hide();
+    inMoveMode = true;
 
-    if (!isAncestor) {
-        moveFact = fact;
+    if (fact.id == this->fact.id) {
+        moveButton->show();
+        moveAboveButton->hide();
+        moveBelowButton->hide();
+    }
+    else {
+        moveButton->hide();
 
-        moveAboveButton->show();
-        moveBelowButton->show();
+        if (!isAncestor) {
+            moveFact = fact;
+
+            moveAboveButton->show();
+            moveBelowButton->show();
+        }
+        else {
+            moveAboveButton->hide();
+            moveBelowButton->hide();
+        }
     }
 }
 
 void FactList::deactivateMoveMode()
 {
+    inMoveMode = false;
+
     moveButton->show();
     moveAboveButton->hide();
     moveBelowButton->hide();
