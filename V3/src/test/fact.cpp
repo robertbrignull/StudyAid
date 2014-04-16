@@ -304,6 +304,151 @@ void FactTest::test_editFact_statement()
     QVERIFY(sizes.at(1) != 0);
 }
 
+void FactTest::test_editFactOrdering_moveMode()
+{
+    CoursePage *coursePage = window->coursePage;
+
+    const char *courseName = "Set Theory";
+    const char *factName = "The empty set is unique";
+    const char *factType = "Theorem";
+
+    // Add the course, fact and proof
+    TestUtil::addCourse(window, courseName);
+    TestUtil::addFact(window, factName, factType);
+
+    // Check that the correct buttons are visible
+    auto factWidget = coursePage->factListView->currentFactList->idChildFactMap.begin()->second;
+    QVERIFY(factWidget->moveButton->isHidden() == false);
+    QVERIFY(factWidget->viewButton->isHidden() == false);
+    QVERIFY(factWidget->moveAboveButton->isHidden() == true);
+    QVERIFY(factWidget->moveBelowButton->isHidden() == true);
+
+    // Click the move button
+    QTest::mouseClick(factWidget->moveButton, Qt::LeftButton);
+
+    // Check that the other buttons are visible
+    QVERIFY(factWidget->moveButton->isHidden() == true);
+    QVERIFY(factWidget->viewButton->isHidden() == true);
+    QVERIFY(factWidget->moveAboveButton->isHidden() == false);
+    QVERIFY(factWidget->moveBelowButton->isHidden() == false);
+
+    // Click the moveAboveButton
+    QTest::mouseClick(factWidget->moveAboveButton, Qt::LeftButton);
+
+    // Check that the original buttons are visible
+    QVERIFY(factWidget->moveButton->isHidden() == false);
+    QVERIFY(factWidget->viewButton->isHidden() == false);
+    QVERIFY(factWidget->moveAboveButton->isHidden() == true);
+    QVERIFY(factWidget->moveBelowButton->isHidden() == true);
+
+    // Click the move button
+    QTest::mouseClick(factWidget->moveButton, Qt::LeftButton);
+
+    // Check that the other buttons are visible
+    QVERIFY(factWidget->moveButton->isHidden() == true);
+    QVERIFY(factWidget->viewButton->isHidden() == true);
+    QVERIFY(factWidget->moveAboveButton->isHidden() == false);
+    QVERIFY(factWidget->moveBelowButton->isHidden() == false);
+
+    // Click the moveBelowButton
+    QTest::mouseClick(factWidget->moveAboveButton, Qt::LeftButton);
+
+    // Check that the original buttons are visible
+    QVERIFY(factWidget->moveButton->isHidden() == false);
+    QVERIFY(factWidget->viewButton->isHidden() == false);
+    QVERIFY(factWidget->moveAboveButton->isHidden() == true);
+    QVERIFY(factWidget->moveBelowButton->isHidden() == true);
+}
+
+void FactTest::test_editFactOrdering_moveAbove()
+{
+    CoursePage *coursePage = window->coursePage;
+
+    const char *courseName = "Set Theory";
+    const char *factName1 = "ZF1 - Extensionality";
+    const char *factType1 = "Axiom";
+    const char *factName2 = "The empty set is unique";
+    const char *factType2 = "Theorem";
+
+    // Add the course and facts
+    TestUtil::addCourse(window, courseName);
+    TestUtil::addFact(window, factName1, factType1);
+    TestUtil::addFact(window, factName2, factType2);
+
+    // Move the second proof above the first
+    auto currentFactListLayout = coursePage->factListView->currentFactList->layout;
+    QTest::mouseClick(((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->moveButton, Qt::LeftButton);
+    QTest::mouseClick(((ExpandingFactWidget*) currentFactListLayout->itemAt(0)->widget())->moveAboveButton, Qt::LeftButton);
+
+    // Check that the proofs are now in the correct order
+    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(0)->widget())->fact.name == factName2);
+    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->fact.name == factName1);
+
+    // Check that the orderings are valid
+    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(0)->widget())->fact.ordering < ((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->fact.ordering);
+}
+
+void FactTest::test_editFactOrdering_moveBelow()
+{
+    CoursePage *coursePage = window->coursePage;
+
+    const char *courseName = "Set Theory";
+    const char *factName1 = "ZF1 - Extensionality";
+    const char *factType1 = "Axiom";
+    const char *factName2 = "The empty set is unique";
+    const char *factType2 = "Theorem";
+
+    // Add our course, fact and proofs
+    TestUtil::addCourse(window, courseName);
+    TestUtil::addFact(window, factName1, factType1);
+    TestUtil::addFact(window, factName2, factType2);
+
+    // Move the first proof below the second
+    auto currentFactListLayout = coursePage->factListView->currentFactList->layout;
+    QTest::mouseClick(((ExpandingFactWidget*) currentFactListLayout->itemAt(0)->widget())->moveButton, Qt::LeftButton);
+    QTest::mouseClick(((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->moveBelowButton, Qt::LeftButton);
+
+    // Check that the proofs are now in the correct order
+    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(0)->widget())->fact.name == factName2);
+    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->fact.name == factName1);
+
+    // Check that the orderings are valid
+    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(0)->widget())->fact.ordering < ((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->fact.ordering);
+}
+
+void FactTest::test_editFactOrdering_moveBetween()
+{
+    CoursePage *coursePage = window->coursePage;
+
+    const char *courseName = "Set Theory";
+    const char *factName1 = "ZF1 - Extensionality";
+    const char *factType1 = "Axiom";
+    const char *factName2 = "ZF2 - Empty Set";
+    const char *factType2 = "Axiom";
+    const char *factName3 = "The empty set is unique";
+    const char *factType3 = "Theorem";
+
+    // Add our course, fact and proofs
+    TestUtil::addCourse(window, courseName);
+    TestUtil::addFact(window, factName1, factType1);
+    TestUtil::addFact(window, factName2, factType2);
+    TestUtil::addFact(window, factName3, factType3);
+
+    // Move the first proof below the second
+    auto currentFactListLayout = coursePage->factListView->currentFactList->layout;
+    QTest::mouseClick(((ExpandingFactWidget*) currentFactListLayout->itemAt(0)->widget())->moveButton, Qt::LeftButton);
+    QTest::mouseClick(((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->moveBelowButton, Qt::LeftButton);
+
+    // Check that the proofs are now in the correct order
+    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(0)->widget())->fact.name == factName2);
+    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->fact.name == factName1);
+    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(2)->widget())->fact.name == factName3);
+
+    // Check that the orderings are valid
+    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(0)->widget())->fact.ordering < ((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->fact.ordering);
+    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->fact.ordering < ((ExpandingFactWidget*) currentFactListLayout->itemAt(2)->widget())->fact.ordering);
+}
+
 void FactTest::test_deleteFact_all()
 {
     CoursePage *coursePage = window->coursePage;

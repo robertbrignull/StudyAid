@@ -22,6 +22,11 @@ private slots:
     void test_editFact_canNotHaveProof();
     void test_editFact_statement();
 
+    void test_editFactOrdering_moveMode();
+    void test_editFactOrdering_moveAbove();
+    void test_editFactOrdering_moveBelow();
+    void test_editFactOrdering_moveBetween();
+
     void test_deleteFact_all();
     void test_deleteFact_one();
 
