@@ -69,13 +69,19 @@ void SectionTest::test_addSection_toRoot()
     QVERIFY(sectionPicker->idSectionPickerMap.size() == 0);
 
     // Check that the fact list has updated
-    auto factList = coursePage->factListView->currentFactList;
+    FactList *factList = coursePage->factListView->currentFactList;
+    QVERIFY(factList->layout->count() == 1);
     QVERIFY(factList->idChildMap.size() == 1);
+    QVERIFY(factList->idChildSectionMap.size() == 1);
+    QVERIFY(factList->idChildFactMap.size() == 0);
 
     // Check that the section in the fact list has the correct name and no children
-    factList = (FactList*) factList->idChildMap.begin()->second.second;
+    factList = factList->idChildSectionMap.begin()->second;
     QVERIFY(factList->sectionNameLabel->text() == sectionName);
+    QVERIFY(factList->layout->count() == 1);
     QVERIFY(factList->idChildMap.size() == 0);
+    QVERIFY(factList->idChildSectionMap.size() == 0);
+    QVERIFY(factList->idChildFactMap.size() == 0);
 }
 
 void SectionTest::test_addSection_toSection()
@@ -109,15 +115,24 @@ void SectionTest::test_addSection_toSection()
 
     // Check that the fact list is correct
     auto factList = coursePage->factListView->currentFactList;
+    QVERIFY(factList->layout->count() == 1);
     QVERIFY(factList->idChildMap.size() == 1);
+    QVERIFY(factList->idChildSectionMap.size() == 1);
+    QVERIFY(factList->idChildFactMap.size() == 0);
 
     factList = (FactList*) factList->idChildMap.begin()->second.second;
     QVERIFY(factList->sectionNameLabel->text() == parentSectionName);
+    QVERIFY(factList->layout->count() == 2);
     QVERIFY(factList->idChildMap.size() == 1);
+    QVERIFY(factList->idChildSectionMap.size() == 1);
+    QVERIFY(factList->idChildFactMap.size() == 0);
 
     factList = (FactList*) factList->idChildMap.begin()->second.second;
     QVERIFY(factList->sectionNameLabel->text() == childSectionName);
+    QVERIFY(factList->layout->count() == 1);
     QVERIFY(factList->idChildMap.size() == 0);
+    QVERIFY(factList->idChildSectionMap.size() == 0);
+    QVERIFY(factList->idChildFactMap.size() == 0);
 }
 
 void SectionTest::test_selectSection()
@@ -152,29 +167,29 @@ void SectionTest::test_selectSection()
 
     // Check that the fact list now has two elements, one of which is a section
     auto factList = coursePage->factListView->currentFactList;
+    QVERIFY(factList->layout->count() == 2);
     QVERIFY(factList->idChildMap.size() == 2);
     QVERIFY(factList->idChildSectionMap.size() == 1);
+    QVERIFY(factList->idChildFactMap.size() == 1);
 
     // Check that the first element is not a section
-    auto childIt = factList->idChildMap.begin();
-    auto sectionIt = factList->idChildSectionMap.begin();
-    QVERIFY(childIt->second.second != sectionIt->second.second);
+    QVERIFY(factList->layout->itemAt(0)->widget() == factList->idChildFactMap.begin()->second);
 
     // Check that the first element is a fact of the correct name
-    factWidget = (ExpandingFactWidget*) childIt->second.second;
-    QVERIFY(factWidget->nameLabel->text() == level0FactName);
+    QVERIFY(factList->idChildFactMap.begin()->second->nameLabel->text() == level0FactName);
 
     // Check that the second is a section
-    childIt++;
-    QVERIFY(childIt->second.second == sectionIt->second.second);
+    QVERIFY(factList->layout->itemAt(1)->widget() == factList->idChildSectionMap.begin()->second);
 
     // Check that the section has the correct name
-    factList = sectionIt->second.second;
+    factList = factList->idChildSectionMap.begin()->second;
     QVERIFY(factList->sectionNameLabel->text() == sectionName);
 
     // Check that the section has one child which is not a section
+    QVERIFY(factList->layout->count() == 2);
     QVERIFY(factList->idChildMap.size() == 1);
     QVERIFY(factList->idChildSectionMap.size() == 0);
+    QVERIFY(factList->idChildFactMap.size() == 1);
 
     // Check that the first element is a fact of the correct name
     factWidget = (ExpandingFactWidget*) factList->idChildMap.begin()->second.second;
@@ -208,12 +223,18 @@ void SectionTest::test_editSection()
 
     // Check that the fact list has updated
     auto factList = coursePage->factListView->currentFactList;
+    QVERIFY(factList->layout->count() == 1);
     QVERIFY(factList->idChildMap.size() == 1);
+    QVERIFY(factList->idChildSectionMap.size() == 1);
+    QVERIFY(factList->idChildFactMap.size() == 0);
 
     // Check that the section in the fact list has the correct name and no children
     factList = (FactList*) factList->idChildMap.begin()->second.second;
     QVERIFY(factList->sectionNameLabel->text() == newSectionName);
+    QVERIFY(factList->layout->count() == 1);
     QVERIFY(factList->idChildMap.size() == 0);
+    QVERIFY(factList->idChildSectionMap.size() == 0);
+    QVERIFY(factList->idChildFactMap.size() == 0);
 }
 
 void SectionTest::test_deleteSection_empty()
@@ -231,7 +252,11 @@ void SectionTest::test_deleteSection_empty()
     TestUtil::deleteSection(window, sectionName);
 
     // Check that the course page shows no facts
-    QVERIFY(coursePage->factListView->currentFactList->idChildMap.size() == 0);
+    auto factList = coursePage->factListView->currentFactList;
+    QVERIFY(factList->layout->count() == 0);
+    QVERIFY(factList->idChildMap.size() == 0);
+    QVERIFY(factList->idChildSectionMap.size() == 0);
+    QVERIFY(factList->idChildFactMap.size() == 0);
 
     // Check that the no sections are shown in the picker
     QVERIFY(coursePage->sectionPicker->idSectionPickerMap.size() == 0);
@@ -258,7 +283,11 @@ void SectionTest::test_deleteSection_notEmpty()
     TestUtil::deleteSection(window, sectionName);
 
     // Check that the course page shows one fact
-    QVERIFY(coursePage->factListView->currentFactList->idChildMap.size() == 1);
+    auto factList = coursePage->factListView->currentFactList;
+    QVERIFY(factList->layout->count() == 1);
+    QVERIFY(factList->idChildMap.size() == 1);
+    QVERIFY(factList->idChildSectionMap.size() == 0);
+    QVERIFY(factList->idChildFactMap.size() == 1);
 
     // Check that the fact is the correct one
     ExpandingFactWidget *factWidget = (ExpandingFactWidget*) coursePage->factListView->currentFactList->idChildMap.begin()->second.second;

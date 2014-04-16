@@ -80,7 +80,11 @@ void FactTest::test_addFact()
     QTest::mouseClick(factPage->factEditDialog->cancelButton, Qt::LeftButton);
 
     // Check that the course page shows one fact
-    QVERIFY(coursePage->factListView->currentFactList->idChildMap.size() == 1);
+    auto currentFactList = coursePage->factListView->currentFactList;
+    QVERIFY(currentFactList->layout->count() == 1);
+    QVERIFY(currentFactList->idChildMap.size() == 1);
+    QVERIFY(currentFactList->idChildSectionMap.size() == 0);
+    QVERIFY(currentFactList->idChildFactMap.size() == 1);
 
     // Check that the name is shown correctly on the course page
     auto it = coursePage->factListView->currentFactList->idChildMap.begin();
@@ -154,7 +158,11 @@ void FactTest::test_addFact_multiple()
     QTest::mouseClick(factPage->factEditDialog->cancelButton, Qt::LeftButton);
 
     // Check that the course page shows one fact
-    QVERIFY(coursePage->factListView->currentFactList->idChildMap.size() == 2);
+    auto currentFactList = coursePage->factListView->currentFactList;
+    QVERIFY(currentFactList->layout->count() == 2);
+    QVERIFY(currentFactList->idChildMap.size() == 2);
+    QVERIFY(currentFactList->idChildSectionMap.size() == 0);
+    QVERIFY(currentFactList->idChildFactMap.size() == 2);
 
     // Check that the name is shown correctly on the course page
     auto it = coursePage->factListView->currentFactList->idChildMap.begin();
@@ -312,7 +320,11 @@ void FactTest::test_deleteFact_all()
     TestUtil::deleteCurrentFact(window);
 
     // Check that no facts are shown
-    QVERIFY(coursePage->factListView->currentFactList->idChildMap.size() == 0);
+    auto currentFactList = coursePage->factListView->currentFactList;
+    QVERIFY(currentFactList->layout->count() == 0);
+    QVERIFY(currentFactList->idChildMap.size() == 0);
+    QVERIFY(currentFactList->idChildSectionMap.size() == 0);
+    QVERIFY(currentFactList->idChildFactMap.size() == 0);
 }
 
 void FactTest::test_deleteFact_one()
@@ -334,7 +346,11 @@ void FactTest::test_deleteFact_one()
     TestUtil::deleteCurrentFact(window);
 
     // Check that the course page shows one fact
-    QVERIFY(coursePage->factListView->currentFactList->idChildMap.size() == 1);
+    auto currentFactList = coursePage->factListView->currentFactList;
+    QVERIFY(currentFactList->layout->count() == 1);
+    QVERIFY(currentFactList->idChildMap.size() == 1);
+    QVERIFY(currentFactList->idChildSectionMap.size() == 0);
+    QVERIFY(currentFactList->idChildFactMap.size() == 1);
 
     // Check that the name is shown correctly on the course page
     auto it = coursePage->factListView->currentFactList->idChildMap.begin();

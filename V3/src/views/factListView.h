@@ -27,6 +27,10 @@ public:
     QHBoxLayout *layout;
     FactList *currentFactList;
 
+signals:
+    void moveButtonClicked(Fact fact);
+    void moveCompleted();
+
 public slots:
     void selectSection(int id);
 };

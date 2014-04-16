@@ -12,16 +12,18 @@
 #include "widgets/imageButton.h"
 #include "widgets/resizableImage.h"
 #include "widgets/resizableStackedWidget.h"
+#include "views/factListView.h"
 #include "database/methods.h"
 
 #include "views/expandingFactWidget.h"
 
-ExpandingFactWidget::ExpandingFactWidget(Fact fact, Model *model, ResizableStackedWidget *pageStack, QWidget *parent)
+ExpandingFactWidget::ExpandingFactWidget(Fact fact, Model *model, ResizableStackedWidget *pageStack, FactListView *factListView, QWidget *parent)
     : QWidget(parent)
 {
     this->model = model;
     this->pageStack = pageStack;
     this->fact = fact;
+    this->factListView = factListView;
 
     headColor = QColor(QString::fromStdString(std::string("#") + findFactType(fact.type).colour));
     bodyColor = Qt::white;
@@ -52,8 +54,17 @@ ExpandingFactWidget::ExpandingFactWidget(Fact fact, Model *model, ResizableStack
 
     viewButton = new ImageButton(QPixmap(":/images/arrow_right_white.png"), QSize(24, 24));
 
+    moveButton = new ImageButton(QPixmap(":/images/move_white.png"), QSize(24, 24));
+    moveAboveButton = new ImageButton(QPixmap(":/images/arrow_up_white.png"), QSize(24, 24));
+    moveBelowButton = new ImageButton(QPixmap(":/images/arrow_down_white.png"), QSize(24, 24));
+
     headLayout->addWidget(nameLabel);
+    headLayout->addWidget(moveBelowButton);
+    headLayout->addWidget(moveAboveButton);
+    headLayout->addWidget(moveButton);
     headLayout->addWidget(viewButton);
+
+    deactivateMoveMode();
 
     headWidget->setParent(this);
     headWidget->show();
@@ -73,6 +84,17 @@ ExpandingFactWidget::ExpandingFactWidget(Fact fact, Model *model, ResizableStack
 
 
     connect(viewButton, SIGNAL(clicked()), this, SLOT(viewButtonClicked()));
+
+    connect(moveButton, SIGNAL(clicked()), this, SLOT(moveButtonClickedSlot()));
+    connect(moveAboveButton, SIGNAL(clicked()), this, SLOT(moveAboveButtonClickedSlot()));
+    connect(moveBelowButton, SIGNAL(clicked()), this, SLOT(moveBelowButtonClickedSlot()));
+
+    connect(this, SIGNAL(moveButtonClicked(Fact)), factListView, SIGNAL(moveButtonClicked(Fact)));
+    connect(this, SIGNAL(moveCompleted()), factListView, SIGNAL(moveCompleted()));
+
+    connect(factListView, SIGNAL(moveButtonClicked(Fact)), this, SLOT(activateMoveMode(Fact)));
+    connect(factListView, SIGNAL(moveCompleted()), this, SLOT(deactivateMoveMode()));
+
     connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
 }
 
@@ -150,6 +172,51 @@ void ExpandingFactWidget::viewButtonClicked()
 {
     model->setFactSelected(fact);
     pageStack->setCurrentIndex(2);
+}
+
+void ExpandingFactWidget::moveButtonClickedSlot()
+{
+    emit moveButtonClicked(fact);
+}
+
+void ExpandingFactWidget::moveAboveButtonClickedSlot()
+{
+    moveFact.parent = fact.parent;
+    moveFact.ordering = fact.ordering;
+
+    editFactOrdering(moveFact);
+    model->editFactOrdering(moveFact);
+
+    emit moveCompleted();
+}
+
+void ExpandingFactWidget::moveBelowButtonClickedSlot()
+{
+    moveFact.parent = fact.parent;
+    moveFact.ordering = fact.ordering + 1;
+
+    editFactOrdering(moveFact);
+    model->editFactOrdering(moveFact);
+
+    emit moveCompleted();
+}
+
+void ExpandingFactWidget::activateMoveMode(Fact fact)
+{
+    moveFact = fact;
+
+    viewButton->hide();
+    moveButton->hide();
+    moveAboveButton->show();
+    moveBelowButton->show();
+}
+
+void ExpandingFactWidget::deactivateMoveMode()
+{
+    viewButton->show();
+    moveButton->show();
+    moveAboveButton->hide();
+    moveBelowButton->hide();
 }
 
 void ExpandingFactWidget::factEditedSlot(Fact fact)
