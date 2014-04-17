@@ -1,153 +1,40 @@
-======= Goals =======
+======= todo list ======
 
-Iteration 1
-- Add a new course
-- Edit a course's name
-- Delete a course
-- Add a new fact
-- Edit a fact's name, type
-- Edit a fact's statement
-- Delete a fact
-- Add a new proof
-- Edit a proof's name
-- Edit a proof's body
-- Delte a proof
+- Decrease margins in fact list so nested sections don't take up so much room
 
-Iteration 2
-- Render a fact's statement to an image
-- Render a proof's body to an image
-- Add a fact dependency
-- Delete a fact dependency
-- Add a proof dependency
-- Delete a proof dependency
+- Text wraps strangely or doesn't wrap at all in various labels
+  - Breadcrumbs don't wrap (maybe truncate with ...)
+  - Fact name on fact page don't wrap, it should do
+  - Same for proof name on proof page
+  - Same for course name on course page
 
-Iteration 3
-- Edit a course's ordering
-- Edit a fact's ordering
-- Edit a proof's ordering
-- Add a section
-- Edit a section's ordering
-- Delete a section
-- Move a fact between sections
+- Hiting return on a dialog should accept rather than reject form
 
-Extras
-- Interface improvements, multiple window / monitor support?
-- Continuous rendering of LaTeX
-- Intelligent caching, only renders when text has changed
-- Quick fact picker / sections outline
+- Better form interaction
+  - Validation of contents (maybe grey out accept button if not valid)
+  - Facts with empty names break the interface
+  - Forms should always be empty when opened
+
+- Display rendered fact on proof page for reference
+
+- Multiple window support
+
+- Only render when text has changed
+
 - Generated list of definitions referenced
+
 - Test generation, it gives you a fact and asks for a definition and/or proof
 
+- Course statistics
+  - Number of facts (broken down into types)
+  - Number of facts with/without proofs
 
+- On course page, some sign on unproven facts
 
-======= Database layout =======
-
-- course
-  - name (text)
-  - ordering (int)
-  - root fact (ref to fact)
-
-- fact
-  - type (enum, ref to FactType)
-  - parent fact (ref to fact)
-  - name (text)
-  - statement (text)
-  - ordering (int)
-
-- fact_type
-  - fact_type (text)
-  - fact_type_can_have_proof (boolean)
-
-- proof
-  - fact (ref to fact)
-  - name (text)
-  - body (text)
-  - ordering (int)
-
-- fact_dependency
-  - dependency (ref to fact)
-  - depender (ref to fact)
-
-- proof_dependency
-  - dependency (ref to fact)
-  - depender (ref to proof)
-
-
-
-======= UI description =======
-
-- Root page
-  - Name of the program
-  - Button to add a new course
-  - List of courses
-    - Name of course
-    - Stats about the course
-    - Move and delete buttons appear on hover
-    - Clicking takes you to course page
-    - Scrolls vertically if too large
-
-- Course page
-  - Back button takes you to root page
-  - Name of course
-  - Edit button in top right
-    - Can change name of course
-  - On left an outline
-    - Lists sections and names of facts
-    - Smaller font size
-    - Clicking on a section sets main view to just that section
-    - A section has an add fact / add subsection button
-  -In middle is the main view
-    - List of facts
-      - Name of fact
-      - Move, edit and delete buttons appear on hover
-      - Clicking expands / contracts the rendered statement
-    - Only shows facts from the currently selected section
-    - Sections are indicated by a brace going around the facts on the left
-    - Scrolls vertically if too large
-  - Divider between outline and main view can dragged
-
-- Fact page
-  - Back button takes you to course page
-  - Name of fact
-  - Edit button
-    - Can change name and type of fact
-  - Three vertically stacked sections with draggable dividers
-    - Statement plain text
-      - Can write anything in here and it will be rendered as LaTeX
-      - Continuous rendering, changes can be seen almost immediately
-      - Scrolls vertically if too large
-    - Rendered output
-      - Can see the rendered LaTeX
-      - Scrolls vertically if too large
-    - Proofs
-      - Button to add a new proof
-      - Lists proofs
-        - Name of proof
-        - Clicking expands / contracts the rendered body
-        - Edit and delete buttons appear on hover
-      - Scrolls vertically if too large
-
-- Proof page
-  - Back button takes you to fact page
-  - Name of proof
-  - Edit button
-    - Can change name of proof
-  - Three vertically stacked sections with draggable dividers
-    - Body plain text
-      - Can write anything in here and it will be rendered as LaTeX
-      - Continuous rendering, changes can be seen almost immediately
-      - Scrolls vertically if too large
-    - Rendered output
-      - Can see the rendered LaTeX
-      - Scrolls vertically if too large
-    - Dependencies
-      - Button to add a new dependency
-      - Lists dependencies
-        - Name of fact
-        - Clicking takes you to that fact page
-        - Delete button appears on hover
-        - Uses fact ordering
-
-- Add dependency page
-  - Looks like course page but without functionality
-  - Clicking a fact selects that for the dependency and leaves page
+- Dependencies
+  - Facts depend on other facts
+    - Shown on fact page and proof page
+    - Only editable on fact page
+  - Proofs depend on facts
+    - Shown on proof page
+  - Choose facts by searching by partial name (as in V2)
