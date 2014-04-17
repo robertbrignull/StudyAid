@@ -47,7 +47,7 @@ public:
     ClickableQLabel *sectionLabel;
 
     // A map from ids to SectionPickerWidgets
-    std::map<int, std::pair<Fact, SectionPickerWidget*> > idSectionPickerMap;
+    std::map<int, SectionPickerWidget*> idSectionPickerMap;
 
 signals:
     void sectionSelected(int id);
@@ -63,5 +63,9 @@ public slots:
 
     void factAddedSlot(Fact fact);
     void factEditedSlot(Fact fact);
+    void factOrderingEditedSlot(Fact fact);
     void factDeletedSlot(int id);
+
+private:
+    void insertSectionPickerWidget(SectionPickerWidget *sectionPickerWidget);
 };

@@ -31,7 +31,8 @@ SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStack
 
 
     layout = new QVBoxLayout(this);
-    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(5);
+    layout->setMargin(0);
 
 
 
@@ -61,7 +62,7 @@ SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStack
 
 
     std::vector<Fact> facts = findChildSections(fact.id);
-    idSectionPickerMap = std::map<int, std::pair<Fact, SectionPickerWidget*> >();
+    idSectionPickerMap = std::map<int, SectionPickerWidget*>();
 
     for (size_t i = 0; i < facts.size(); ++i) {
         factAddedSlot(facts[i]);
@@ -86,6 +87,7 @@ SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStack
 
     connect(model, SIGNAL(factAdded(Fact)), this, SLOT(factAddedSlot(Fact)));
     connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
+    connect(model, SIGNAL(factOrderingEdited(Fact)), this, SLOT(factOrderingEditedSlot(Fact)));
     connect(model, SIGNAL(factDeleted(int)), this, SLOT(factDeletedSlot(int)));
 }
 
@@ -122,22 +124,7 @@ void SectionPickerWidget::sectionDeleteDialogAccepted()
 void SectionPickerWidget::factAddedSlot(Fact fact)
 {
     if (fact.type == "Section" && fact.parent == this->fact.id) {
-        int position = idSectionPickerMap.size();
-
-        for (auto it = idSectionPickerMap.begin(); it != idSectionPickerMap.end(); it++) {
-            if (it->second.first.ordering > fact.ordering) {
-                position = std::min(position, layout->indexOf(it->second.second));
-            }
-        }
-
-        SectionPickerWidget *sectionPickerWidget = new SectionPickerWidget(fact, model, pageStack, factAddForm, factAddDialog, sectionEditForm, sectionEditDialog);
-        
-        layout->addSpacing(5);
-        layout->addWidget(sectionPickerWidget);
-
-        idSectionPickerMap.insert(std::pair<int, std::pair<Fact, SectionPickerWidget*> >(fact.id, std::pair<Fact, SectionPickerWidget*>(fact, sectionPickerWidget)));
-
-        connect(sectionPickerWidget, SIGNAL(sectionSelected(int)), this, SLOT(sectionSelectedSlot(int)));
+        insertSectionPickerWidget(new SectionPickerWidget(fact, model, pageStack, factAddForm, factAddDialog, sectionEditForm, sectionEditDialog));
     }
 }
 
@@ -149,12 +136,45 @@ void SectionPickerWidget::factEditedSlot(Fact fact)
     }
 }
 
+void SectionPickerWidget::factOrderingEditedSlot(Fact fact)
+{
+    factDeletedSlot(fact.id);
+
+    if (fact.type == "Section" && fact.parent == this->fact.id) {
+        // Update the orderings of other section child section pickers
+        for (auto it = idSectionPickerMap.begin(); it != idSectionPickerMap.end(); it++) {
+            if (it->second->fact.ordering >= fact.ordering) {
+                it->second->fact.ordering += 1;
+            }
+        }
+
+        insertSectionPickerWidget(new SectionPickerWidget(fact, model, pageStack, factAddForm, factAddDialog, sectionEditForm, sectionEditDialog));
+    }
+}
+
 void SectionPickerWidget::factDeletedSlot(int id)
 {
     if (idSectionPickerMap.count(id) != 0) {
         auto item = idSectionPickerMap.at(id);
-        layout->removeWidget(item.second);
-        delete item.second;
+        layout->removeWidget(item);
+        delete item;
         idSectionPickerMap.erase(id);
     }
+}
+
+void SectionPickerWidget::insertSectionPickerWidget(SectionPickerWidget *sectionPickerWidget)
+{
+    int position = idSectionPickerMap.size() + 1;
+
+    for (auto it = idSectionPickerMap.begin(); it != idSectionPickerMap.end(); it++) {
+        if (it->second->fact.ordering > sectionPickerWidget->fact.ordering) {
+            position = std::min(position, layout->indexOf(it->second));
+        }
+    }
+
+    layout->insertWidget(position, sectionPickerWidget);
+
+    idSectionPickerMap.insert(std::pair<int, SectionPickerWidget*>(sectionPickerWidget->fact.id, sectionPickerWidget));
+
+    connect(sectionPickerWidget, SIGNAL(sectionSelected(int)), this, SLOT(sectionSelectedSlot(int)));
 }

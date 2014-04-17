@@ -244,7 +244,7 @@ SectionPickerWidget *TestUtil::findSectionPicker(StudyAid *window, const char *n
     }
 
     for (auto it = searchRoot->idSectionPickerMap.begin(); it != searchRoot->idSectionPickerMap.end(); it++) {
-        auto picker = findSectionPicker(window, name, it->second.second);
+        auto picker = findSectionPicker(window, name, it->second);
         if (picker != nullptr) {
             return picker;
         }

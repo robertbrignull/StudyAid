@@ -62,7 +62,7 @@ void SectionTest::test_addSection_toRoot()
     QVERIFY(coursePage->sectionPicker->idSectionPickerMap.size() == 1);
 
     // Check it has the correct name
-    auto sectionPicker = coursePage->sectionPicker->idSectionPickerMap.begin()->second.second;
+    auto sectionPicker = coursePage->sectionPicker->idSectionPickerMap.begin()->second;
     QVERIFY(sectionPicker->sectionLabel->text() == sectionName);
 
     // Check that the new section has no children
@@ -103,12 +103,12 @@ void SectionTest::test_addSection_toSection()
     QVERIFY(sectionPicker->sectionLabel->text() == "All");
     QVERIFY(sectionPicker->idSectionPickerMap.size() == 1);
 
-    sectionPicker = sectionPicker->idSectionPickerMap.begin()->second.second;
+    sectionPicker = sectionPicker->idSectionPickerMap.begin()->second;
 
     QVERIFY(sectionPicker->sectionLabel->text() == parentSectionName);
     QVERIFY(sectionPicker->idSectionPickerMap.size() == 1);
 
-    sectionPicker = sectionPicker->idSectionPickerMap.begin()->second.second;
+    sectionPicker = sectionPicker->idSectionPickerMap.begin()->second;
 
     QVERIFY(sectionPicker->sectionLabel->text() == childSectionName);
     QVERIFY(sectionPicker->idSectionPickerMap.size() == 0);
@@ -215,7 +215,7 @@ void SectionTest::test_editSection()
     QVERIFY(coursePage->sectionPicker->idSectionPickerMap.size() == 1);
 
     // Check it has the correct name
-    auto sectionPicker = coursePage->sectionPicker->idSectionPickerMap.begin()->second.second;
+    auto sectionPicker = coursePage->sectionPicker->idSectionPickerMap.begin()->second;
     QVERIFY(sectionPicker->sectionLabel->text() == newSectionName);
 
     // Check that the new section has no children
@@ -322,17 +322,22 @@ void SectionTest::test_editSectionOrdering_moveAbove()
     TestUtil::addFact(window, sectionName1, "Section");
     TestUtil::addFact(window, sectionName2, "Section");
 
-    // Move the second proof above the first
+    // Move the second section above the first
     auto currentFactListLayout = coursePage->factListView->currentFactList->layout;
     QTest::mouseClick(((FactList*) currentFactListLayout->itemAt(1)->widget())->moveButton, Qt::LeftButton);
     QTest::mouseClick(((FactList*) currentFactListLayout->itemAt(0)->widget())->moveAboveButton, Qt::LeftButton);
 
-    // Check that the proofs are now in the correct order
+    // Check that the sections are now in the correct order
     QVERIFY(((FactList*) currentFactListLayout->itemAt(0)->widget())->fact.name == sectionName2);
     QVERIFY(((FactList*) currentFactListLayout->itemAt(1)->widget())->fact.name == sectionName1);
 
     // Check that the orderings are valid
     QVERIFY(((FactList*) currentFactListLayout->itemAt(0)->widget())->fact.ordering < ((FactList*) currentFactListLayout->itemAt(1)->widget())->fact.ordering);
+
+    // Check that the section picker updated
+    QVERIFY(coursePage->sectionPicker->idSectionPickerMap.size() == 2);
+    QVERIFY(((SectionPickerWidget*) coursePage->sectionPicker->layout->itemAt(1)->widget())->sectionLabel->text() == sectionName2);
+    QVERIFY(((SectionPickerWidget*) coursePage->sectionPicker->layout->itemAt(2)->widget())->sectionLabel->text() == sectionName1);
 }
 
 void SectionTest::test_editSectionOrdering_moveBelow()
@@ -348,17 +353,22 @@ void SectionTest::test_editSectionOrdering_moveBelow()
     TestUtil::addFact(window, sectionName1, "Section");
     TestUtil::addFact(window, sectionName2, "Section");
 
-    // Move the first proof below the second
+    // Move the first section below the second
     auto currentFactListLayout = coursePage->factListView->currentFactList->layout;
     QTest::mouseClick(((FactList*) currentFactListLayout->itemAt(0)->widget())->moveButton, Qt::LeftButton);
     QTest::mouseClick(((FactList*) currentFactListLayout->itemAt(1)->widget())->moveBelowButton, Qt::LeftButton);
 
-    // Check that the proofs are now in the correct order
+    // Check that the sections are now in the correct order
     QVERIFY(((FactList*) currentFactListLayout->itemAt(0)->widget())->fact.name == sectionName2);
     QVERIFY(((FactList*) currentFactListLayout->itemAt(1)->widget())->fact.name == sectionName1);
 
     // Check that the orderings are valid
     QVERIFY(((FactList*) currentFactListLayout->itemAt(0)->widget())->fact.ordering < ((FactList*) currentFactListLayout->itemAt(1)->widget())->fact.ordering);
+
+    // Check that the section picker updated
+    QVERIFY(coursePage->sectionPicker->idSectionPickerMap.size() == 2);
+    QVERIFY(((SectionPickerWidget*) coursePage->sectionPicker->layout->itemAt(1)->widget())->sectionLabel->text() == sectionName2);
+    QVERIFY(((SectionPickerWidget*) coursePage->sectionPicker->layout->itemAt(2)->widget())->sectionLabel->text() == sectionName1);
 }
 
 void SectionTest::test_editSectionOrdering_moveBetween()
@@ -376,12 +386,12 @@ void SectionTest::test_editSectionOrdering_moveBetween()
     TestUtil::addFact(window, sectionName2, "Section");
     TestUtil::addFact(window, sectionName3, "Section");
 
-    // Move the first proof below the second
+    // Move the first section below the second
     auto currentFactListLayout = coursePage->factListView->currentFactList->layout;
     QTest::mouseClick(((FactList*) currentFactListLayout->itemAt(0)->widget())->moveButton, Qt::LeftButton);
     QTest::mouseClick(((FactList*) currentFactListLayout->itemAt(1)->widget())->moveBelowButton, Qt::LeftButton);
 
-    // Check that the proofs are now in the correct order
+    // Check that the sections are now in the correct order
     QVERIFY(((FactList*) currentFactListLayout->itemAt(0)->widget())->fact.name == sectionName2);
     QVERIFY(((FactList*) currentFactListLayout->itemAt(1)->widget())->fact.name == sectionName1);
     QVERIFY(((FactList*) currentFactListLayout->itemAt(2)->widget())->fact.name == sectionName3);
@@ -389,6 +399,12 @@ void SectionTest::test_editSectionOrdering_moveBetween()
     // Check that the orderings are valid
     QVERIFY(((FactList*) currentFactListLayout->itemAt(0)->widget())->fact.ordering < ((FactList*) currentFactListLayout->itemAt(1)->widget())->fact.ordering);
     QVERIFY(((FactList*) currentFactListLayout->itemAt(1)->widget())->fact.ordering < ((FactList*) currentFactListLayout->itemAt(2)->widget())->fact.ordering);
+
+    // Check that the section picker updated
+    QVERIFY(coursePage->sectionPicker->idSectionPickerMap.size() == 3);
+    QVERIFY(((SectionPickerWidget*) coursePage->sectionPicker->layout->itemAt(1)->widget())->sectionLabel->text() == sectionName2);
+    QVERIFY(((SectionPickerWidget*) coursePage->sectionPicker->layout->itemAt(2)->widget())->sectionLabel->text() == sectionName1);
+    QVERIFY(((SectionPickerWidget*) coursePage->sectionPicker->layout->itemAt(3)->widget())->sectionLabel->text() == sectionName3);
 }
 
 void SectionTest::test_editSectionOrdering_factIntoSection()
