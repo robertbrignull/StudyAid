@@ -150,7 +150,7 @@ void recursivelyRenderFact(Fact fact)
 void renderAll()
 {
     // First delete any rendered images
-    if (system((std::string("rm -f ") + imageDir + "/fact/* " + imageDir + "/proof.*").c_str())) {
+    if (system((std::string("rm -f ") + imageDir + "/fact/* " + imageDir + "/proof/*").c_str())) {
         std::cout << "Could not delete rendered images" << std::endl;
     }
 
