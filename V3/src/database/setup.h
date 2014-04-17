@@ -4,7 +4,7 @@
 
 /* Initializes the connection
  */
-void initialiseConnection(bool testMode);
+void initialiseConnection(const char *database);
 
 /* Copies backup/restore scripts to user home
  * directory if not there already

@@ -21,15 +21,9 @@ std::string toString(int value)
     return oss.str();
 }
 
-void initialiseLatex(bool testMode)
+void initialiseLatex(const char *database)
 {
-    struct passwd *pw = getpwuid(getuid());
-
-    imageDir = std::string(pw->pw_dir) + "/.StudyAidV3/";
-
-    if (testMode) {
-        imageDir += "test/";
-    }
+    imageDir = std::string(getpwuid(getuid())->pw_dir) + "/.StudyAidV3/" + database + "/";
 }
 
 std::string getFactImageFilename(Fact fact)

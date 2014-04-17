@@ -50,14 +50,17 @@ StudyAid::~StudyAid()
 
 int main(int argc, char **argv)
 {
+    const char *database = (argc >= 2 ? argv[1] : "default");
+
     bool testMode = (argc >= 2 && strncmp(argv[1], "test", 4) == 0);
 
-    initialiseConnection(testMode);
+    initialiseConnection(database);
     initialiseBackup();
-    initialiseLatex(testMode);
+    initialiseLatex(database);
 
-    if (argc >= 2 && strncmp(argv[1], "--render-all", 12) == 0) {
+    if (argc >= 3 && strncmp(argv[2], "render-all", 12) == 0) {
         renderAll();
+        exit(0);
     }
 
     QApplication app(argc, argv);

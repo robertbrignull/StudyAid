@@ -4,7 +4,7 @@
 
 #include "database/structures.h"
 
-void initialiseLatex(bool testMode);
+void initialiseLatex(const char *database);
 
 /* Return the path to the file where this fact or
  * proof's rendered image should be stored.

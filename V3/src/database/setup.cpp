@@ -6,9 +6,9 @@
 #include <sys/stat.h>
 #include <errno.h>
 
-#include <iostream>
-
 #include <mysql++.h>
+
+#include <libxml++/libxml++.h>
 
 #include <QFile>
 #include <QString>
@@ -16,25 +16,69 @@
 
 #include "database/setup.h"
 
-std::string databaseName = "study_aid_v3";
-std::string server = "127.0.0.1";
-std::string user = "study_aid_v3";
-std::string password = "";
+std::string databaseName;
+std::string server;
+std::string user;
+std::string password;
 
 mysqlpp::Connection conn = mysqlpp::Connection(true);
 
-void initialiseConnection(bool testMode)
+std::string extractValue(xmlpp::Element *root_node, const char *name)
 {
-    if (testMode) {
-        databaseName = "study_aid_v3_test";
+    auto nodeList = root_node->find(name);
+
+    if (nodeList.size() != 1) {
+        std::cerr << "Could not parse config file, nodeList incorrect length" << std::endl;
+        exit(1);
     }
+
+    auto node = *nodeList.begin();
+
+    if (!dynamic_cast<xmlpp::Element*>(node)) {
+        std::cerr << "Could not parse config file, node not an element" << std::endl;
+        exit(1);
+    }
+
+    auto element = dynamic_cast<xmlpp::Element*>(node);
+
+    if (!element->get_child_text()) {
+        return "";
+    }
+    else {
+        return element->get_child_text()->get_content();
+    }
+}
+
+void initialiseConnection(const char *database)
+{
+    std::string configFilename = std::string(getpwuid(getuid())->pw_dir) + "/.StudyAidV3/database/config.xml";
+
+    xmlpp::DomParser parser(configFilename);
+
+    if (parser.get_document() == 0) {
+        std::cerr << "Config file ~/.StudyAidV3/database/config.xml not found" << std::endl;
+        exit(1);
+    }
+
+    xmlpp::Node *root_node = parser.get_document()->get_root_node();
+
+    auto children = root_node->get_children(database);
+    if (children.size() != 1) {
+        std::cerr << "Could not parse config file, database not recognized" << std::endl;
+        exit(1);
+    }
+    
+    xmlpp::Element *config = dynamic_cast<xmlpp::Element*>(*children.begin());
+
+    databaseName = extractValue(config, "databaseName");
+    server = extractValue(config, "server");
+    user = extractValue(config, "user");
+    password = extractValue(config, "password");
 }
 
 void initialiseBackup()
 {
-    struct passwd *pw = getpwuid(getuid());
-
-    std::string dataDir = std::string(pw->pw_dir) + "/.StudyAidV3/";
+    std::string dataDir = std::string(getpwuid(getuid())->pw_dir) + "/.StudyAidV3/";
 
 
 
