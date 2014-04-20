@@ -28,7 +28,7 @@ public:
     QWidget *generateFactListOrExpandingFactWidget(Fact fact);
     void insertFactWidget(Fact fact, QWidget *widget);
 
-    void buildLayout();
+    void buildLayout(bool isRootSection);
     void destroyLayout();
 
 
@@ -42,6 +42,9 @@ public:
 
     // Is this list current built and visible
     bool isCurrentlyBuilt;
+
+    // Is this list currently the root, if so don't paint the outline
+    bool isRootSection;
 
     QVBoxLayout *layout;
 

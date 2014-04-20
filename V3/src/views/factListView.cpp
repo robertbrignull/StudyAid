@@ -17,9 +17,11 @@ FactListView::FactListView(Course course, Model *model, ResizableStackedWidget *
     currentFactList = new FactList(findFact(course.root_fact), model, pageStack, this);
     idFactListMap.insert(std::pair<int, FactList*>(course.root_fact, currentFactList));
 
-    currentFactList->buildLayout();
+    currentFactList->buildLayout(true);
 
     layout = new QHBoxLayout(this);
+    layout->setContentsMargins(0, 0, 0, 0);
+
     layout->addWidget(currentFactList);
 }
 
@@ -45,7 +47,7 @@ void FactListView::selectSection(int id)
     }
 
     currentFactList = idFactListMap.at(id);
-    currentFactList->buildLayout();
+    currentFactList->buildLayout(true);
 
     layout->addWidget(currentFactList);
     currentFactList->show();

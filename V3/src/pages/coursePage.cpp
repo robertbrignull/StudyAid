@@ -145,6 +145,7 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
 
     QWidget *pickerScrollWidget = new QWidget();
     pickerScrollLayout = new QVBoxLayout(pickerScrollWidget);
+    pickerScrollLayout->setContentsMargins(0, 0, 0, 0);
     pickerScrollArea->setWidget(pickerScrollWidget);
 
     pickerScrollLayout->addStretch(1);
@@ -161,6 +162,7 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
 
     QWidget *courseScrollWidget = new QWidget();
     courseScrollLayout = new QVBoxLayout(courseScrollWidget);
+    courseScrollLayout->setContentsMargins(0, 0, 0, 0);
     courseScrollArea->setWidget(courseScrollWidget);
 
 

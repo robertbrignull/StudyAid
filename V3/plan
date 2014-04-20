@@ -1,10 +1,5 @@
 ======= todo list ======
 
-- Decrease margins in fact list so nested sections don't take up so much room
-
-- Section tree should be shown in picker, not just ordering
-  - Use same margin system as the fact list
-
 - Text wraps strangely or doesn't wrap at all in various labels
   - Breadcrumbs don't wrap (maybe truncate with ...)
   - Fact name on fact page don't wrap, it should do

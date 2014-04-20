@@ -9,6 +9,7 @@
 
 class Model;
 class ResizableStackedWidget;
+class QPaintEvent;
 class QVBoxLayout;
 class FactForm;
 class SectionForm;
@@ -22,6 +23,8 @@ class SectionPickerWidget : public QWidget
 
 public:
     SectionPickerWidget(Fact fact, Model *model, ResizableStackedWidget *pageStack, FactForm *factAddForm, Dialog *factAddDialog, SectionForm *sectionEditForm, Dialog *sectionEditDialog, QWidget *parent = 0);
+
+    void paintEvent(QPaintEvent *);
 
 
 

@@ -25,7 +25,7 @@ FactList::FactList(Fact fact, Model *model, ResizableStackedWidget *pageStack, F
 
 
     layout = new QVBoxLayout(this);
-    layout->setContentsMargins(11, 0, 0, 11);
+    layout->setContentsMargins(6, 0, 0, 11);
 
     
 
@@ -106,7 +106,7 @@ FactList::~FactList()
 
 void FactList::paintEvent(QPaintEvent *)
 {
-    if (fact.parent != -1) {
+    if (fact.parent != -1 && !isRootSection) {
         QPainter painter(this);
 
         painter.setPen(QPen(QBrush(QColor(QColor(66, 139, 202))), 2));
@@ -132,13 +132,14 @@ void FactList::insertFactWidget(Fact fact, QWidget *factWidget)
     idChildMap.insert(std::pair<int, std::pair<Fact, QWidget*> >(fact.id, std::pair<Fact, QWidget*>(fact, factWidget)));
 }
 
-void FactList::buildLayout()
+void FactList::buildLayout(bool isRootSection)
 {  
     if (!isCurrentlyBuilt) {
         isCurrentlyBuilt = true;
+        this->isRootSection = isRootSection;
 
         for (auto it = idChildSectionMap.begin(); it != idChildSectionMap.end(); it++) {
-            it->second->buildLayout();
+            it->second->buildLayout(false);
             insertFactWidget(it->second->fact, it->second);
         }
 
@@ -158,6 +159,7 @@ void FactList::destroyLayout()
 {
     if (isCurrentlyBuilt) {
         isCurrentlyBuilt = false;
+        isRootSection = false;
 
         hide();
 
@@ -271,7 +273,7 @@ void FactList::factAddedSlot(Fact fact)
 
             if (isCurrentlyBuilt) {
                 insertFactWidget(fact, factWidget);
-                factWidget->buildLayout();
+                factWidget->buildLayout(false);
             }
         }
         else {
@@ -354,7 +356,7 @@ void FactList::factOrderingEditedSlot(Fact fact)
 
                     if (isCurrentlyBuilt) {
                         insertFactWidget(fact, factWidget);
-                        factWidget->buildLayout();
+                        factWidget->buildLayout(false);
                     }
                 }
                 else {

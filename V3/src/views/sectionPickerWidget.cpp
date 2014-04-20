@@ -3,6 +3,7 @@
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QPainter>
 
 #include "model.h"
 #include "database/methods.h"
@@ -31,8 +32,7 @@ SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStack
 
 
     layout = new QVBoxLayout(this);
-    layout->setSpacing(5);
-    layout->setMargin(0);
+    layout->setContentsMargins(6, 0, 0, 5);
 
 
 
@@ -89,6 +89,19 @@ SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStack
     connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
     connect(model, SIGNAL(factOrderingEdited(Fact)), this, SLOT(factOrderingEditedSlot(Fact)));
     connect(model, SIGNAL(factDeleted(int)), this, SLOT(factDeletedSlot(int)));
+}
+
+void SectionPickerWidget::paintEvent(QPaintEvent *)
+{
+    if (fact.parent != -1) {
+        QPainter painter(this);
+
+        painter.setPen(QPen(QBrush(QColor(QColor(66, 139, 202))), 2));
+
+        painter.drawLine(1, 1, 13, 1);
+        painter.drawLine(1, 1, 1, size().height()-1);
+        painter.drawLine(1, size().height()-1, 13, size().height()-1);
+    }
 }
 
 void SectionPickerWidget::sectionSelectedSlot(int id)
