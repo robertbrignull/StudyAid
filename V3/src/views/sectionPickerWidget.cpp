@@ -37,7 +37,7 @@ SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStack
 
 
     QHBoxLayout *sectionLayout = new QHBoxLayout();
-    sectionLabel = new ClickableQLabel((fact.parent != -1) ? fact.name : "All");
+    sectionLabel = new ClickableQLabel((fact.parent != -1) ? QString::fromStdString(fact.name) : "All");
 
     sectionLabel->setWordWrap(true);
     sectionLabel->setScaledContents(true);

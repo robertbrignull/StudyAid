@@ -87,8 +87,11 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
     topLayout->setContentsMargins(0, 0, 0, 0);
 
     courseLabel = new QLabel();
+    courseLabel->setWordWrap(true);
+    courseLabel->setScaledContents(true);
+
     QFont courseFont = courseLabel->font();
-    courseFont.setPointSize(38);
+    courseFont.setPointSize(24);
     courseLabel->setFont(courseFont);
 
     editCourseButton = new ImageButton(QPixmap(":/images/pencil_black.png"), QSize(32, 32));
@@ -102,7 +105,6 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
     deleteCourseVLayout->addWidget(deleteCourseButton);
 
     topLayout->addWidget(courseLabel);
-    topLayout->addStretch(1);
     topLayout->addLayout(editCourseVLayout);
     topLayout->addSpacing(10);
     topLayout->addLayout(deleteCourseVLayout);
@@ -138,7 +140,7 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
     // The section picker controls which section is shown
     // on the other view.
 
-    QScrollArea *pickerScrollArea = new QScrollArea();
+    pickerScrollArea = new QScrollArea();
     pickerScrollArea->setWidgetResizable(true);
     pickerScrollArea->setFrameShape(QFrame::NoFrame);
     splitter->addWidget(pickerScrollArea);
@@ -155,7 +157,7 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
     // This is a list of facts which on click will either expand
     // or change to the fact page.
 
-    QScrollArea *courseScrollArea = new QScrollArea();
+    courseScrollArea = new QScrollArea();
     courseScrollArea->setWidgetResizable(true);
     courseScrollArea->setFrameShape(QFrame::NoFrame);
     splitter->addWidget(courseScrollArea);
@@ -271,6 +273,7 @@ void CoursePage::courseSelectedChangedSlot(Course course)
     sectionPicker = new SectionPickerWidget(findFact(course.root_fact), model, pageStack, factAddForm, factAddDialog, sectionEditForm, sectionEditDialog);
     pickerScrollLayout->addWidget(sectionPicker);
     pickerScrollLayout->addStretch(1);
+    pickerScrollArea->ensureVisible(0, 0);
 
     // Rebuild the fact list
     while (courseScrollLayout->count() > 0) {
@@ -279,6 +282,7 @@ void CoursePage::courseSelectedChangedSlot(Course course)
     factListView = new FactListView(course, model, pageStack);
     courseScrollLayout->addWidget(factListView);
     courseScrollLayout->addStretch(1);
+    courseScrollArea->ensureVisible(0, 0);
 
     // Connect the two together
     connect(sectionPicker, SIGNAL(sectionSelected(int)), factListView, SLOT(selectSection(int)));

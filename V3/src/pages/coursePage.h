@@ -17,6 +17,7 @@ class QVBoxLayout;
 class SectionPickerWidget;
 class FactListView;
 class ImageButton;
+class QScrollArea;
 
 class CoursePage : public QWidget
 {
@@ -51,6 +52,7 @@ public:
     // THe splitter contains the SectionPicker and FactListView
     Splitter *splitter;
 
+    QScrollArea *pickerScrollArea, *courseScrollArea;
     QVBoxLayout *pickerScrollLayout, *courseScrollLayout;
     SectionPickerWidget *sectionPicker;
     FactListView *factListView;

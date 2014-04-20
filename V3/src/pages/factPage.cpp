@@ -87,8 +87,11 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     topLayout->setContentsMargins(0, 0, 0, 0);
 
     factLabel = new QLabel();
+    factLabel->setWordWrap(true);
+    factLabel->setScaledContents(true);
+
     QFont factFont = factLabel->font();
-    factFont.setPointSize(38);
+    factFont.setPointSize(24);
     factLabel->setFont(factFont);
 
     trafficLight = new TrafficLight(TrafficLight::AMBER);
@@ -113,7 +116,6 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     deleteFactVLayout->addWidget(deleteFactButton);
 
     topLayout->addWidget(factLabel);
-    topLayout->addStretch(1);
     topLayout->addLayout(trafficLightVLayout);
     topLayout->addSpacing(10);
     topLayout->addLayout(addProofVLayout);

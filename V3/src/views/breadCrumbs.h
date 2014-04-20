@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QWidget>
+#include <QFontMetrics>
 
 #include "database/structures.h"
 
@@ -15,6 +16,7 @@ class BreadCrumbs : public QWidget
 
 public:
     BreadCrumbs(int level, Model *model, ResizableStackedWidget *pageStack, QWidget *parent = 0);
+    ~BreadCrumbs();
 
     QLabel *newSeperator();
 
@@ -25,8 +27,12 @@ public:
 
     int level;
 
+    QString rootText, courseName, factName, proofName;
+
     ClickableQLabel *coursesLabel, *factsLabel, *proofsLabel;
     QLabel *currentCourseLabel, *currentFactLabel, *currentProofLabel;
+
+    QFontMetrics *fontMetrics;
 
 public slots:
     void courseSelectedChangedSlot(Course course);
@@ -40,4 +46,7 @@ public slots:
     void coursesLabelClicked();
     void factsLabelClicked();
     void proofsLabelClicked();
+
+private:
+    void adjustLabels();
 };

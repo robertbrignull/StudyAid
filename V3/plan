@@ -1,11 +1,5 @@
 ======= todo list ======
 
-- Text wraps strangely or doesn't wrap at all in various labels
-  - Breadcrumbs don't wrap (maybe truncate with ...)
-  - Fact name on fact page don't wrap, it should do
-  - Same for proof name on proof page
-  - Same for course name on course page
-
 - Hiting return on a dialog should accept rather than reject form
 
 - Better form interaction

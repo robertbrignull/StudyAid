@@ -82,8 +82,11 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
     topLayout->setContentsMargins(0, 0, 0, 0);
 
     proofLabel = new QLabel();
+    proofLabel->setWordWrap(true);
+    proofLabel->setScaledContents(true);
+
     QFont proofFont = proofLabel->font();
-    proofFont.setPointSize(38);
+    proofFont.setPointSize(24);
     proofLabel->setFont(proofFont);
 
     trafficLight = new TrafficLight(TrafficLight::AMBER);
@@ -103,7 +106,6 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
     deleteProofVLayout->addWidget(deleteProofButton);
 
     topLayout->addWidget(proofLabel);
-    topLayout->addStretch(1);
     topLayout->addLayout(trafficLightVLayout);
     topLayout->addSpacing(10);
     topLayout->addLayout(editProofVLayout);

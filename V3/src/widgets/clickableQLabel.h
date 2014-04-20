@@ -9,7 +9,7 @@ class ClickableQLabel : public QLabel
     Q_OBJECT
 
 public:
-    ClickableQLabel(std::string text, QWidget *parent = 0);
+    ClickableQLabel(QString text, QWidget *parent = 0);
 
     void enterEvent(QEvent *);
     void leaveEvent(QEvent *);

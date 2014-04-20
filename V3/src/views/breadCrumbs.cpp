@@ -24,7 +24,8 @@ BreadCrumbs::BreadCrumbs(int level, Model *model, ResizableStackedWidget *pageSt
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
 
-    coursesLabel = new ClickableQLabel("Courses");
+    rootText = "Courses";
+    coursesLabel = new ClickableQLabel(rootText);
 
     QFont font = coursesLabel->font();
     font.setPointSize(14);
@@ -40,6 +41,8 @@ BreadCrumbs::BreadCrumbs(int level, Model *model, ResizableStackedWidget *pageSt
     coursesLabel->setFont(font);
     coursesLabel->setPalette(bluePalette);
     layout->addWidget(coursesLabel);
+
+    fontMetrics = new QFontMetrics(font);
 
     connect(coursesLabel, SIGNAL(clicked()), this, SLOT(coursesLabelClicked()));
 
@@ -104,31 +107,30 @@ BreadCrumbs::BreadCrumbs(int level, Model *model, ResizableStackedWidget *pageSt
     layout->addStretch(1);
 }
 
+BreadCrumbs::~BreadCrumbs()
+{
+    delete fontMetrics;
+}
+
 void BreadCrumbs::courseSelectedChangedSlot(Course course)
 {
-    if (level == 1) {
-        currentCourseLabel->setText(QString::fromStdString(course.name));
-    }
-    else if (level > 1) {
-        factsLabel->setText(QString::fromStdString(course.name));
-    }
+    courseName = QString::fromStdString(course.name);
+
+    adjustLabels();
 }
 
 void BreadCrumbs::factSelectedChangedSlot(Fact fact)
 {
-    if (level == 2) {
-        currentFactLabel->setText(QString::fromStdString(fact.name));
-    }
-    else if (level > 2) {
-        proofsLabel->setText(QString::fromStdString(fact.name));
-    }
+    factName = QString::fromStdString(fact.name);
+
+    adjustLabels();
 }
 
 void BreadCrumbs::proofSelectedChangedSlot(Proof proof)
 {
-    if (level == 3) {
-        currentProofLabel->setText((proof.name != "") ? QString::fromStdString(proof.name) : "Proof");
-    }
+    proofName = (proof.name != "") ? QString::fromStdString(proof.name) : "Proof";
+
+    adjustLabels();
 }
 
 void BreadCrumbs::courseEditedSlot(Course course)
@@ -181,4 +183,35 @@ QLabel *BreadCrumbs::newSeperator()
     sep->setPalette(greyPalette);
 
     return sep;
+}
+
+void BreadCrumbs::adjustLabels()
+{
+    if (level == 1) {
+        coursesLabel->setText(rootText);
+        currentCourseLabel->setText(courseName);
+
+        coursesLabel->setText(fontMetrics->elidedText(coursesLabel->text(), Qt::ElideRight, coursesLabel->width()));
+        currentCourseLabel->setText(fontMetrics->elidedText(currentCourseLabel->text(), Qt::ElideRight, currentCourseLabel->width()));
+    }
+    else if (level == 2) {
+        coursesLabel->setText(rootText);
+        factsLabel->setText(courseName);
+        currentFactLabel->setText(factName);
+
+        coursesLabel->setText(fontMetrics->elidedText(coursesLabel->text(), Qt::ElideRight, coursesLabel->width()));
+        factsLabel->setText(fontMetrics->elidedText(factsLabel->text(), Qt::ElideRight, factsLabel->width()));
+        currentFactLabel->setText(fontMetrics->elidedText(currentFactLabel->text(), Qt::ElideRight, currentFactLabel->width()));
+    }
+    else if (level == 3) {
+        coursesLabel->setText(rootText);
+        factsLabel->setText(courseName);
+        proofsLabel->setText(factName);
+        currentProofLabel->setText(proofName);
+
+        coursesLabel->setText(fontMetrics->elidedText(coursesLabel->text(), Qt::ElideRight, coursesLabel->width()));
+        factsLabel->setText(fontMetrics->elidedText(factsLabel->text(), Qt::ElideRight, factsLabel->width()));
+        proofsLabel->setText(fontMetrics->elidedText(proofsLabel->text(), Qt::ElideRight, proofsLabel->width()));
+        currentProofLabel->setText(fontMetrics->elidedText(currentProofLabel->text(), Qt::ElideRight, currentProofLabel->width()));
+    }
 }
