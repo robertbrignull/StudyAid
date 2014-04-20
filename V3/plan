@@ -1,7 +1,5 @@
 ======= todo list ======
 
-- Hiting return on a dialog should accept rather than reject form
-
 - Better form interaction
   - Validation of contents (maybe grey out accept button if not valid)
   - Facts with empty names break the interface

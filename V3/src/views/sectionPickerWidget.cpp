@@ -79,8 +79,8 @@ SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStack
     if (fact.parent != -1) {
         connect(deleteSectionButton, SIGNAL(clicked()), sectionDeleteDialog, SLOT(show()));
 
-        connect(sectionDeleteDialog, SIGNAL(cancelled()), sectionDeleteDialog, SLOT(close()));
-        connect(sectionDeleteDialog, SIGNAL(completed()), this, SLOT(sectionDeleteDialogAccepted()));
+        connect(sectionDeleteDialog, SIGNAL(accepted()), this, SLOT(sectionDeleteDialogAccepted()));
+        connect(sectionDeleteDialog, SIGNAL(rejected()), sectionDeleteDialog, SLOT(close()));
 
         connect(editSectionButton, SIGNAL(clicked()), this, SLOT(sectionEditButtonClicked()));
     }

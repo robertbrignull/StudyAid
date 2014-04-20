@@ -140,8 +140,8 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
     connect(newCourseButton, SIGNAL(clicked()), courseAddDialog, SLOT(show()));
 
-    connect(courseAddDialog, SIGNAL(completed()), this, SLOT(courseAddDialogCompleted()));
-    connect(courseAddDialog, SIGNAL(cancelled()), courseAddDialog, SLOT(close()));
+    connect(courseAddDialog, SIGNAL(accepted()), this, SLOT(courseAddDialogCompleted()));
+    connect(courseAddDialog, SIGNAL(rejected()), courseAddDialog, SLOT(close()));
 
     connect(model, SIGNAL(courseAdded(Course)), this, SLOT(courseAddedSlot(Course)));
     connect(model, SIGNAL(courseOrderingEdited(Course)), this, SLOT(courseOrderingEditedSlot(Course)));

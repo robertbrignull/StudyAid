@@ -183,19 +183,19 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
 
     connect(editCourseButton, SIGNAL(clicked()), this, SLOT(courseEditButtonClicked()));
 
-    connect(courseEditDialog, SIGNAL(completed()), this, SLOT(courseEditDialogCompleted()));
-    connect(courseEditDialog, SIGNAL(cancelled()), courseEditDialog, SLOT(close()));
+    connect(courseEditDialog, SIGNAL(accepted()), this, SLOT(courseEditDialogCompleted()));
+    connect(courseEditDialog, SIGNAL(rejected()), courseEditDialog, SLOT(close()));
 
     connect(deleteCourseButton, SIGNAL(clicked()), courseDeleteDialog, SLOT(show()));
 
-    connect(courseDeleteDialog, SIGNAL(completed()), this, SLOT(courseDeleteDialogAccepted()));
-    connect(courseDeleteDialog, SIGNAL(cancelled()), courseDeleteDialog, SLOT(close()));
+    connect(courseDeleteDialog, SIGNAL(accepted()), this, SLOT(courseDeleteDialogAccepted()));
+    connect(courseDeleteDialog, SIGNAL(rejected()), courseDeleteDialog, SLOT(close()));
 
-    connect(factAddDialog, SIGNAL(cancelled()), factAddDialog, SLOT(close()));
-    connect(factAddDialog, SIGNAL(completed()), this, SLOT(factAddFormCompleted()));
+    connect(factAddDialog, SIGNAL(accepted()), this, SLOT(factAddFormCompleted()));
+    connect(factAddDialog, SIGNAL(rejected()), factAddDialog, SLOT(close()));
 
-    connect(sectionEditDialog, SIGNAL(cancelled()), sectionEditDialog, SLOT(close()));
-    connect(sectionEditDialog, SIGNAL(completed()), this, SLOT(sectionEditFormCompleted()));
+    connect(sectionEditDialog, SIGNAL(accepted()), this, SLOT(sectionEditFormCompleted()));
+    connect(sectionEditDialog, SIGNAL(rejected()), sectionEditDialog, SLOT(close()));
 
     connect(model, SIGNAL(courseSelectedChanged(Course)), this, SLOT(courseSelectedChangedSlot(Course)));
     connect(model, SIGNAL(courseEdited(Course)), this, SLOT(courseEditedSlot(Course)));

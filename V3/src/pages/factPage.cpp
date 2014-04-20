@@ -238,18 +238,18 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
     connect(addProofButton, SIGNAL(clicked()), proofAddDialog, SLOT(show()));
 
-    connect(proofAddDialog, SIGNAL(cancelled()), proofAddDialog, SLOT(close()));
-    connect(proofAddDialog, SIGNAL(completed()), this, SLOT(proofAddDialogCompleted()));
+    connect(proofAddDialog, SIGNAL(accepted()), this, SLOT(proofAddDialogCompleted()));
+    connect(proofAddDialog, SIGNAL(rejected()), proofAddDialog, SLOT(close()));
 
     connect(editFactButton, SIGNAL(clicked()), this, SLOT(factEditButtonClicked()));
 
-    connect(factEditDialog, SIGNAL(cancelled()), factEditDialog, SLOT(close()));
-    connect(factEditDialog, SIGNAL(completed()), this, SLOT(factEditDialogCompleted()));
+    connect(factEditDialog, SIGNAL(accepted()), this, SLOT(factEditDialogCompleted()));
+    connect(factEditDialog, SIGNAL(rejected()), factEditDialog, SLOT(close()));
 
     connect(deleteFactButton, SIGNAL(clicked()), factDeleteDialog, SLOT(show()));
 
-    connect(factDeleteDialog, SIGNAL(cancelled()), factDeleteDialog, SLOT(close()));
-    connect(factDeleteDialog, SIGNAL(completed()), this, SLOT(factDeleteDialogAccepted()));
+    connect(factDeleteDialog, SIGNAL(accepted()), this, SLOT(factDeleteDialogAccepted()));
+    connect(factDeleteDialog, SIGNAL(rejected()), factDeleteDialog, SLOT(close()));
 
     connect(model, SIGNAL(factSelectedChanged(Fact)), this, SLOT(factSelectedChangedSlot(Fact)));
     connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));

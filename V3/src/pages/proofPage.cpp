@@ -200,13 +200,13 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
 
     connect(editProofButton, SIGNAL(clicked()), this, SLOT(proofEditButtonClicked()));
 
-    connect(proofEditDialog, SIGNAL(cancelled()), proofEditDialog, SLOT(close()));
-    connect(proofEditDialog, SIGNAL(completed()), this, SLOT(proofEditDialogCompleted()));
+    connect(proofEditDialog, SIGNAL(accepted()), this, SLOT(proofEditDialogCompleted()));
+    connect(proofEditDialog, SIGNAL(rejected()), proofEditDialog, SLOT(close()));
 
     connect(deleteProofButton, SIGNAL(clicked()), proofDeleteDialog, SLOT(show()));
 
-    connect(proofDeleteDialog, SIGNAL(cancelled()), proofDeleteDialog, SLOT(close()));
-    connect(proofDeleteDialog, SIGNAL(completed()), this, SLOT(proofDeleteDialogAccepted()));
+    connect(proofDeleteDialog, SIGNAL(accepted()), this, SLOT(proofDeleteDialogAccepted()));
+    connect(proofDeleteDialog, SIGNAL(rejected()), proofDeleteDialog, SLOT(close()));
 
     connect(model, SIGNAL(proofSelectedChanged(Proof)), this, SLOT(proofSelectedChangedSlot(Proof)));
     connect(model, SIGNAL(proofEdited(Proof)), this, SLOT(proofEditedSlot(Proof)));

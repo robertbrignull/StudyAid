@@ -19,8 +19,4 @@ public:
 
     QPushButton *cancelButton;
     QPushButton *confirmButton;
-
-signals:
-    void completed();
-    void cancelled();
 };

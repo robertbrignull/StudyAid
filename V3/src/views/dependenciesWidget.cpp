@@ -66,11 +66,11 @@ DependenciesWidget::DependenciesWidget(QWidget *parent)
 
 
 
-    connect(depDeleteDialog, &Dialog::cancelled, [=](){
+    connect(depDeleteDialog, &Dialog::rejected, [=](){
         depDeleteDialog->close();
     });
 
-    connect(depDeleteDialog, &Dialog::completed, [=](){
+    connect(depDeleteDialog, &Dialog::accepted, [=](){
         depDeleteDialog->close();
         std::cout << "Deleting dependency " << depBeingDeleted << std::endl;
     });

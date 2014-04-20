@@ -4,6 +4,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>
+#include <QDialogButtonBox>
 
 #include "widgets/horizontalSeperator.h"
 
@@ -36,15 +37,14 @@ Dialog::Dialog(QWidget *parent, QWidget *body, std::string topText, std::string 
     cancelButton = new QPushButton(QString::fromStdString(cancelButtonText));
     confirmButton = new QPushButton(QString::fromStdString(confirmButtonText));
 
-    QHBoxLayout *buttonLayout = new QHBoxLayout();
-    buttonLayout->addWidget(cancelButton);
-    buttonLayout->addStretch(1);
-    buttonLayout->addWidget(confirmButton);
+    QDialogButtonBox *dialogButtonBox = new QDialogButtonBox();
+    dialogButtonBox->addButton(cancelButton, QDialogButtonBox::RejectRole);
+    dialogButtonBox->addButton(confirmButton, QDialogButtonBox::AcceptRole);
 
-    layout->addLayout(buttonLayout);
-
+    layout->addWidget(dialogButtonBox);
 
 
-    connect(cancelButton, SIGNAL(clicked()), this, SIGNAL(cancelled()));
-    connect(confirmButton, SIGNAL(clicked()), this, SIGNAL(completed()));
+
+    connect(dialogButtonBox, SIGNAL(accepted()), this, SIGNAL(accepted()));
+    connect(dialogButtonBox, SIGNAL(rejected()), this, SIGNAL(rejected()));
 }
