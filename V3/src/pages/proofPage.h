@@ -16,6 +16,7 @@ class ResizableImage;
 class TrafficLight;
 class ImageButton;
 class BreadCrumbs;
+class LatexHighlighter;
 
 class ProofPage : public QWidget
 {
@@ -46,6 +47,7 @@ public:
 
     // Contains the current proof's statement
     QTextEdit *bodyTextEdit;
+    LatexHighlighter *bodyHighlighter;
 
     // The rendered statement
     ResizableImage *bodyImage;

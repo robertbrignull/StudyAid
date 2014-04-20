@@ -24,6 +24,7 @@
 #include "widgets/dialog.h"
 #include "views/breadCrumbs.h"
 #include "views/proofViewWidget.h"
+#include "views/latexHighlighter.h"
 #include "forms/factForm.h"
 #include "forms/proofForm.h"
 
@@ -158,9 +159,13 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     // The QTextEdit does its own scrolling.
 
     statementTextEdit = new QTextEdit();
+
     QFont font = statementTextEdit->font();
     font.setPointSize(12);
     statementTextEdit->setFont(font);
+
+    statementHighlighter = new LatexHighlighter(statementTextEdit->document());
+
     splitter->addWidget(statementTextEdit);
 
     statementSaveTimer = new QTimer(this);
@@ -286,21 +291,23 @@ void FactPage::factEditDialogCompleted()
 
 void FactPage::saveStatement()
 {
-    Fact fact = model->getFactSelected();
-    fact.statement = statementTextEdit->toPlainText().toStdString();
+    if (model->isFactSelected()) {
+        Fact fact = model->getFactSelected();
+        fact.statement = statementTextEdit->toPlainText().toStdString();
 
-    int result = renderFact(fact);
+        int result = renderFact(fact);
 
-    if (result == 0) {
-        statementImage->setImage(getFactImageFilename(fact));
-        trafficLight->setState(TrafficLight::GREEN);
+        if (result == 0) {
+            statementImage->setImage(getFactImageFilename(fact));
+            trafficLight->setState(TrafficLight::GREEN);
+        }
+        else {
+            trafficLight->setState(TrafficLight::RED);
+        }
+
+        editFact(fact);
+        model->editFact(fact);
     }
-    else {
-        trafficLight->setState(TrafficLight::RED);
-    }
-
-    editFact(fact);
-    model->editFact(fact);
 }
 
 void FactPage::factDeleteDialogAccepted()

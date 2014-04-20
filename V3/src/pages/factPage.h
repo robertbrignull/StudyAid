@@ -24,6 +24,7 @@ class ProofViewWidget;
 class ImageButton;
 class BreadCrumbs;
 class QTimer;
+class LatexHighlighter;
 
 class FactPage : public QWidget
 {
@@ -58,6 +59,7 @@ public:
 
     // Contains the current fact's statement
     QTextEdit *statementTextEdit;
+    LatexHighlighter *statementHighlighter;
 
     // For the timer that saves and renders the statement
     QTimer *statementSaveTimer;

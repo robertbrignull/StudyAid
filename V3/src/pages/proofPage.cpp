@@ -23,6 +23,7 @@
 #include "widgets/dialog.h"
 #include "views/dependenciesWidget.h"
 #include "views/breadCrumbs.h"
+#include "views/latexHighlighter.h"
 #include "forms/proofForm.h"
 
 #include "pages/proofPage.h"
@@ -146,9 +147,13 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
     // The QTextEdit does its own scrolling.
 
     bodyTextEdit = new QTextEdit();
+
     QFont font = bodyTextEdit->font();
     font.setPointSize(12);
     bodyTextEdit->setFont(font);
+
+    bodyHighlighter = new LatexHighlighter(bodyTextEdit->document());
+
     splitter->addWidget(bodyTextEdit);
 
     QTimer *bodySaveTimer = new QTimer(this);
