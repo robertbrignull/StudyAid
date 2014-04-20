@@ -24,7 +24,7 @@ ProofViewWidget::ProofViewWidget(Proof proof, Model *model, ResizableStackedWidg
 
     QVBoxLayout *outerLayout = new QVBoxLayout(this);
 
-    nameLabel = new QLabel(QString::fromStdString(proof.name));
+    nameLabel = new QLabel((proof.name != "") ? QString::fromStdString(proof.name) : "Proof");
 
     viewProofButton = new ImageButton(QPixmap(":/images/arrow_right_black.png"), QSize(24, 24));
 
@@ -134,7 +134,7 @@ void ProofViewWidget::proofEditedSlot(Proof proof)
     if (proof.id == this->proof.id) {
         this->proof = proof;
 
-        nameLabel->setText(QString::fromStdString(proof.name));
+        nameLabel->setText((proof.name != "") ? QString::fromStdString(proof.name) : "Proof");
         bodyImage->reloadImage();
     }
 }

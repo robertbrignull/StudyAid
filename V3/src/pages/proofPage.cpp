@@ -293,7 +293,7 @@ void ProofPage::proofEditedSlot(Proof proof)
 void ProofPage::reloadProofDetails(Proof proof)
 {
     // Set labels with the proof and body
-    proofLabel->setText(QString::fromStdString(proof.name));
+    proofLabel->setText((proof.name != "") ? QString::fromStdString(proof.name) : "Proof");
 
     if (bodyTextEdit->toPlainText() != QString::fromStdString(proof.body)) {
         bodyTextEdit->setPlainText(QString::fromStdString(proof.body));

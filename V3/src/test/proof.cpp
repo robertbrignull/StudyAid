@@ -127,6 +127,37 @@ void ProofTest::test_addProof_multiple()
     QVERIFY(it->second->nameLabel->text() == proofName);
 }
 
+void ProofTest::test_addProof_nameEmpty()
+{
+    FactPage *factPage = window->factPage;
+    ProofPage *proofPage = window->proofPage;
+
+    const char *courseName = "Set Theory";
+    const char *factName = "The empty set is unique";
+    const char *factType = "Theorem";
+    const char *proofName = "";
+    const char *visibleProofName = "Proof";
+
+    // Add our course and fact
+    TestUtil::addCourse(window, courseName);
+    TestUtil::addFact(window, factName, factType);
+
+    // Add our proof
+    TestUtil::addProof(window, proofName);
+
+    // Check that the name is shown correctly on the proof page
+    QVERIFY(proofPage->proofLabel->text() == visibleProofName);
+    QVERIFY(proofPage->breadCrumbs->currentProofLabel->text() == visibleProofName);
+
+    // Check that the name is correct in the editProofDialog
+    QTest::mouseClick(proofPage->editProofButton, Qt::LeftButton);
+    QVERIFY(proofPage->proofEditForm->nameInput->text() == proofName);
+    QTest::mouseClick(proofPage->proofEditDialog->cancelButton, Qt::LeftButton);
+
+    // Check that the name is correct on the fact page
+    QVERIFY(factPage->idProofViewWidgetMap.begin()->second->nameLabel->text() == visibleProofName);
+}
+
 void ProofTest::test_editProof()
 {
     FactPage *factPage = window->factPage;
@@ -203,6 +234,39 @@ void ProofTest::test_editProof_body()
     // Check the size of the rendered images have increased
     QVERIFY(proofPage->bodyImage->image.height() > oldHeightOnProofPage);
     QVERIFY(factPage->idProofViewWidgetMap.begin()->second->bodyImage->image.height() > oldHeightOnFactPage);
+}
+
+void ProofTest::test_editProof_nameEmpty()
+{
+    FactPage *factPage = window->factPage;
+    ProofPage *proofPage = window->proofPage;
+
+    const char *courseName = "Set Theory";
+    const char *factName = "The empty set is unique";
+    const char *factType = "Theorem";
+    const char *proofName = "Direct proof";
+    const char *newProofName = "";
+    const char *newVisibleProofName = "Proof";
+
+    // Add our course and fact and proof
+    TestUtil::addCourse(window, courseName);
+    TestUtil::addFact(window, factName, factType);
+    TestUtil::addProof(window, proofName);
+
+    // Immeditately change the name of the proof
+    TestUtil::editCurrentProof(window, newProofName);
+
+    // Check that the name is shown correctly on the proof page
+    QVERIFY(proofPage->proofLabel->text() == newVisibleProofName);
+    QVERIFY(proofPage->breadCrumbs->currentProofLabel->text() == newVisibleProofName);
+
+    // Check that the name is correct in the editProofDialog
+    QTest::mouseClick(proofPage->editProofButton, Qt::LeftButton);
+    QVERIFY(proofPage->proofEditForm->nameInput->text() == newProofName);
+    QTest::mouseClick(proofPage->proofEditDialog->cancelButton, Qt::LeftButton);
+
+    // Check that the name is correct on the fact page
+    QVERIFY(factPage->idProofViewWidgetMap.begin()->second->nameLabel->text() == newVisibleProofName);
 }
 
 void ProofTest::test_editProofOrdering_moveMode()

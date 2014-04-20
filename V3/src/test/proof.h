@@ -14,9 +14,11 @@ private slots:
 
     void test_addProof();
     void test_addProof_multiple();
+    void test_addProof_nameEmpty();
 
     void test_editProof();
     void test_editProof_body();
+    void test_editProof_nameEmpty();
 
     void test_editProofOrdering_moveMode();
     void test_editProofOrdering_moveAbove();

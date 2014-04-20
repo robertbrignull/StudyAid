@@ -24,6 +24,8 @@
 
 - Only render when text has changed
 
+- Syntax highlighting of latex
+
 - Generated list of definitions referenced
 
 - Test generation, it gives you a fact and asks for a definition and/or proof
@@ -31,6 +33,7 @@
 - Course statistics
   - Number of facts (broken down into types)
   - Number of facts with/without proofs
+  - Possibly the number of characters in all facts/proofs (lots of computation)
 
 - On course page, some sign on unproven facts
 

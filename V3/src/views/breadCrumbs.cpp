@@ -127,7 +127,7 @@ void BreadCrumbs::factSelectedChangedSlot(Fact fact)
 void BreadCrumbs::proofSelectedChangedSlot(Proof proof)
 {
     if (level == 3) {
-        currentProofLabel->setText(QString::fromStdString(proof.name));
+        currentProofLabel->setText((proof.name != "") ? QString::fromStdString(proof.name) : "Proof");
     }
 }
 
