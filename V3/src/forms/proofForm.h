@@ -1,20 +1,24 @@
 #pragma once
 
 #include <iostream>
-#include <map>
 
 #include <QWidget>
 
 #include "database/structures.h"
+#include "forms/form.h"
 
 class QLineEdit;
 
-class ProofForm : public QWidget
+class ProofForm : public Form
 {
     Q_OBJECT
 
 public:
     ProofForm(QWidget *parent = 0);
+
+    void clear();
+
+    bool isValid();
 
     void setData(Proof proof);
     Proof getData();

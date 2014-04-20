@@ -36,6 +36,40 @@ void CourseTest::cleanup()
     delete window;
 }
 
+void CourseTest::test_addCourse_form()
+{
+    RootPage *rootPage = window->rootPage;
+
+    const char *courseName = "Set Theory";
+
+    // Open the dialog
+    QTest::mouseClick(rootPage->newCourseButton, Qt::LeftButton);
+
+    // Check that the dialog is showing
+    QVERIFY(rootPage->courseAddDialog->isHidden() == false);
+
+    // Check that the accept button is disabled
+    QVERIFY(rootPage->courseAddDialog->confirmButton->isEnabled() == false);
+
+    // Change the name to be non-empty
+    rootPage->courseAddForm->nameInput->setText(courseName);
+
+    // Check that the accept button is enabled
+    QVERIFY(rootPage->courseAddDialog->confirmButton->isEnabled() == true);
+
+    // Change the name to be empty
+    rootPage->courseAddForm->nameInput->setText("");
+
+    // Check that the accept button is disabled
+    QVERIFY(rootPage->courseAddDialog->confirmButton->isEnabled() == false);
+
+    // Close the dialog
+    QTest::mouseClick(rootPage->courseAddDialog->cancelButton, Qt::LeftButton);
+
+    // Check that the dialog closed
+    QVERIFY(rootPage->courseAddDialog->isHidden() == true);
+}
+
 void CourseTest::test_addCourse_one()
 {
     RootPage *rootPage = window->rootPage;
@@ -114,6 +148,43 @@ void CourseTest::test_addCourse_multiple()
     // and are in the correct order
     QVERIFY(((CourseTitleWidget*) rootPage->scrollLayout->itemAt(0)->widget())->course.name == otherCourseName);
     QVERIFY(((CourseTitleWidget*) rootPage->scrollLayout->itemAt(1)->widget())->course.name == courseName);
+}
+
+void CourseTest::test_editCourse_form()
+{
+    CoursePage *coursePage = window->coursePage;
+
+    const char *courseName = "Linear Algebra";
+
+    // Add a course
+    TestUtil::addCourse(window, courseName);
+
+    // Open the dialog
+    QTest::mouseClick(coursePage->editCourseButton, Qt::LeftButton);
+
+    // Check that the dialog is showing
+    QVERIFY(coursePage->courseEditDialog->isHidden() == false);
+
+    // Check that the accept button is enabled
+    QVERIFY(coursePage->courseEditDialog->confirmButton->isEnabled() == true);
+
+    // Change the name to be empty
+    coursePage->courseEditForm->nameInput->setText("");
+
+    // Check that the accept button is disabled
+    QVERIFY(coursePage->courseEditDialog->confirmButton->isEnabled() == false);
+
+    // Change the name to be non-empty
+    coursePage->courseEditForm->nameInput->setText(courseName);
+
+    // Check that the accept button is enabled
+    QVERIFY(coursePage->courseEditDialog->confirmButton->isEnabled() == true);
+
+    // Close the dialog
+    QTest::mouseClick(coursePage->courseEditDialog->cancelButton, Qt::LeftButton);
+
+    // Check that the dialog closed
+    QVERIFY(coursePage->courseEditDialog->isHidden() == true);
 }
 
 void CourseTest::test_editCourse()

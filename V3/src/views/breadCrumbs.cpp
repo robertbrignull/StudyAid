@@ -191,6 +191,8 @@ void BreadCrumbs::adjustLabels()
         coursesLabel->setText(rootText);
         currentCourseLabel->setText(courseName);
 
+        adjustSize();
+
         coursesLabel->setText(fontMetrics->elidedText(coursesLabel->text(), Qt::ElideRight, coursesLabel->width()));
         currentCourseLabel->setText(fontMetrics->elidedText(currentCourseLabel->text(), Qt::ElideRight, currentCourseLabel->width()));
     }
@@ -198,6 +200,8 @@ void BreadCrumbs::adjustLabels()
         coursesLabel->setText(rootText);
         factsLabel->setText(courseName);
         currentFactLabel->setText(factName);
+
+        adjustSize();
 
         coursesLabel->setText(fontMetrics->elidedText(coursesLabel->text(), Qt::ElideRight, coursesLabel->width()));
         factsLabel->setText(fontMetrics->elidedText(factsLabel->text(), Qt::ElideRight, factsLabel->width()));
@@ -208,6 +212,8 @@ void BreadCrumbs::adjustLabels()
         factsLabel->setText(courseName);
         proofsLabel->setText(factName);
         currentProofLabel->setText(proofName);
+
+        adjustSize();
 
         coursesLabel->setText(fontMetrics->elidedText(coursesLabel->text(), Qt::ElideRight, coursesLabel->width()));
         factsLabel->setText(fontMetrics->elidedText(factsLabel->text(), Qt::ElideRight, factsLabel->width()));

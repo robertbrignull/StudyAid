@@ -121,9 +121,8 @@ void SectionPickerWidget::factAddButtonClicked()
 
 void SectionPickerWidget::sectionEditButtonClicked()
 {
-    sectionEditForm->setData(fact);
-
     sectionEditDialog->show();
+    sectionEditForm->setData(fact);
 }
 
 void SectionPickerWidget::sectionDeleteDialogAccepted()

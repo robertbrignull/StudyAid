@@ -17,6 +17,7 @@ private slots:
 
     void test_selectSection();
 
+    void test_editSection_form();
     void test_editSection();
 
     void test_editSectionOrdering_moveMode();

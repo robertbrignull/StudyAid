@@ -19,7 +19,6 @@
 #include "pages/rootPage.h"
 #include "pages/coursePage.h"
 #include "pages/factPage.h"
-#include "forms/courseForm.h"
 #include "forms/factForm.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/imageButton.h"
@@ -31,6 +30,7 @@
 #include "views/factListView.h"
 #include "views/factList.h"
 #include "views/expandingFactWidget.h"
+#include "views/sectionPickerWidget.h"
 
 #include "test/testUtil.h"
 
@@ -46,6 +46,43 @@ void FactTest::init()
 void FactTest::cleanup()
 {
     delete window;
+}
+
+void FactTest::test_addFact_form()
+{
+    CoursePage *coursePage = window->coursePage;
+
+    const char *courseName = "Set Theory";
+
+    // Add our course
+    TestUtil::addCourse(window, courseName);
+
+    // Open the dialog
+    QTest::mouseClick(coursePage->sectionPicker->addFactButton, Qt::LeftButton);
+
+    // Check that the dialog is showing
+    QVERIFY(coursePage->factAddDialog->isHidden() == false);
+
+    // Check that the accept button is disabled
+    QVERIFY(coursePage->factAddDialog->confirmButton->isEnabled() == false);
+
+    // Change the name to be non-empty
+    coursePage->factAddForm->nameInput->setText(courseName);
+
+    // Check that the accept button is enabled
+    QVERIFY(coursePage->factAddDialog->confirmButton->isEnabled() == true);
+
+    // Change the name to be empty
+    coursePage->factAddForm->nameInput->setText("");
+
+    // Check that the accept button is disabled
+    QVERIFY(coursePage->factAddDialog->confirmButton->isEnabled() == false);
+
+    // Close the dialog
+    QTest::mouseClick(coursePage->factAddDialog->cancelButton, Qt::LeftButton);
+
+    // Check that the dialog closed
+    QVERIFY(coursePage->factAddDialog->isHidden() == true);
 }
 
 void FactTest::test_addFact()
@@ -170,6 +207,46 @@ void FactTest::test_addFact_multiple()
 
     it++;
     QVERIFY(((ExpandingFactWidget*) it->second.second)->fact.name == factName);
+}
+
+void FactTest::test_editFact_form()
+{
+    FactPage *factPage = window->factPage;
+
+    const char *courseName = "Set Theory";
+    const char *factName = "The empty set is unique";
+    const char *factType = "Theorem";
+
+    // Add our course and fact
+    TestUtil::addCourse(window, courseName);
+    TestUtil::addFact(window, factName, factType);
+
+    // Open the dialog
+    QTest::mouseClick(factPage->editFactButton, Qt::LeftButton);
+
+    // Check that the dialog is showing
+    QVERIFY(factPage->factEditDialog->isHidden() == false);
+
+    // Check that the accept button is enabled
+    QVERIFY(factPage->factEditDialog->confirmButton->isEnabled() == true);
+
+    // Change the name to be empty
+    factPage->factEditForm->nameInput->setText("");
+
+    // Check that the accept button is disabled
+    QVERIFY(factPage->factEditDialog->confirmButton->isEnabled() == false);
+
+    // Change the name to be non-empty
+    factPage->factEditForm->nameInput->setText(courseName);
+
+    // Check that the accept button is disabled
+    QVERIFY(factPage->factEditDialog->confirmButton->isEnabled() == true);
+
+    // Close the dialog
+    QTest::mouseClick(factPage->factEditDialog->cancelButton, Qt::LeftButton);
+
+    // Check that the dialog closed
+    QVERIFY(factPage->factEditDialog->isHidden() == true);
 }
 
 void FactTest::test_editFact()

@@ -9,7 +9,7 @@
 #include "forms/factForm.h"
 
 FactForm::FactForm(QWidget *parent)
-    : QWidget(parent)
+    : Form(parent)
 {
     fact = Fact();
 
@@ -56,6 +56,23 @@ FactForm::FactForm(QWidget *parent)
 
     gridLayout->addLayout(nameLeftLayout, 1, 0);
     gridLayout->addLayout(nameRightLayout, 1, 1);
+
+
+
+    connect(nameInput, SIGNAL(textChanged(QString)), this, SLOT(checkValidity()));
+    connect(typeInput, SIGNAL(currentIndexChanged(int)), this, SLOT(checkValidity()));
+}
+
+void FactForm::clear()
+{
+    nameInput->setText("");
+    typeInput->setCurrentIndex(0);
+    currentlyValid = isValid();
+}
+
+bool FactForm::isValid()
+{
+    return (nameInput->text() != "" && typeInput->currentIndex() != -1);
 }
 
 void FactForm::setData(Fact fact)

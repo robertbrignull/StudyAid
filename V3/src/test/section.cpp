@@ -11,7 +11,7 @@
 #include "database/setup.h"
 #include "pages/rootPage.h"
 #include "pages/coursePage.h"
-#include "forms/courseForm.h"
+#include "forms/sectionForm.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/imageButton.h"
 #include "widgets/clickableQLabel.h"
@@ -194,6 +194,45 @@ void SectionTest::test_selectSection()
     // Check that the first element is a fact of the correct name
     factWidget = (ExpandingFactWidget*) factList->idChildMap.begin()->second.second;
     QVERIFY(factWidget->nameLabel->text() == level1FactName);
+}
+
+void SectionTest::test_editSection_form()
+{
+    CoursePage *coursePage = window->coursePage;
+
+    const char *courseName = "Set Theory";
+    const char *sectionName = "Cardinal Numbers";
+
+    // Add our course and section
+    TestUtil::addCourse(window, courseName);
+    TestUtil::addFact(window, sectionName, "Section");
+
+    // Open the dialog
+    QTest::mouseClick(coursePage->sectionPicker->idSectionPickerMap.begin()->second->editSectionButton, Qt::LeftButton);
+
+    // Check that the dialog is showing
+    QVERIFY(coursePage->sectionEditDialog->isHidden() == false);
+
+    // Check that the accept button is enabled
+    QVERIFY(coursePage->sectionEditDialog->confirmButton->isEnabled() == true);
+
+    // Change the name to be empty
+    coursePage->sectionEditForm->nameInput->setText("");
+
+    // Check that the accept button is disabled
+    QVERIFY(coursePage->sectionEditDialog->confirmButton->isEnabled() == false);
+
+    // Change the name to be non-empty
+    coursePage->sectionEditForm->nameInput->setText(sectionName);
+
+    // Check that the accept button is disabled
+    QVERIFY(coursePage->sectionEditDialog->confirmButton->isEnabled() == true);
+
+    // Close the dialog
+    QTest::mouseClick(coursePage->sectionEditDialog->cancelButton, Qt::LeftButton);
+
+    // Check that the dialog closed
+    QVERIFY(coursePage->sectionEditDialog->isHidden() == true);
 }
 
 void SectionTest::test_editSection()

@@ -1,10 +1,5 @@
 ======= todo list ======
 
-- Better form interaction
-  - Validation of contents (maybe grey out accept button if not valid)
-  - Facts with empty names break the interface
-  - Forms should always be empty when opened
-
 - Display rendered fact on proof page for reference
 
 - Multiple window support

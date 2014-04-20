@@ -270,8 +270,8 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
 void FactPage::factEditButtonClicked()
 {
-    factEditForm->setData(model->getFactSelected());
     factEditDialog->show();
+    factEditForm->setData(model->getFactSelected());
 }
 
 void FactPage::factEditDialogCompleted()

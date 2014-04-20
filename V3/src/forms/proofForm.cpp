@@ -5,7 +5,7 @@
 #include "forms/proofForm.h"
 
 ProofForm::ProofForm(QWidget *parent)
-    : QWidget(parent)
+    : Form(parent)
 {
     proof = Proof();
 
@@ -17,6 +17,19 @@ ProofForm::ProofForm(QWidget *parent)
     layout->addWidget(new QLabel("Name: "));
     layout->addWidget(nameInput);
     layout->addStretch(1);
+    
+    connect(nameInput, SIGNAL(textChanged(QString)), this, SLOT(checkValidity()));
+}
+
+void ProofForm::clear()
+{
+    nameInput->setText("");
+    currentlyValid = isValid();
+}
+
+bool ProofForm::isValid()
+{
+    return true;
 }
 
 void ProofForm::setData(Proof proof)

@@ -1,21 +1,25 @@
 #pragma once
 
 #include <iostream>
-#include <map>
 
 #include <QWidget>
 
 #include "database/structures.h"
+#include "forms/form.h"
 
 class QLineEdit;
 class QComboBox;
 
-class FactForm : public QWidget
+class FactForm : public Form
 {
     Q_OBJECT
 
 public:
     FactForm(QWidget *parent = 0);
+
+    void clear();
+
+    bool isValid();
 
     void setData(Fact fact);
     Fact getData();

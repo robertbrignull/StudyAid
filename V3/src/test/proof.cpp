@@ -17,8 +17,6 @@
 #include "pages/coursePage.h"
 #include "pages/factPage.h"
 #include "pages/proofPage.h"
-#include "forms/courseForm.h"
-#include "forms/factForm.h"
 #include "forms/proofForm.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/imageButton.h"
@@ -46,6 +44,47 @@ void ProofTest::init()
 void ProofTest::cleanup()
 {
     delete window;
+}
+
+void ProofTest::test_addProof_form()
+{
+    FactPage *factPage = window->factPage;
+
+    const char *courseName = "Set Theory";
+    const char *factName = "The empty set is unique";
+    const char *factType = "Theorem";
+    const char *proofName = "Direct proof";
+
+    // Add our course and fact
+    TestUtil::addCourse(window, courseName);
+    TestUtil::addFact(window, factName, factType);
+
+    // Open the dialog
+    QTest::mouseClick(factPage->addProofButton, Qt::LeftButton);
+
+    // Check that the dialog is showing
+    QVERIFY(factPage->proofAddDialog->isHidden() == false);
+
+    // Check that the accept button is enabled
+    QVERIFY(factPage->proofAddDialog->confirmButton->isEnabled() == true);
+
+    // Change the name to be non-empty
+    factPage->proofAddForm->nameInput->setText(proofName);
+
+    // Check that the accept button is still enabled
+    QVERIFY(factPage->proofAddDialog->confirmButton->isEnabled() == true);
+
+    // Change the name to be empty
+    factPage->proofAddForm->nameInput->setText("");
+
+    // Check that the accept button is still enabled
+    QVERIFY(factPage->proofAddDialog->confirmButton->isEnabled() == true);
+
+    // Close the dialog
+    QTest::mouseClick(factPage->proofAddDialog->cancelButton, Qt::LeftButton);
+
+    // Check that the dialog closed
+    QVERIFY(factPage->proofAddDialog->isHidden() == true);
 }
 
 void ProofTest::test_addProof()
@@ -156,6 +195,48 @@ void ProofTest::test_addProof_nameEmpty()
 
     // Check that the name is correct on the fact page
     QVERIFY(factPage->idProofViewWidgetMap.begin()->second->nameLabel->text() == visibleProofName);
+}
+
+void ProofTest::test_editProof_form()
+{
+    ProofPage *proofPage = window->proofPage;
+
+    const char *courseName = "Set Theory";
+    const char *factName = "The empty set is unique";
+    const char *factType = "Theorem";
+    const char *proofName = "Direct proof";
+
+    // Add our course and fact and proof
+    TestUtil::addCourse(window, courseName);
+    TestUtil::addFact(window, factName, factType);
+    TestUtil::addProof(window, proofName);
+
+    // Open the dialog
+    QTest::mouseClick(proofPage->editProofButton, Qt::LeftButton);
+
+    // Check that the dialog is showing
+    QVERIFY(proofPage->proofEditDialog->isHidden() == false);
+
+    // Check that the accept button is enabled
+    QVERIFY(proofPage->proofEditDialog->confirmButton->isEnabled() == true);
+
+    // Change the name to be empty
+    proofPage->proofEditForm->nameInput->setText("");
+
+    // Check that the accept button is still enabled
+    QVERIFY(proofPage->proofEditDialog->confirmButton->isEnabled() == true);
+
+    // Change the name to be non-empty
+    proofPage->proofEditForm->nameInput->setText(proofName);
+
+    // Check that the accept button is still enabled
+    QVERIFY(proofPage->proofEditDialog->confirmButton->isEnabled() == true);
+
+    // Close the dialog
+    QTest::mouseClick(proofPage->proofEditDialog->cancelButton, Qt::LeftButton);
+
+    // Check that the dialog closed
+    QVERIFY(proofPage->proofEditDialog->isHidden() == true);
 }
 
 void ProofTest::test_editProof()

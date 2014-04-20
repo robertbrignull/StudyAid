@@ -12,10 +12,12 @@ private slots:
     void init();
     void cleanup();
 
+    void test_addProof_form();
     void test_addProof();
     void test_addProof_multiple();
     void test_addProof_nameEmpty();
 
+    void test_editProof_form();
     void test_editProof();
     void test_editProof_body();
     void test_editProof_nameEmpty();

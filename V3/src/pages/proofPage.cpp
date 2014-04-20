@@ -224,8 +224,8 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
 
 void ProofPage::proofEditButtonClicked()
 {
-    proofEditForm->setData(model->getProofSelected());
     proofEditDialog->show();
+    proofEditForm->setData(model->getProofSelected());
 }
 
 void ProofPage::proofEditDialogCompleted()

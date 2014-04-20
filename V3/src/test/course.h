@@ -12,9 +12,11 @@ private slots:
     void init();
     void cleanup();
 
+    void test_addCourse_form();
     void test_addCourse_one();
     void test_addCourse_multiple();
 
+    void test_editCourse_form();
     void test_editCourse();
 
     void test_editCourseOrdering_moveMode();

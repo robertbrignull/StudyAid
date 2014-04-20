@@ -5,7 +5,7 @@
 #include "forms/sectionForm.h"
 
 SectionForm::SectionForm(QWidget *parent)
-    : QWidget(parent)
+    : Form(parent)
 {
     section = Fact();
 
@@ -17,6 +17,19 @@ SectionForm::SectionForm(QWidget *parent)
     layout->addWidget(new QLabel("Name: "));
     layout->addWidget(nameInput);
     layout->addStretch(1);
+    
+    connect(nameInput, SIGNAL(textChanged(QString)), this, SLOT(checkValidity()));
+}
+
+void SectionForm::clear()
+{
+    nameInput->setText("");
+    currentlyValid = isValid();
+}
+
+bool SectionForm::isValid()
+{
+    return (nameInput->text() != "");
 }
 
 void SectionForm::setData(Fact section)

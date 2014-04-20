@@ -211,8 +211,8 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
 
 void CoursePage::courseEditButtonClicked()
 {
-    courseEditForm->setData(model->getCourseSelected());
     courseEditDialog->show();
+    courseEditForm->setData(model->getCourseSelected());
 }
 
 void CoursePage::courseEditDialogCompleted()
