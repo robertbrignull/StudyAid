@@ -17,18 +17,14 @@ protected:
     void highlightBlock(const QString &text);
 
 private:
-    struct HighlightingRule
-    {
-        QRegExp pattern;
-        QTextCharFormat format;
-    };
-    QVector<HighlightingRule> highlightingRules;
+    QRegExp mathModeStartPattern;
+    QRegExp mathModeEndPattern;
 
-    QRegExp mathModeStartExpression;
-    QRegExp mathModeEndExpression;
+    QRegExp backslashPattern;
+    QRegExp argumentPattern;
+    QRegExp bracketPattern;
+    QRegExp mathModeBoundaryPattern;
 
-    QTextCharFormat mathModeFormat;
-    QTextCharFormat argumentFormat;
-    QTextCharFormat bracketFormat;
-    QTextCharFormat backSlashFormat;
+    QColor yellow, orange, blue, purple;
+    QColor backslashColor, argumentColor, bracketColor, mathMathColor;
 };
