@@ -14,6 +14,7 @@
 #include <QtTest/QtTest>
 
 #include "StudyAid.h"
+#include "model.h"
 #include "database/setup.h"
 #include "database/methods.h"
 #include "pages/rootPage.h"
@@ -40,12 +41,14 @@ void FactTest::init()
 {
     clearTestDatabase();
 
-    window = new StudyAid();
+    modelSignaller = new ModelSignaller();
+    window = new StudyAid(modelSignaller);
 }
 
 void FactTest::cleanup()
 {
     delete window;
+    delete modelSignaller;
 }
 
 void FactTest::test_addFact_form()

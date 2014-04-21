@@ -2,6 +2,7 @@
 
 #include <QWidget>
 
+class ModelSignaller;
 class Model;
 class ResizableStackedWidget;
 class RootPage;
@@ -14,7 +15,7 @@ class StudyAid : public QWidget
     Q_OBJECT
 
 public:
-    StudyAid(QWidget *parent = 0);
+    StudyAid(ModelSignaller *modelSignaller, QWidget *parent = 0);
     ~StudyAid();
 
 

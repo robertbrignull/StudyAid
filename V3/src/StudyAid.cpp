@@ -20,13 +20,13 @@
 
 #include "StudyAid.h"
 
-StudyAid::StudyAid(QWidget *parent)
+StudyAid::StudyAid(ModelSignaller *modelSignaller, QWidget *parent)
     : QWidget(parent)
 {
     QHBoxLayout *layout = new QHBoxLayout(this);
 
     stack = new ResizableStackedWidget();
-    model = new Model();
+    model = new Model(modelSignaller);
 
     rootPage = new RootPage(stack, model);
     coursePage = new CoursePage(stack, model);
@@ -76,7 +76,8 @@ int main(int argc, char **argv)
         return 0;
     }
     else {
-        StudyAid window;
+        ModelSignaller modelSignaller;
+        StudyAid window(&modelSignaller);
 
         window.setWindowTitle("StudyAid");
         window.show();

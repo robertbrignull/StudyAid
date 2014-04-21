@@ -8,6 +8,7 @@
 #include <QtTest/QtTest>
 
 #include "StudyAid.h"
+#include "model.h"
 #include "database/setup.h"
 #include "pages/rootPage.h"
 #include "pages/coursePage.h"
@@ -28,12 +29,14 @@ void CourseTest::init()
 {
     clearTestDatabase();
 
-    window = new StudyAid();
+    modelSignaller = new ModelSignaller();
+    window = new StudyAid(modelSignaller);
 }
 
 void CourseTest::cleanup()
 {
     delete window;
+    delete modelSignaller;
 }
 
 void CourseTest::test_addCourse_form()

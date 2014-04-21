@@ -2,6 +2,7 @@
 
 #include <QObject>
 
+class ModelSignaller;
 class StudyAid;
 
 class ProofTest : public QObject
@@ -34,5 +35,6 @@ private slots:
     void test_viewProof_bodyNotEmpty();
 
 private:
+    ModelSignaller *modelSignaller;
     StudyAid *window;
 };

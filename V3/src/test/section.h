@@ -2,6 +2,7 @@
 
 #include <QObject>
 
+class ModelSignaller;
 class StudyAid;
 
 class SectionTest : public QObject
@@ -34,5 +35,6 @@ private slots:
     void test_deleteSection_notEmpty();
 
 private:
+    ModelSignaller *modelSignaller;
     StudyAid *window;
 };

@@ -2,6 +2,7 @@
 
 #include <QObject>
 
+class ModelSignaller;
 class StudyAid;
 
 class FactTest : public QObject
@@ -38,5 +39,6 @@ private slots:
     void test_viewFact_statementNotEmpty();
 
 private:
+    ModelSignaller *modelSignaller;
     StudyAid *window;
 };
