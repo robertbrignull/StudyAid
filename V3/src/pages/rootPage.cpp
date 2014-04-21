@@ -64,12 +64,17 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     titleLabel->setAlignment(Qt::AlignCenter);
     innerLayout->addWidget(titleLabel);
 
-
     // The label that says "Courses..."
     QLabel *coursesLabel = new QLabel("Courses...");
     QFont coursesFont = coursesLabel->font();
     coursesFont.setPointSize(38);
     coursesLabel->setFont(coursesFont);
+
+    // The button to open a new window
+    newWindowButton = new ImageButton(QPixmap(":/images/open_window_black.png"), QSize(32, 32));
+    QVBoxLayout *newWindowVLayout = new QVBoxLayout();
+    newWindowVLayout->addSpacing(16);
+    newWindowVLayout->addWidget(newWindowButton);
 
     // The button for adding a new course
     newCourseButton = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(32, 32));
@@ -82,6 +87,8 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     newCourseHLayout->addSpacing(10);
     newCourseHLayout->addWidget(coursesLabel);
     newCourseHLayout->addStretch(1);
+    newCourseHLayout->addLayout(newWindowVLayout);
+    newCourseHLayout->addSpacing(10);
     newCourseHLayout->addLayout(newCourseVLayout);
     newCourseHLayout->addSpacing(22);
 
@@ -142,6 +149,8 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
     connect(courseAddDialog, SIGNAL(accepted()), this, SLOT(courseAddDialogCompleted()));
     connect(courseAddDialog, SIGNAL(rejected()), courseAddDialog, SLOT(close()));
+
+    connect(newWindowButton, SIGNAL(clicked()), this, SIGNAL(requestNewWindow()));
 
     connect(model, SIGNAL(courseAdded(Course)), this, SLOT(courseAddedSlot(Course)));
     connect(model, SIGNAL(courseOrderingEdited(Course)), this, SLOT(courseOrderingEditedSlot(Course)));

@@ -41,11 +41,35 @@ StudyAid::StudyAid(ModelSignaller *modelSignaller, QWidget *parent)
     stack->addWidget(proofPage);
 
     showMaximized();
+
+
+
+    connect(rootPage, SIGNAL(requestNewWindow()), this, SIGNAL(requestNewWindow()));
 }
 
 StudyAid::~StudyAid()
 {
     delete model;
+}
+
+StudyAidController::StudyAidController()
+{
+    modelSignaller = new ModelSignaller();
+}
+
+StudyAidController::~StudyAidController()
+{
+    delete modelSignaller;
+}
+
+void StudyAidController::openNewWindow()
+{
+    StudyAid *window = new StudyAid(modelSignaller);
+
+    window->setWindowTitle("StudyAid");
+    window->show();
+
+    connect(window, SIGNAL(requestNewWindow()), this, SLOT(openNewWindow()));
 }
 
 int main(int argc, char **argv)
@@ -76,11 +100,8 @@ int main(int argc, char **argv)
         return 0;
     }
     else {
-        ModelSignaller modelSignaller;
-        StudyAid window(&modelSignaller);
-
-        window.setWindowTitle("StudyAid");
-        window.show();
+        StudyAidController controller;
+        controller.openNewWindow();
 
         return app.exec();
     }

@@ -28,4 +28,23 @@ public:
     ProofPage *proofPage;
 
     Model *model;
+
+signals:
+    void requestNewWindow();
+};
+
+class StudyAidController : public QWidget
+{
+    Q_OBJECT
+
+public:
+    StudyAidController();
+    ~StudyAidController();
+
+
+
+    ModelSignaller *modelSignaller;
+
+public slots:
+    void openNewWindow();
 };

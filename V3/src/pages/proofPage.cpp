@@ -215,6 +215,7 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
 
     connect(model, SIGNAL(proofSelectedChanged(Proof)), this, SLOT(proofSelectedChangedSlot(Proof)));
     connect(model, SIGNAL(proofEdited(Proof)), this, SLOT(proofEditedSlot(Proof)));
+    connect(model, SIGNAL(proofDeleted(int)), this, SLOT(proofDeletedSlot(int)));
 }
 
 
@@ -264,12 +265,10 @@ void ProofPage::saveBody()
 
 void ProofPage::proofDeleteDialogAccepted()
 {
-    deleteProof(model->getProofSelected().id);
-
-    model->deleteProof(model->getProofSelected().id);
-
     proofDeleteDialog->close();
-    pageStack->setCurrentIndex(2);
+    
+    deleteProof(model->getProofSelected().id);
+    model->deleteProof(model->getProofSelected().id);
 }
 
 void ProofPage::proofSelectedChangedSlot(Proof proof)
@@ -287,6 +286,13 @@ void ProofPage::proofSelectedChangedSlot(Proof proof)
 void ProofPage::proofEditedSlot(Proof proof)
 {
     reloadProofDetails(proof);
+}
+
+void ProofPage::proofDeletedSlot(int id)
+{
+    if (id == model->getProofSelected().id && pageStack->currentIndex() > 2) {
+        pageStack->setCurrentIndex(2);
+    }
 }
 
 //  ##      ## ####### ######## ##    ##  #####  #####    #####

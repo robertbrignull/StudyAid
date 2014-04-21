@@ -69,4 +69,5 @@ public slots:
 
     void courseSelectedChangedSlot(Course course);
     void courseEditedSlot(Course course);
+    void courseDeletedSlot(int id);
 };

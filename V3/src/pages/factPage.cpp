@@ -258,6 +258,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
     connect(model, SIGNAL(factSelectedChanged(Fact)), this, SLOT(factSelectedChangedSlot(Fact)));
     connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
+    connect(model, SIGNAL(factDeleted(int)), this, SLOT(factDeletedSlot(int)));
     connect(model, SIGNAL(proofAdded(Proof)), this, SLOT(proofAddedSlot(Proof)));
     connect(model, SIGNAL(proofOrderingEdited(Proof)), this, SLOT(proofOrderingEditedSlot(Proof)));
     connect(model, SIGNAL(proofDeleted(int)), this, SLOT(proofDeletedSlot(int)));
@@ -312,12 +313,10 @@ void FactPage::saveStatement()
 
 void FactPage::factDeleteDialogAccepted()
 {
-    deleteFact(model->getFactSelected().id);
-
-    model->deleteFact(model->getFactSelected().id);
-
     factDeleteDialog->close();
-    pageStack->setCurrentIndex(1);
+    
+    deleteFact(model->getFactSelected().id);
+    model->deleteFact(model->getFactSelected().id);
 }
 
 void FactPage::proofAddDialogCompleted()
@@ -347,6 +346,13 @@ void FactPage::factEditedSlot(Fact fact)
 {
     if (fact.id == model->getFactSelected().id) {
         reloadFactDetails(fact);
+    }
+}
+
+void FactPage::factDeletedSlot(int id)
+{
+    if (id == model->getFactSelected().id && pageStack->currentIndex() > 1) {
+        pageStack->setCurrentIndex(1);
     }
 }
 

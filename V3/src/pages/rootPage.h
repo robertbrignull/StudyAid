@@ -13,6 +13,7 @@ class Dialog;
 class QVBoxLayout;
 class CourseTitleWidget;
 class ImageButton;
+class QPushButton;
 
 class RootPage : public QWidget
 {
@@ -26,6 +27,8 @@ public:
     Model *model;
     ResizableStackedWidget *pageStack;
 
+    QPushButton *newWindowButton;
+
     ImageButton *newCourseButton;
     CourseForm *courseAddForm;
     Dialog *courseAddDialog;
@@ -37,6 +40,8 @@ public:
     std::map<int, CourseTitleWidget*> idCourseMap;
 
 signals:
+    void requestNewWindow();
+
     void moveButtonClicked(Course course);
     void moveCompleted();
 

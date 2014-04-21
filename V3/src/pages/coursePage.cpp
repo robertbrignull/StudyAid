@@ -199,6 +199,7 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
 
     connect(model, SIGNAL(courseSelectedChanged(Course)), this, SLOT(courseSelectedChangedSlot(Course)));
     connect(model, SIGNAL(courseEdited(Course)), this, SLOT(courseEditedSlot(Course)));
+    connect(model, SIGNAL(courseDeleted(int)), this, SLOT(courseDeletedSlot(int)));
 }
 
 //   #####  ##       #####  ########  #####
@@ -227,12 +228,10 @@ void CoursePage::courseEditDialogCompleted()
 
 void CoursePage::courseDeleteDialogAccepted()
 {
-    deleteCourse(model->getCourseSelected().id);
-
-    model->deleteCourse(model->getCourseSelected().id);
-
     courseDeleteDialog->close();
-    pageStack->setCurrentIndex(0);
+
+    deleteCourse(model->getCourseSelected().id);
+    model->deleteCourse(model->getCourseSelected().id);
 }
 
 void CoursePage::factAddFormCompleted()
@@ -296,5 +295,12 @@ void CoursePage::courseEditedSlot(Course course)
     if (model->isCourseSelected() && model->getCourseSelected().id == course.id) {
         // Update the labels with the name of the course
         courseLabel->setText(QString::fromStdString(course.name));
+    }
+}
+
+void CoursePage::courseDeletedSlot(int id)
+{
+    if (id == model->getCourseSelected().id && pageStack->currentIndex() > 0) {
+        pageStack->setCurrentIndex(0);
     }
 }

@@ -18,6 +18,7 @@
     <file>images/triangle_right_black.png</file>
     <file>images/triangle_up_black.png</file>
     <file>images/triangle_down_black.png</file>
+    <file>images/open_window_black.png</file>
 
     <file>database/backup</file>
     <file>database/restore</file>
