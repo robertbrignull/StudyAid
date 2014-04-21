@@ -20,7 +20,7 @@ LatexHighlighter::LatexHighlighter(QTextDocument *parent)
     mathModeEndPattern = QRegExp("[^\\$]\\$+");
 
     // Other expressions
-    backslashPattern = QRegExp("\\\\[A-Za-z]*");
+    backslashPattern = QRegExp("\\\\[A-Za-z]+|\\\\\\{|\\\\\\}");
 
     argumentPattern = QRegExp("[\\{\\[].*[\\}\\]]");
     argumentPattern.setMinimal(true);
