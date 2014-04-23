@@ -17,11 +17,13 @@ signals:
     void factAdded(Fact fact);
     void factEdited(Fact fact);
     void factOrderingEdited(Fact fact);
+    void factRendered(Fact fact, bool success);
     void factDeleted(int id);
 
     void proofAdded(Proof proof);
     void proofEdited(Proof proof);
     void proofOrderingEdited(Proof proof);
+    void proofRendered(Proof proof, bool success);
     void proofDeleted(int id);
 
 public slots:
@@ -33,11 +35,13 @@ public slots:
     void addFact(Fact fact);
     void editFact(Fact fact);
     void editFactOrdering(Fact fact);
+    void renderFact(Fact fact, bool success);
     void deleteFact(int id);
 
     void addProof(Proof proof);
     void editProof(Proof proof);
     void editProofOrdering(Proof proof);
+    void renderProof(Proof proof, bool success);
     void deleteProof(int id);
 };
 
@@ -70,12 +74,14 @@ signals:
     void factAdded(Fact fact);
     void factEdited(Fact fact);
     void factOrderingEdited(Fact fact);
+    void factRendered(Fact fact, bool success);
     void factDeleted(int id);
 
     void proofSelectedChanged(Proof proof);
     void proofAdded(Proof proof);
     void proofEdited(Proof proof);
     void proofOrderingEdited(Proof proof);
+    void proofRendered(Proof proof, bool success);
     void proofDeleted(int id);
 
 public slots:
@@ -89,12 +95,14 @@ public slots:
     void addFact(Fact fact);
     void editFact(Fact fact);
     void editFactOrdering(Fact fact);
+    void renderFact(Fact fact, bool success);
     void deleteFact(int id);
 
     void setProofSelected(Proof proof);
     void addProof(Proof proof);
     void editProof(Proof proof);
     void editProofOrdering(Proof proof);
+    void renderProof(Proof proof, bool success);
     void deleteProof(int id);
 
 private:

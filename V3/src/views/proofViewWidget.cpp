@@ -135,6 +135,14 @@ void ProofViewWidget::proofEditedSlot(Proof proof)
         this->proof = proof;
 
         nameLabel->setText((proof.name != "") ? QString::fromStdString(proof.name) : "Proof");
+    }
+}
+
+void ProofViewWidget::proofRenderedSlot(Proof proof, bool success)
+{
+    if (proof.id == this->proof.id && success) {
+        this->proof = proof;
+
         bodyImage->reloadImage();
     }
 }

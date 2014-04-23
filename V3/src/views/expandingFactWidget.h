@@ -69,6 +69,7 @@ public slots:
     void deactivateMoveMode();
 
     void factEditedSlot(Fact fact);
+    void factRenderedSlot(Fact fact, bool success);
 
 private:
     void setExpanded(bool expanded);

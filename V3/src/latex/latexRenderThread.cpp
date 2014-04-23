@@ -88,6 +88,7 @@ void LatexRenderThread::queueFact(Fact fact)
     if (!found) {
         FactOrProof factOrProof;
         factOrProof.isFact = true;
+        factOrProof.isProof = false;
         factOrProof.fact = fact;
         queue.push_back(factOrProof);
     }
@@ -111,6 +112,7 @@ void LatexRenderThread::queueProof(Proof proof)
 
     if (!found) {
         FactOrProof factOrProof;
+        factOrProof.isFact = false;
         factOrProof.isProof = true;
         factOrProof.proof = proof;
         queue.push_back(factOrProof);
@@ -138,12 +140,12 @@ void LatexRenderThread::run()
         queueMutex.unlock();
 
         if (factOrProof.isFact) {
-            renderText(factOrProof.fact.statement, LatexRenderThread::imageDir + "/fact/", toString(factOrProof.fact.id));
-            std::cout << "Rendered fact " << factOrProof.fact.id << std::endl;
+            int result = renderText(factOrProof.fact.statement, LatexRenderThread::imageDir + "/fact/", toString(factOrProof.fact.id));
+            LatexRenderThread::modelSignaller->renderFact(factOrProof.fact, (result == 0));
         }
-        else {
-            renderText(factOrProof.proof.body, LatexRenderThread::imageDir + "/proof/", toString(factOrProof.proof.id));
-            std::cout << "Rendered proof " << factOrProof.proof.id << std::endl;
+        else if (factOrProof.isProof) {
+            int result = renderText(factOrProof.proof.body, LatexRenderThread::imageDir + "/proof/", toString(factOrProof.proof.id));
+            LatexRenderThread::modelSignaller->renderProof(factOrProof.proof, (result == 0));
         }
     }
 }
@@ -195,5 +197,6 @@ int LatexRenderThread::renderText(std::string text, std::string path, std::strin
     deleteFile(path + filename + ".log");
     deleteFile(path + filename + ".pdf");
 
+    // Should return 0 on success, 1 on latex render error, 2 for some other error
     return retVal;
 }

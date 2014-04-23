@@ -9,6 +9,7 @@
 
 #include "model.h"
 #include "database/setup.h"
+#include "database/structures.h"
 #include "latex/latex.h"
 #include "pages/rootPage.h"
 #include "pages/coursePage.h"
@@ -90,6 +91,11 @@ int main(int argc, char **argv)
     font.setFamily("Helvetica");
     font.setPointSize(18);
     app.setFont(font);
+
+    qRegisterMetaType<FactType>();
+    qRegisterMetaType<Fact>();
+    qRegisterMetaType<Proof>();
+    qRegisterMetaType<Course>();
 
     if (testMode) {
         runAllTests();

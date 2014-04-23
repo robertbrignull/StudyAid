@@ -93,6 +93,7 @@ public slots:
 
     void factSelectedChangedSlot(Fact fact);
     void factEditedSlot(Fact fact);
+    void factRenderedSlot(Fact fact, bool success);
     void factDeletedSlot(int id);
 
     void proofAddedSlot(Proof proof);

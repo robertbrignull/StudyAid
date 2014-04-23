@@ -46,4 +46,5 @@ public slots:
     void deactivateMoveMode();
 
     void proofEditedSlot(Proof proof);
+    void proofRenderedSlot(Proof proof, bool success);
 };

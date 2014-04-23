@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include <QMetaType>
+
 typedef struct FactType
 {
     std::string fact_type;
@@ -39,3 +41,10 @@ typedef struct Course
 
 
 class NotFoundException : public std::exception { };
+
+
+
+Q_DECLARE_METATYPE(FactType);
+Q_DECLARE_METATYPE(Fact);
+Q_DECLARE_METATYPE(Proof);
+Q_DECLARE_METATYPE(Course);

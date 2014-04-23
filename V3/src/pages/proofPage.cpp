@@ -216,6 +216,7 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
 
     connect(model, SIGNAL(proofSelectedChanged(Proof)), this, SLOT(proofSelectedChangedSlot(Proof)));
     connect(model, SIGNAL(proofEdited(Proof)), this, SLOT(proofEditedSlot(Proof)));
+    connect(model, SIGNAL(proofRendered(Proof, bool)), this, SLOT(proofRenderedSlot(Proof, bool)));
     connect(model, SIGNAL(proofDeleted(int)), this, SLOT(proofDeletedSlot(int)));
 }
 
@@ -251,13 +252,10 @@ void ProofPage::saveBody()
         Proof proof = model->getProofSelected();
         proof.body = bodyTextEdit->toPlainText().toStdString();
 
-        renderProof(proof);
-
-        bodyImage->setImage(getProofImageFilename(proof));
-        trafficLight->setState(TrafficLight::GREEN);
-
         editProof(proof);
         model->editProof(proof);
+
+        renderProof(proof);
     }
 }
 
@@ -284,6 +282,20 @@ void ProofPage::proofSelectedChangedSlot(Proof proof)
 void ProofPage::proofEditedSlot(Proof proof)
 {
     reloadProofDetails(proof);
+}
+
+void ProofPage::proofRenderedSlot(Proof proof, bool success)
+{
+    if (proof.id == model->getProofSelected().id) {
+        bodyImage->setImage(getProofImageFilename(proof));
+        
+        if (success) {
+            trafficLight->setState(TrafficLight::GREEN);
+        }
+        else {
+            trafficLight->setState(TrafficLight::RED);
+        }
+    }
 }
 
 void ProofPage::proofDeletedSlot(int id)

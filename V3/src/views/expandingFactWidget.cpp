@@ -266,7 +266,14 @@ void ExpandingFactWidget::factEditedSlot(Fact fact)
         this->fact = fact;
 
         nameLabel->setText(QString::fromStdString(fact.name));
-        
+
+        adjustSize();
+    }
+}
+
+void ExpandingFactWidget::factRenderedSlot(Fact fact, bool success)
+{
+    if (fact.id == this->fact.id && success) {
         image = QPixmap(QString::fromStdString(getFactImageFilename(fact)));
         imageWidth = std::min(width() - border*2, 1000);
         imageHeight = (image.width() == 0) ? 0 : image.height() * imageWidth / image.width();

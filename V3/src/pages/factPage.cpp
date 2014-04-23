@@ -259,6 +259,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
     connect(model, SIGNAL(factSelectedChanged(Fact)), this, SLOT(factSelectedChangedSlot(Fact)));
     connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
+    connect(model, SIGNAL(factRendered(Fact, bool)), this, SLOT(factRenderedSlot(Fact, bool)));
     connect(model, SIGNAL(factDeleted(int)), this, SLOT(factDeletedSlot(int)));
     connect(model, SIGNAL(proofAdded(Proof)), this, SLOT(proofAddedSlot(Proof)));
     connect(model, SIGNAL(proofOrderingEdited(Proof)), this, SLOT(proofOrderingEditedSlot(Proof)));
@@ -297,13 +298,10 @@ void FactPage::saveStatement()
         Fact fact = model->getFactSelected();
         fact.statement = statementTextEdit->toPlainText().toStdString();
 
-        renderFact(fact);
-        
-        statementImage->setImage(getFactImageFilename(fact));
-        trafficLight->setState(TrafficLight::GREEN);
-
         editFact(fact);
         model->editFact(fact);
+
+        renderFact(fact);
     }
 }
 
@@ -342,6 +340,20 @@ void FactPage::factEditedSlot(Fact fact)
 {
     if (fact.id == model->getFactSelected().id) {
         reloadFactDetails(fact);
+    }
+}
+
+void FactPage::factRenderedSlot(Fact fact, bool success)
+{
+    if (fact.id == model->getFactSelected().id) {
+        statementImage->setImage(getFactImageFilename(fact));
+        
+        if (success) {
+            trafficLight->setState(TrafficLight::GREEN);
+        }
+        else {
+            trafficLight->setState(TrafficLight::RED);
+        }
     }
 }
 

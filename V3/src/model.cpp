@@ -45,6 +45,11 @@ void ModelSignaller::editFactOrdering(Fact fact)
     emit factOrderingEdited(fact);
 }
 
+void ModelSignaller::renderFact(Fact fact, bool success)
+{
+    emit factRendered(fact, success);
+}
+
 void ModelSignaller::deleteFact(int id)
 {
     emit factDeleted(id);
@@ -63,6 +68,11 @@ void ModelSignaller::editProof(Proof proof)
 void ModelSignaller::editProofOrdering(Proof proof)
 {
     emit proofOrderingEdited(proof);
+}
+
+void ModelSignaller::renderProof(Proof proof, bool success)
+{
+    emit proofRendered(proof, success);
 }
 
 void ModelSignaller::deleteProof(int id)
@@ -96,11 +106,13 @@ Model::Model(ModelSignaller *modelSignaller)
     connect(modelSignaller, SIGNAL(factAdded(Fact)), this, SIGNAL(factAdded(Fact)));
     connect(modelSignaller, SIGNAL(factEdited(Fact)), this, SIGNAL(factEdited(Fact)));
     connect(modelSignaller, SIGNAL(factOrderingEdited(Fact)), this, SIGNAL(factOrderingEdited(Fact)));
+    connect(modelSignaller, SIGNAL(factRendered(Fact, bool)), this, SIGNAL(factRendered(Fact, bool)));
     connect(modelSignaller, SIGNAL(factDeleted(int)), this, SIGNAL(factDeleted(int)));
 
     connect(modelSignaller, SIGNAL(proofAdded(Proof)), this, SIGNAL(proofAdded(Proof)));
     connect(modelSignaller, SIGNAL(proofEdited(Proof)), this, SIGNAL(proofEdited(Proof)));
     connect(modelSignaller, SIGNAL(proofOrderingEdited(Proof)), this, SIGNAL(proofOrderingEdited(Proof)));
+    connect(modelSignaller, SIGNAL(proofRendered(Proof, bool)), this, SIGNAL(proofRendered(Proof, bool)));
     connect(modelSignaller, SIGNAL(proofDeleted(int)), this, SIGNAL(proofDeleted(int)));
 }
 
@@ -194,6 +206,11 @@ void Model::editFactOrdering(Fact fact)
     modelSignaller->editFactOrdering(fact);
 }
 
+void Model::renderFact(Fact fact, bool success)
+{
+    modelSignaller->renderFact(fact, success);
+}
+
 void Model::deleteFact(int id)
 {
     modelSignaller->deleteFact(id);
@@ -237,6 +254,11 @@ void Model::editProofOrdering(Proof proof)
     }
 
     modelSignaller->editProofOrdering(proof);
+}
+
+void Model::renderProof(Proof proof, bool success)
+{
+    modelSignaller->renderProof(proof, success);
 }
 
 void Model::deleteProof(int id)
