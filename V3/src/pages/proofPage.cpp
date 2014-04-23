@@ -149,6 +149,7 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
     bodyTextEdit = new QTextEdit();
 
     QFont font = bodyTextEdit->font();
+    font.setFamily("Courier");
     font.setPointSize(12);
     bodyTextEdit->setFont(font);
 

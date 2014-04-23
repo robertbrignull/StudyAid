@@ -1,12 +1,14 @@
 ======= todo list ======
 
+- Reset fact list scroll area when changing section
+
+- try to reduce lag while rendering latex
+  - render less often
+  - render in another thread
+
 - Display rendered fact on proof page for reference
 
-- Multiple window support
-
 - Only render when text has changed
-
-- Syntax highlighting of latex
 
 - Generated list of definitions referenced
 

@@ -74,13 +74,14 @@ int renderText(std::string text, std::string path, std::string filename)
         "\\usepackage{amsfonts}\n" +
         "\\usepackage{amsmath}\n" +
         "\\usepackage{amssymb}\n" +
+        "\\usepackage{minted}\n" +
         "\\begin{document}\n" +
         "\\begin{preview}\n" +
-        "\\ \n" +
+        "\n" +
         text +
         "\n\n" +
         "\\end{preview}\n" +
-        "\\end{document}\n";
+        "\\end{document}";
 
     if (system((std::string("mkdir -p ") + path).c_str())) {
         retVal = 2;
@@ -92,7 +93,7 @@ int renderText(std::string text, std::string path, std::string filename)
         goto cleanup;
     }
 
-    if (system((std::string("pdflatex -halt-on-error -output-directory ") + path + " " + filename + ".latex > /dev/null").c_str())) {
+    if (system((std::string("cd ") + path + "; pdflatex -shell-escape -halt-on-error -output-directory . " + filename + ".latex > /dev/null").c_str())) {
         retVal = 1;
         goto cleanup;
     }

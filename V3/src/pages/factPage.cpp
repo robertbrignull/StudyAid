@@ -161,6 +161,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     statementTextEdit = new QTextEdit();
 
     QFont font = statementTextEdit->font();
+    font.setFamily("Courier");
     font.setPointSize(12);
     statementTextEdit->setFont(font);
 
