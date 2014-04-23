@@ -1,7 +1,5 @@
 ======= todo list ======
 
-- Reset fact list scroll area when changing section
-
 - try to reduce lag while rendering latex
   - render less often
   - render in another thread

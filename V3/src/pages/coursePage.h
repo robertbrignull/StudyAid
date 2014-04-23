@@ -67,6 +67,8 @@ public slots:
 
     void sectionEditFormCompleted();
 
+    void sectionSelected(int id);
+
     void courseSelectedChangedSlot(Course course);
     void courseEditedSlot(Course course);
     void courseDeletedSlot(int id);

@@ -260,6 +260,11 @@ void CoursePage::sectionEditFormCompleted()
     sectionEditDialog->close();
 }
 
+void CoursePage::sectionSelected(int)
+{
+    courseScrollArea->ensureVisible(0, 0);
+}
+
 void CoursePage::courseSelectedChangedSlot(Course course)
 {
     // Update the labels with the name of the course
@@ -285,6 +290,7 @@ void CoursePage::courseSelectedChangedSlot(Course course)
 
     // Connect the two together
     connect(sectionPicker, SIGNAL(sectionSelected(int)), factListView, SLOT(selectSection(int)));
+    connect(sectionPicker, SIGNAL(sectionSelected(int)), this, SLOT(sectionSelected(int)));
 
     // Adjust the size of the splitter panes
     splitter->setSizes(QList<int>({0, 1}));
