@@ -4,7 +4,9 @@
 
 #include "database/structures.h"
 
-void initialiseLatex(const char *database);
+class ModelSignaller;
+
+void initialiseLatex(const char *database, ModelSignaller *modelSignaller);
 
 /* Return the path to the file where this fact or
  * proof's rendered image should be stored.
@@ -12,13 +14,10 @@ void initialiseLatex(const char *database);
 std::string getFactImageFilename(Fact fact);
 std::string getProofImageFilename(Proof proof);
 
-/* Renders a fact or proof.
- * Returns 0 on success.
- *         1 if the latex is invalid
- *         2 if there was a more serious error
+/* Queues a fact/proof for rendering
  */
-int renderFact(Fact fact);
-int renderProof(Proof proof);
+void renderFact(Fact fact);
+void renderProof(Proof proof);
 
 /* Removes all rendered images and renders
  * everything from scratch.

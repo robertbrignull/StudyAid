@@ -297,15 +297,10 @@ void FactPage::saveStatement()
         Fact fact = model->getFactSelected();
         fact.statement = statementTextEdit->toPlainText().toStdString();
 
-        int result = renderFact(fact);
-
-        if (result == 0) {
-            statementImage->setImage(getFactImageFilename(fact));
-            trafficLight->setState(TrafficLight::GREEN);
-        }
-        else {
-            trafficLight->setState(TrafficLight::RED);
-        }
+        renderFact(fact);
+        
+        statementImage->setImage(getFactImageFilename(fact));
+        trafficLight->setState(TrafficLight::GREEN);
 
         editFact(fact);
         model->editFact(fact);

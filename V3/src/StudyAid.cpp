@@ -52,14 +52,9 @@ StudyAid::~StudyAid()
     delete model;
 }
 
-StudyAidController::StudyAidController()
+StudyAidController::StudyAidController(ModelSignaller *modelSignaller)
 {
-    modelSignaller = new ModelSignaller();
-}
-
-StudyAidController::~StudyAidController()
-{
-    delete modelSignaller;
+    this->modelSignaller = modelSignaller;
 }
 
 void StudyAidController::openNewWindow()
@@ -78,9 +73,11 @@ int main(int argc, char **argv)
 
     bool testMode = (argc >= 2 && strncmp(argv[1], "test", 4) == 0);
 
+    ModelSignaller modelSignaller;
+
     initialiseConnection(database);
     initialiseBackup();
-    initialiseLatex(database);
+    initialiseLatex(database, &modelSignaller);
 
     if (argc >= 3 && strncmp(argv[2], "render-all", 12) == 0) {
         renderAll();
@@ -100,7 +97,7 @@ int main(int argc, char **argv)
         return 0;
     }
     else {
-        StudyAidController controller;
+        StudyAidController controller(&modelSignaller);
         controller.openNewWindow();
 
         return app.exec();

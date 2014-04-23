@@ -247,21 +247,18 @@ void ProofPage::proofEditDialogCompleted()
 
 void ProofPage::saveBody()
 {
-    Proof proof = model->getProofSelected();
-    proof.body = bodyTextEdit->toPlainText().toStdString();
+    if (model->isProofSelected()) {
+        Proof proof = model->getProofSelected();
+        proof.body = bodyTextEdit->toPlainText().toStdString();
 
-    int result = renderProof(proof);
+        renderProof(proof);
 
-    if (result == 0) {
         bodyImage->setImage(getProofImageFilename(proof));
         trafficLight->setState(TrafficLight::GREEN);
-    }
-    else {
-        trafficLight->setState(TrafficLight::RED);
-    }
 
-    editProof(proof);
-    model->editProof(proof);
+        editProof(proof);
+        model->editProof(proof);
+    }
 }
 
 void ProofPage::proofDeleteDialogAccepted()
