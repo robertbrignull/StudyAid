@@ -16,6 +16,7 @@ class ResizableImage;
 class TrafficLight;
 class ImageButton;
 class BreadCrumbs;
+class QTimer;
 class LatexHighlighter;
 
 class ProofPage : public QWidget
@@ -45,20 +46,24 @@ public:
     // The splitter
     Splitter *splitter;
 
-    // Contains the current proof's statement
+    // Contains the current proof's body
     QTextEdit *bodyTextEdit;
     LatexHighlighter *bodyHighlighter;
 
-    // The rendered statement
+    // For the timer that saves and renders the body
+    QTimer *bodySaveTimer;
+
+    // The rendered body
     ResizableImage *bodyImage;
 
-    // Shows whether the statement rendered without errors
+    // Shows whether the body rendered without errors
     TrafficLight *trafficLight;
 
 public slots:
     void proofEditButtonClicked();
     void proofEditDialogCompleted();
 
+    void bodyChanged();
     void saveBody();
 
     void proofDeleteDialogAccepted();

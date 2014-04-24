@@ -173,7 +173,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     statementSaveTimer->setSingleShot(true);
     statementSaveTimer->setInterval(200);
 
-    connect(statementTextEdit, SIGNAL(textChanged()), statementSaveTimer, SLOT(start()));
+    connect(statementTextEdit, SIGNAL(textChanged()), this, SLOT(statementChanged()));
     connect(statementSaveTimer, SIGNAL(timeout()), this, SLOT(saveStatement()));
 
 
@@ -292,17 +292,24 @@ void FactPage::factEditDialogCompleted()
     factEditDialog->close();
 }
 
+void FactPage::statementChanged()
+{
+    if (model->isFactSelected() && !statementSaveTimer->isActive()) {
+        saveStatement();
+
+        statementSaveTimer->start();
+    }
+}
+
 void FactPage::saveStatement()
 {
-    if (model->isFactSelected()) {
-        Fact fact = model->getFactSelected();
-        fact.statement = statementTextEdit->toPlainText().toStdString();
+    Fact fact = model->getFactSelected();
+    fact.statement = statementTextEdit->toPlainText().toStdString();
 
-        editFact(fact);
-        model->editFact(fact);
+    editFact(fact);
+    model->editFact(fact);
 
-        renderFact(fact);
-    }
+    renderFact(fact);
 }
 
 void FactPage::factDeleteDialogAccepted()

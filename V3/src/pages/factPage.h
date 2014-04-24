@@ -85,6 +85,7 @@ public slots:
     void factEditButtonClicked();
     void factEditDialogCompleted();
 
+    void statementChanged();
     void saveStatement();
 
     void factDeleteDialogAccepted();

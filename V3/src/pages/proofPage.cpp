@@ -157,11 +157,11 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
 
     splitter->addWidget(bodyTextEdit);
 
-    QTimer *bodySaveTimer = new QTimer(this);
+    bodySaveTimer = new QTimer(this);
     bodySaveTimer->setSingleShot(true);
     bodySaveTimer->setInterval(200);
 
-    connect(bodyTextEdit, SIGNAL(textChanged()), bodySaveTimer, SLOT(start()));
+    connect(bodyTextEdit, SIGNAL(textChanged()), this, SLOT(bodyChanged()));
     connect(bodySaveTimer, SIGNAL(timeout()), this, SLOT(saveBody()));
 
 
@@ -246,17 +246,24 @@ void ProofPage::proofEditDialogCompleted()
     proofEditDialog->close();
 }
 
+void ProofPage::bodyChanged()
+{
+    if (model->isProofSelected() && !bodySaveTimer->isActive()) {
+        saveBody();
+
+        bodySaveTimer->start();
+    }
+}
+
 void ProofPage::saveBody()
 {
-    if (model->isProofSelected()) {
-        Proof proof = model->getProofSelected();
-        proof.body = bodyTextEdit->toPlainText().toStdString();
+    Proof proof = model->getProofSelected();
+    proof.body = bodyTextEdit->toPlainText().toStdString();
 
-        editProof(proof);
-        model->editProof(proof);
+    editProof(proof);
+    model->editProof(proof);
 
-        renderProof(proof);
-    }
+    renderProof(proof);
 }
 
 void ProofPage::proofDeleteDialogAccepted()
