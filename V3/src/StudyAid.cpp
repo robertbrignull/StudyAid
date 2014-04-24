@@ -74,17 +74,6 @@ int main(int argc, char **argv)
 
     bool testMode = (argc >= 2 && strncmp(argv[1], "test", 4) == 0);
 
-    ModelSignaller modelSignaller;
-
-    initialiseConnection(database);
-    initialiseBackup();
-    initialiseLatex(database, &modelSignaller);
-
-    if (argc >= 3 && strncmp(argv[2], "render-all", 12) == 0) {
-        renderAll();
-        exit(0);
-    }
-
     QApplication app(argc, argv);
 
     QFont font;
@@ -96,6 +85,17 @@ int main(int argc, char **argv)
     qRegisterMetaType<Fact>();
     qRegisterMetaType<Proof>();
     qRegisterMetaType<Course>();
+
+    ModelSignaller modelSignaller;
+
+    initialiseConnection(database);
+    initialiseBackup();
+    initialiseLatex(database, &modelSignaller);
+
+    if (argc >= 3 && strncmp(argv[2], "render-all", 12) == 0) {
+        renderAll();
+        exit(0);
+    }
 
     if (testMode) {
         runAllTests();

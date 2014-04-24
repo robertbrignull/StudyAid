@@ -61,7 +61,7 @@ SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStack
 
 
 
-    std::vector<Fact> facts = findChildSections(fact.id);
+    std::vector<Fact> facts = Database::findChildSections(fact.id);
     idSectionPickerMap = std::map<int, SectionPickerWidget*>();
 
     for (size_t i = 0; i < facts.size(); ++i) {
@@ -129,7 +129,6 @@ void SectionPickerWidget::sectionDeleteDialogAccepted()
 {
     sectionDeleteDialog->close();
 
-    deleteFact(fact.id);
     model->deleteFact(fact.id);
 }
 

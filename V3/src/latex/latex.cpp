@@ -57,7 +57,7 @@ void renderProof(Proof proof)
 void recursivelyRenderFact(Fact fact)
 {
     if (fact.type == "Section") {
-        std::vector<Fact> facts = findChildFacts(fact.id);
+        std::vector<Fact> facts = Database::findChildFacts(fact.id);
         for (size_t i = 0; i < facts.size(); i++) {
             recursivelyRenderFact(facts[i]);
         }
@@ -65,7 +65,7 @@ void recursivelyRenderFact(Fact fact)
     else {
         renderFact(fact);
 
-        std::vector<Proof> proofs = findProofsForFact(fact.id);
+        std::vector<Proof> proofs = Database::findProofsForFact(fact.id);
         for (size_t i = 0; i < proofs.size(); i++) {
             renderProof(proofs[i]);
         }
@@ -79,8 +79,8 @@ void renderAll()
         std::cout << "Could not delete rendered images" << std::endl;
     }
 
-    std::vector<Course> courses = findAllCourses();
+    std::vector<Course> courses = Database::findAllCourses();
     for (size_t i = 0; i < courses.size(); i++) {
-        recursivelyRenderFact(findFact(courses[i].root_fact));
+        recursivelyRenderFact(Database::findFact(courses[i].root_fact));
     }
 }

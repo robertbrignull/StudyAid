@@ -20,12 +20,17 @@ class LatexRenderThread : public QThread
 
 public:
     LatexRenderThread(QObject *parent = 0);
+    ~LatexRenderThread();
 
     static void initialise(ModelSignaller *modelSignaller, std::string imageDir);
     static LatexRenderThread *getLatexRenderThread();
 
     void queueFact(Fact fact);
     void queueProof(Proof proof);
+
+signals:
+    void factRendered(Fact fact, bool success);
+    void proofRendered(Proof proof, bool success);
 
 protected:
     void run();

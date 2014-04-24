@@ -29,7 +29,7 @@ FactForm::FactForm(QWidget *parent)
 
     typeInput = new QComboBox();
 
-    std::vector<FactType> types = findAllFactTypes();
+    std::vector<FactType> types = Database::findAllFactTypes();
     for (auto it = types.begin(); it != types.end(); it++) {
         typeInput->addItem(QString::fromStdString(it->fact_type));
     }

@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include "database/methods.h"
+
 #include "model.h"
 
 //   #####  ######  #####  ##    ##    ##    ##      ##      ###### ######
@@ -10,73 +12,94 @@
 //  ##   ##   ##   ##   ## ##   ### ##    ## ##      ##      ##     ##   ##
 //   #####  ######  #####  ##    ## ##    ## ####### ####### ###### ##   ##
 
-void ModelSignaller::addCourse(Course course)
+Course ModelSignaller::addCourse(std::string name)
 {
+    Course course = Database::findCourse(Database::addCourse(name));
+
     emit courseAdded(course);
+
+    return course;
 }
 
 void ModelSignaller::editCourse(Course course)
 {
+    Database::editCourse(course);
     emit courseEdited(course);
 }
 
 void ModelSignaller::editCourseOrdering(Course course)
 {
+    Database::editCourseOrdering(course);
     emit courseOrderingEdited(course);
 }
 
 void ModelSignaller::deleteCourse(int id)
 {
+    Database::deleteCourse(id);
     emit courseDeleted(id);
 }
 
-void ModelSignaller::addFact(Fact fact)
+Fact ModelSignaller::addFact(int parent, std::string name, std::string type)
 {
+    Fact fact = Database::findFact(Database::addFact(parent, name, type));
+
     emit factAdded(fact);
+
+    return fact;
 }
 
 void ModelSignaller::editFact(Fact fact)
 {
+    Database::editFact(fact);
     emit factEdited(fact);
 }
 
 void ModelSignaller::editFactOrdering(Fact fact)
 {
+    Database::editFactOrdering(fact);
     emit factOrderingEdited(fact);
 }
 
-void ModelSignaller::renderFact(Fact fact, bool success)
+void ModelSignaller::renderFact(Fact fact)
 {
-    emit factRendered(fact, success);
+    emit factRendered(fact, true);
 }
 
 void ModelSignaller::deleteFact(int id)
 {
+    Database::deleteFact(id);
     emit factDeleted(id);
 }
 
-void ModelSignaller::addProof(Proof proof)
+Proof ModelSignaller::addProof(int fact, std::string name)
 {
+    Proof proof = Database::findProof(Database::addProof(fact, name));
+
     emit proofAdded(proof);
+
+    return proof;
 }
 
 void ModelSignaller::editProof(Proof proof)
 {
+    Database::editProof(proof);
     emit proofEdited(proof);
 }
 
 void ModelSignaller::editProofOrdering(Proof proof)
 {
+    Database::editProofOrdering(proof);
     emit proofOrderingEdited(proof);
 }
 
-void ModelSignaller::renderProof(Proof proof, bool success)
+void ModelSignaller::renderProof(Proof proof)
 {
-    emit proofRendered(proof, success);
+    emit proofRendered(proof, true);
 }
 
 void ModelSignaller::deleteProof(int id)
 {
+    Database::deleteProof(id);
     emit proofDeleted(id);
 }
 
@@ -114,6 +137,13 @@ Model::Model(ModelSignaller *modelSignaller)
     connect(modelSignaller, SIGNAL(proofOrderingEdited(Proof)), this, SIGNAL(proofOrderingEdited(Proof)));
     connect(modelSignaller, SIGNAL(proofRendered(Proof, bool)), this, SIGNAL(proofRendered(Proof, bool)));
     connect(modelSignaller, SIGNAL(proofDeleted(int)), this, SIGNAL(proofDeleted(int)));
+
+    connect(modelSignaller, SIGNAL(courseEdited(Course)), this, SLOT(courseEditedSlot(Course)));
+    connect(modelSignaller, SIGNAL(courseOrderingEdited(Course)), this, SLOT(courseOrderingEditedSlot(Course)));
+    connect(modelSignaller, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
+    connect(modelSignaller, SIGNAL(factOrderingEdited(Fact)), this, SLOT(factOrderingEditedSlot(Fact)));
+    connect(modelSignaller, SIGNAL(proofEdited(Proof)), this, SLOT(proofEditedSlot(Proof)));
+    connect(modelSignaller, SIGNAL(proofOrderingEdited(Proof)), this, SLOT(proofOrderingEditedSlot(Proof)));
 }
 
 ModelSignaller *Model::getModelSignaller()
@@ -138,26 +168,18 @@ void Model::setCourseSelected(Course course)
     emit courseSelectedChanged(course);
 }
 
-void Model::addCourse(Course course)
+Course Model::addCourse(std::string name)
 {
-    modelSignaller->addCourse(course);
+    return modelSignaller->addCourse(name);
 }
 
 void Model::editCourse(Course course)
 {
-    if (course.id == this->course.id) {
-        this->course = course;
-    }
-
     modelSignaller->editCourse(course);
 }
 
 void Model::editCourseOrdering(Course course)
 {
-    if (course.id == this->course.id) {
-        this->course = course;
-    }
-
     modelSignaller->editCourseOrdering(course);
 }
 
@@ -183,32 +205,24 @@ void Model::setFactSelected(Fact fact)
     emit factSelectedChanged(fact);
 }
 
-void Model::addFact(Fact fact)
+Fact Model::addFact(int parent, std::string name, std::string type)
 {
-    modelSignaller->addFact(fact);
+    return modelSignaller->addFact(parent, name, type);
 }
 
 void Model::editFact(Fact fact)
 {
-    if (fact.id == this->fact.id) {
-        this->fact = fact;
-    }
-
     modelSignaller->editFact(fact);
 }
 
 void Model::editFactOrdering(Fact fact)
 {
-    if (fact.id == this->fact.id) {
-        this->fact = fact;
-    }
-
     modelSignaller->editFactOrdering(fact);
 }
 
-void Model::renderFact(Fact fact, bool success)
+void Model::renderFact(Fact fact)
 {
-    modelSignaller->renderFact(fact, success);
+    modelSignaller->renderFact(fact);
 }
 
 void Model::deleteFact(int id)
@@ -233,35 +247,69 @@ void Model::setProofSelected(Proof proof)
     emit proofSelectedChanged(proof);
 }
 
-void Model::addProof(Proof proof)
+Proof Model::addProof(int fact, std::string name)
 {
-    modelSignaller->addProof(proof);
+    return modelSignaller->addProof(fact, name);
 }
 
 void Model::editProof(Proof proof)
 {
-    if (proof.id == this->proof.id) {
-        this->proof = proof;
-    }
-
     modelSignaller->editProof(proof);
 }
 
 void Model::editProofOrdering(Proof proof)
 {
-    if (proof.id == this->proof.id) {
-        this->proof = proof;
-    }
-
     modelSignaller->editProofOrdering(proof);
 }
 
-void Model::renderProof(Proof proof, bool success)
+void Model::renderProof(Proof proof)
 {
-    modelSignaller->renderProof(proof, success);
+    modelSignaller->renderProof(proof);
 }
 
 void Model::deleteProof(int id)
 {
     modelSignaller->deleteProof(id);
+}
+
+void Model::courseEditedSlot(Course course)
+{
+    if (course.id == this->course.id) {
+        this->course = course;
+    }
+}
+
+void Model::courseOrderingEditedSlot(Course course)
+{
+    if (course.id == this->course.id) {
+        this->course = course;
+    }
+}
+
+void Model::factEditedSlot(Fact fact)
+{
+    if (fact.id == this->fact.id) {
+        this->fact = fact;
+    }
+}
+
+void Model::factOrderingEditedSlot(Fact fact)
+{
+    if (fact.id == this->fact.id) {
+        this->fact = fact;
+    }
+}
+
+void Model::proofEditedSlot(Proof proof)
+{
+    if (proof.id == this->proof.id) {
+        this->proof = proof;
+    }
+}
+
+void Model::proofOrderingEditedSlot(Proof proof)
+{
+    if (proof.id == this->proof.id) {
+        this->proof = proof;
+    }
 }

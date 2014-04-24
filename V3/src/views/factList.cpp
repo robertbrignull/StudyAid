@@ -62,7 +62,7 @@ FactList::FactList(Fact fact, Model *model, ResizableStackedWidget *pageStack, F
     idChildFactMap = std::map<int, ExpandingFactWidget*>();
     idChildMap = std::map<int, std::pair<Fact, QWidget*> >();
 
-    std::vector<Fact> facts = findChildFacts(fact.id);
+    std::vector<Fact> facts = Database::findChildFacts(fact.id);
 
     for (size_t i = 0; i < facts.size(); ++i) {
         if (facts[i].type == "Section") {
@@ -196,7 +196,6 @@ void FactList::moveAboveButtonClickedSlot()
     moveFact.parent = fact.parent;
     moveFact.ordering = fact.ordering;
 
-    editFactOrdering(moveFact);
     model->editFactOrdering(moveFact);
 
     emit moveCompleted();
@@ -207,7 +206,6 @@ void FactList::moveBelowButtonClickedSlot()
     moveFact.parent = fact.parent;
     moveFact.ordering = fact.ordering + 1;
 
-    editFactOrdering(moveFact);
     model->editFactOrdering(moveFact);
 
     emit moveCompleted();

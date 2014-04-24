@@ -56,6 +56,11 @@ LatexRenderThread::LatexRenderThread(QObject *parent)
     emptyQueueMutex.lock();
 }
 
+LatexRenderThread::~LatexRenderThread()
+{
+    std::cout << "Thread deleted" << std::endl;
+}
+
 void LatexRenderThread::initialise(ModelSignaller *pModelSignaller, std::string pImageDir)
 {
     LatexRenderThread::modelSignaller = pModelSignaller;
@@ -65,8 +70,11 @@ void LatexRenderThread::initialise(ModelSignaller *pModelSignaller, std::string 
 LatexRenderThread *LatexRenderThread::getLatexRenderThread()
 {
     if (LatexRenderThread::activeRenderThread == nullptr) {
-        LatexRenderThread::activeRenderThread = new LatexRenderThread();
+        LatexRenderThread::activeRenderThread = new LatexRenderThread(LatexRenderThread::modelSignaller);
         LatexRenderThread::activeRenderThread->start();
+
+        connect(LatexRenderThread::activeRenderThread, SIGNAL(factRendered(Fact, bool)), LatexRenderThread::modelSignaller, SLOT(renderFact(Fact, bool)), Qt::QueuedConnection);
+        connect(LatexRenderThread::activeRenderThread, SIGNAL(proofRendered(Proof, bool)), LatexRenderThread::modelSignaller, SLOT(renderProof(Proof, bool)), Qt::QueuedConnection);
     }
 
     return LatexRenderThread::activeRenderThread;
@@ -140,12 +148,12 @@ void LatexRenderThread::run()
         queueMutex.unlock();
 
         if (factOrProof.isFact) {
-            int result = renderText(factOrProof.fact.statement, LatexRenderThread::imageDir + "/fact/", toString(factOrProof.fact.id));
-            LatexRenderThread::modelSignaller->renderFact(factOrProof.fact, (result == 0));
+            int result = 0;//renderText(factOrProof.fact.statement, LatexRenderThread::imageDir + "/fact/", toString(factOrProof.fact.id));
+            emit factRendered(factOrProof.fact, (result == 0));
         }
         else if (factOrProof.isProof) {
-            int result = renderText(factOrProof.proof.body, LatexRenderThread::imageDir + "/proof/", toString(factOrProof.proof.id));
-            LatexRenderThread::modelSignaller->renderProof(factOrProof.proof, (result == 0));
+            int result = 0;//renderText(factOrProof.proof.body, LatexRenderThread::imageDir + "/proof/", toString(factOrProof.proof.id));
+            emit proofRendered(factOrProof.proof, (result == 0));
         }
     }
 }

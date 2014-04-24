@@ -635,7 +635,7 @@ void FactTest::test_factColours()
     for (auto it = idChildMap.begin(); it != idChildMap.end(); it++) {
         ExpandingFactWidget *factWidget = (ExpandingFactWidget*) it->second.second;
 
-        QColor colour = QColor(QString::fromStdString(std::string("#") + findFactType(factWidget->nameLabel->text().toStdString()).colour));
+        QColor colour = QColor(QString::fromStdString(std::string("#") + Database::findFactType(factWidget->nameLabel->text().toStdString()).colour));
 
         QVERIFY(QColor(factWidget->grab(QRect(40, 2, 1, 1)).toImage().pixel(0, 0)) == colour);
     }

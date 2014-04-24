@@ -126,7 +126,7 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
 
     // Load every course from the database and build up idCourseMap
-    std::vector<Course> courses = findAllCourses();
+    std::vector<Course> courses = Database::findAllCourses();
     idCourseMap = std::map<int, CourseTitleWidget*>();
 
     for (size_t i = 0; i < courses.size(); ++i) {
@@ -167,9 +167,7 @@ RootPage::RootPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
 void RootPage::courseAddDialogCompleted()
 {
-    Course course = findCourse(addCourse(courseAddForm->getData().name));
-        
-    model->addCourse(course);
+    Course course = model->addCourse(courseAddForm->getData().name);
     model->setCourseSelected(course);
 
     courseAddDialog->close();

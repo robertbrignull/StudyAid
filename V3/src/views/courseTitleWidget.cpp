@@ -96,7 +96,6 @@ void CourseTitleWidget::moveAboveButtonClickedSlot()
 {
     moveCourse.ordering = course.ordering;
 
-    editCourseOrdering(moveCourse);
     model->editCourseOrdering(moveCourse);
 
     emit moveCompleted();
@@ -106,7 +105,6 @@ void CourseTitleWidget::moveBelowButtonClickedSlot()
 {
     moveCourse.ordering = course.ordering + 1;
 
-    editCourseOrdering(moveCourse);
     model->editCourseOrdering(moveCourse);
 
     emit moveCompleted();

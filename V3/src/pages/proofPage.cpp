@@ -240,7 +240,6 @@ void ProofPage::proofEditDialogCompleted()
 {
     Proof proof = proofEditForm->getData();
 
-    editProof(proof);
     model->editProof(proof);
 
     proofEditDialog->close();
@@ -260,17 +259,14 @@ void ProofPage::saveBody()
     Proof proof = model->getProofSelected();
     proof.body = bodyTextEdit->toPlainText().toStdString();
 
-    editProof(proof);
     model->editProof(proof);
-
-    renderProof(proof);
+    model->renderProof(proof);
 }
 
 void ProofPage::proofDeleteDialogAccepted()
 {
     proofDeleteDialog->close();
     
-    deleteProof(model->getProofSelected().id);
     model->deleteProof(model->getProofSelected().id);
 }
 

@@ -26,7 +26,7 @@ ExpandingFactWidget::ExpandingFactWidget(Fact fact, Model *model, ResizableStack
     this->fact = fact;
     this->factListView = factListView;
 
-    headColor = QColor(QString::fromStdString(std::string("#") + findFactType(fact.type).colour));
+    headColor = QColor(QString::fromStdString(std::string("#") + Database::findFactType(fact.type).colour));
     bodyColor = Qt::white;
     radius = 4;
     border = 16;
@@ -190,7 +190,6 @@ void ExpandingFactWidget::moveAboveButtonClickedSlot()
     moveFact.parent = fact.parent;
     moveFact.ordering = fact.ordering;
 
-    editFactOrdering(moveFact);
     model->editFactOrdering(moveFact);
 
     emit moveCompleted();
@@ -201,7 +200,6 @@ void ExpandingFactWidget::moveBelowButtonClickedSlot()
     moveFact.parent = fact.parent;
     moveFact.ordering = fact.ordering + 1;
 
-    editFactOrdering(moveFact);
     model->editFactOrdering(moveFact);
 
     emit moveCompleted();
@@ -279,7 +277,7 @@ void ExpandingFactWidget::factRenderedSlot(Fact fact, bool success)
         imageHeight = (image.width() == 0) ? 0 : image.height() * imageWidth / image.width();
         imageNeedsScaling = true;
 
-        headColor = QColor(QString::fromStdString(std::string("#") + findFactType(fact.type).colour));
+        headColor = QColor(QString::fromStdString(std::string("#") + Database::findFactType(fact.type).colour));
 
         adjustSize();
     }

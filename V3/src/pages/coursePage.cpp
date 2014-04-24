@@ -220,7 +220,6 @@ void CoursePage::courseEditDialogCompleted()
 {
     Course course = courseEditForm->getData();
     
-    editCourse(course);
     model->editCourse(course);
 
     courseEditDialog->close();
@@ -230,7 +229,6 @@ void CoursePage::courseDeleteDialogAccepted()
 {
     courseDeleteDialog->close();
 
-    deleteCourse(model->getCourseSelected().id);
     model->deleteCourse(model->getCourseSelected().id);
 }
 
@@ -238,9 +236,7 @@ void CoursePage::factAddFormCompleted()
 {
     Fact data = factAddForm->getData();
 
-    Fact newFact = findFact(addFact(data.parent, data.name, data.type));
-
-    model->addFact(newFact);
+    Fact newFact = model->addFact(data.parent, data.name, data.type);
 
     factAddDialog->close();
 
@@ -254,7 +250,6 @@ void CoursePage::sectionEditFormCompleted()
 {
     Fact section = sectionEditForm->getData();
 
-    editFact(section);
     model->editFact(section);
 
     sectionEditDialog->close();
@@ -274,7 +269,7 @@ void CoursePage::courseSelectedChangedSlot(Course course)
     while (pickerScrollLayout->count() > 0) {
         delete pickerScrollLayout->takeAt(0)->widget();
     }
-    sectionPicker = new SectionPickerWidget(findFact(course.root_fact), model, pageStack, factAddForm, factAddDialog, sectionEditForm, sectionEditDialog);
+    sectionPicker = new SectionPickerWidget(Database::findFact(course.root_fact), model, pageStack, factAddForm, factAddDialog, sectionEditForm, sectionEditDialog);
     pickerScrollLayout->addWidget(sectionPicker);
     pickerScrollLayout->addStretch(1);
     pickerScrollArea->ensureVisible(0, 0);

@@ -84,7 +84,6 @@ void ProofViewWidget::moveAboveButtonClickedSlot()
 {
     moveProof.ordering = proof.ordering;
 
-    editProofOrdering(moveProof);
     model->editProofOrdering(moveProof);
 
     emit moveCompleted();
@@ -94,7 +93,6 @@ void ProofViewWidget::moveBelowButtonClickedSlot()
 {
     moveProof.ordering = proof.ordering + 1;
 
-    editProofOrdering(moveProof);
     model->editProofOrdering(moveProof);
 
     emit moveCompleted();

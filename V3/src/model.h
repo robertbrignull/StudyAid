@@ -27,21 +27,21 @@ signals:
     void proofDeleted(int id);
 
 public slots:
-    void addCourse(Course course);
+    Course addCourse(std::string name);
     void editCourse(Course course);
     void editCourseOrdering(Course course);
     void deleteCourse(int id);
 
-    void addFact(Fact fact);
+    Fact addFact(int parent, std::string name, std::string type);
     void editFact(Fact fact);
     void editFactOrdering(Fact fact);
-    void renderFact(Fact fact, bool success);
+    void renderFact(Fact fact);
     void deleteFact(int id);
 
-    void addProof(Proof proof);
+    Proof addProof(int fact, std::string name);
     void editProof(Proof proof);
     void editProofOrdering(Proof proof);
-    void renderProof(Proof proof, bool success);
+    void renderProof(Proof proof);
     void deleteProof(int id);
 };
 
@@ -86,24 +86,33 @@ signals:
 
 public slots:
     void setCourseSelected(Course course);
-    void addCourse(Course course);
+    Course addCourse(std::string name);
     void editCourse(Course course);
     void editCourseOrdering(Course course);
     void deleteCourse(int id);
 
     void setFactSelected(Fact fact);
-    void addFact(Fact fact);
+    Fact addFact(int parent, std::string name, std::string type);
     void editFact(Fact fact);
     void editFactOrdering(Fact fact);
-    void renderFact(Fact fact, bool success);
+    void renderFact(Fact fact);
     void deleteFact(int id);
 
     void setProofSelected(Proof proof);
-    void addProof(Proof proof);
+    Proof addProof(int fact, std::string name);
     void editProof(Proof proof);
     void editProofOrdering(Proof proof);
-    void renderProof(Proof proof, bool success);
+    void renderProof(Proof proof);
     void deleteProof(int id);
+
+    void courseEditedSlot(Course course);
+    void courseOrderingEditedSlot(Course course);
+
+    void factEditedSlot(Fact fact);
+    void factOrderingEditedSlot(Fact fact);
+
+    void proofEditedSlot(Proof proof);
+    void proofOrderingEditedSlot(Proof proof);
 
 private:
     ModelSignaller *modelSignaller;

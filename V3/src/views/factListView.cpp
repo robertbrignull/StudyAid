@@ -14,7 +14,7 @@ FactListView::FactListView(Course course, Model *model, ResizableStackedWidget *
 
     idFactListMap = std::map<int, FactList*>();
 
-    currentFactList = new FactList(findFact(course.root_fact), model, pageStack, this);
+    currentFactList = new FactList(Database::findFact(course.root_fact), model, pageStack, this);
     idFactListMap.insert(std::pair<int, FactList*>(course.root_fact, currentFactList));
 
     currentFactList->buildLayout(true);

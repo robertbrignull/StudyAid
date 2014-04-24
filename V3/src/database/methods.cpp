@@ -60,7 +60,7 @@ Proof loadProof(mysqlpp::Row row)
 //  ##   ## ##   ## ##   ## ##  ##  ##   ## ##
 //   #####   #####   #####  ##   ##  #####  #######
 
-int addCourse(std::string name)
+int Database::addCourse(std::string name)
 {
     mysqlpp::Connection *conn = getConn();
     mysqlpp::Query query(conn, true);
@@ -88,7 +88,7 @@ int addCourse(std::string name)
     return result.insert_id();
 }
 
-Course findCourse(int id)
+Course Database::findCourse(int id)
 {
     mysqlpp::Connection *conn = getConn();
 
@@ -104,7 +104,7 @@ Course findCourse(int id)
     return loadCourse(result[0]);
 }
 
-std::vector<Course> findAllCourses()
+std::vector<Course> Database::findAllCourses()
 {
     mysqlpp::Connection *conn = getConn();
 
@@ -122,7 +122,7 @@ std::vector<Course> findAllCourses()
     return courses;
 }
 
-void editCourse(Course course)
+void Database::editCourse(Course course)
 {
     mysqlpp::Connection *conn = getConn();
 
@@ -132,7 +132,7 @@ void editCourse(Course course)
     query.execute(course.name, course.id);
 }
 
-void editCourseOrdering(Course course)
+void Database::editCourseOrdering(Course course)
 {
     mysqlpp::Connection *conn = getConn();
     mysqlpp::Query query(conn, true);
@@ -147,7 +147,7 @@ void editCourseOrdering(Course course)
     query.execute(course.ordering, course.id);
 }
 
-void deleteCourse(int id)
+void Database::deleteCourse(int id)
 {
     mysqlpp::Connection *conn = getConn();
     mysqlpp::Query query(conn, true);
@@ -175,7 +175,7 @@ void deleteCourse(int id)
 //  ##      ##    ## ##   ##    ##
 //  ##      ##    ##  #####     ##
 
-int addFact(int parent, std::string name, std::string type)
+int Database::addFact(int parent, std::string name, std::string type)
 {
     mysqlpp::Connection *conn = getConn();
     mysqlpp::Query query(conn, true);
@@ -196,7 +196,7 @@ int addFact(int parent, std::string name, std::string type)
     return query.execute(parent, name, type, ordering).insert_id();
 }
 
-Fact findFact(int id)
+Fact Database::findFact(int id)
 {
     mysqlpp::Connection *conn = getConn();
 
@@ -212,7 +212,7 @@ Fact findFact(int id)
     return loadFact(result[0]);
 }
 
-std::vector<Fact> findChildSections(int parent)
+std::vector<Fact> Database::findChildSections(int parent)
 {
     mysqlpp::Connection *conn = getConn();
 
@@ -230,7 +230,7 @@ std::vector<Fact> findChildSections(int parent)
     return facts;
 }
 
-std::vector<Fact> findChildFacts(int parent)
+std::vector<Fact> Database::findChildFacts(int parent)
 {
     mysqlpp::Connection *conn = getConn();
 
@@ -248,7 +248,7 @@ std::vector<Fact> findChildFacts(int parent)
     return facts;
 }
 
-void editFact(Fact fact)
+void Database::editFact(Fact fact)
 {
     mysqlpp::Connection *conn = getConn();
 
@@ -258,7 +258,7 @@ void editFact(Fact fact)
     query.execute(fact.name, fact.type, fact.statement, fact.id);
 }
 
-void editFactOrdering(Fact fact)
+void Database::editFactOrdering(Fact fact)
 {
     mysqlpp::Connection *conn = getConn();
     mysqlpp::Query query(conn, true);
@@ -273,7 +273,7 @@ void editFactOrdering(Fact fact)
     query.execute(fact.parent, fact.ordering, fact.id);
 }
 
-void deleteFact(int id)
+void Database::deleteFact(int id)
 {
     mysqlpp::Connection *conn = getConn();
 
@@ -291,7 +291,7 @@ void deleteFact(int id)
 //  ##      ##    ## ##   ##    ##               ##       ##    ##      ##
 //  ##      ##    ##  #####     ##               ##       ##    ##      #######
 
-FactType findFactType(std::string factType)
+FactType Database::findFactType(std::string factType)
 {
     mysqlpp::Connection *conn = getConn();
 
@@ -307,7 +307,7 @@ FactType findFactType(std::string factType)
     return loadFactType(result[0]);
 }
 
-std::vector<FactType> findAllFactTypes()
+std::vector<FactType> Database::findAllFactTypes()
 {
     mysqlpp::Connection *conn = getConn();
 
@@ -335,7 +335,7 @@ std::vector<FactType> findAllFactTypes()
 //  ##      ##   ## ##   ## ##   ## ##
 //  ##      ##    #  #####   #####  ##
 
-int addProof(int fact, std::string name)
+int Database::addProof(int fact, std::string name)
 {
     mysqlpp::Connection *conn = getConn();
     mysqlpp::Query query(conn, true);
@@ -356,7 +356,7 @@ int addProof(int fact, std::string name)
     return query.execute(fact, name, ordering).insert_id();
 }
 
-Proof findProof(int id)
+Proof Database::findProof(int id)
 {
     mysqlpp::Connection *conn = getConn();
 
@@ -372,7 +372,7 @@ Proof findProof(int id)
     return loadProof(result[0]);
 }
 
-std::vector<Proof> findProofsForFact(int fact)
+std::vector<Proof> Database::findProofsForFact(int fact)
 {
     mysqlpp::Connection *conn = getConn();
 
@@ -390,7 +390,7 @@ std::vector<Proof> findProofsForFact(int fact)
     return proofs;
 }
 
-void editProof(Proof proof)
+void Database::editProof(Proof proof)
 {
     mysqlpp::Connection *conn = getConn();
 
@@ -400,7 +400,7 @@ void editProof(Proof proof)
     query.execute(proof.name, proof.body, proof.id);
 }
 
-void editProofOrdering(Proof proof)
+void Database::editProofOrdering(Proof proof)
 {
     mysqlpp::Connection *conn = getConn();
     mysqlpp::Query query(conn, true);
@@ -415,7 +415,7 @@ void editProofOrdering(Proof proof)
     query.execute(proof.ordering, proof.id);
 }
 
-void deleteProof(int id)
+void Database::deleteProof(int id)
 {
     mysqlpp::Connection *conn = getConn();
 

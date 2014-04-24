@@ -286,7 +286,6 @@ void FactPage::factEditDialogCompleted()
 {
     Fact fact = factEditForm->getData();
 
-    editFact(fact);
     model->editFact(fact);
 
     factEditDialog->close();
@@ -306,25 +305,20 @@ void FactPage::saveStatement()
     Fact fact = model->getFactSelected();
     fact.statement = statementTextEdit->toPlainText().toStdString();
 
-    editFact(fact);
     model->editFact(fact);
-
-    renderFact(fact);
+    model->renderFact(fact);
 }
 
 void FactPage::factDeleteDialogAccepted()
 {
     factDeleteDialog->close();
     
-    deleteFact(model->getFactSelected().id);
     model->deleteFact(model->getFactSelected().id);
 }
 
 void FactPage::proofAddDialogCompleted()
 {
-    Proof proof = findProof(addProof(model->getFactSelected().id, proofAddForm->getData().name));
-
-    model->addProof(proof);
+    Proof proof = model->addProof(model->getFactSelected().id, proofAddForm->getData().name);
     model->setProofSelected(proof);
 
     proofAddDialog->close();
@@ -449,7 +443,7 @@ void FactPage::reloadFactDetails(Fact fact)
     }
 
     // Show or hide the proof section depending on fact type
-    if (findFactType(fact.type).can_have_proof) {
+    if (Database::findFactType(fact.type).can_have_proof) {
         // Remove all old proofs
         for (auto it = idProofViewWidgetMap.begin(); it != idProofViewWidgetMap.end(); it++) {
             proofsScrollLayout->removeWidget(it->second);
@@ -458,7 +452,7 @@ void FactPage::reloadFactDetails(Fact fact)
         idProofViewWidgetMap.clear();
 
         // Add all proofs of this fact
-        std::vector<Proof> proofs = findProofsForFact(fact.id);
+        std::vector<Proof> proofs = Database::findProofsForFact(fact.id);
 
         for (size_t i = 0 ; i < proofs.size(); ++i) {
             proofAddedSlot(proofs[i]);
