@@ -180,18 +180,8 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
     bodyWidget->setAutoFillBackground(true);
 
     bodyImage = new ResizableImage("");
-
-    QHBoxLayout *bodyHLayout = new QHBoxLayout();
-    bodyHLayout->addStretch(1);
-    bodyHLayout->addWidget(bodyImage);
-    bodyHLayout->addStretch(1);
-
-    QVBoxLayout *bodyVLayout = new QVBoxLayout();
-    bodyVLayout->addLayout(bodyHLayout);
-    bodyVLayout->addStretch(1);
-
-    bodyWidget->setLayout(bodyVLayout);
-    bodyScrollArea->setWidget(bodyWidget);
+    
+    bodyScrollArea->setWidget(bodyImage);
     splitter->addWidget(bodyScrollArea);
 
 

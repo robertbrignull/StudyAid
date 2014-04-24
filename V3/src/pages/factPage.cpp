@@ -184,26 +184,9 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     statementScrollArea->setWidgetResizable(true);
     statementScrollArea->setFrameShape(QFrame::NoFrame);
 
-    QWidget *statementWidget = new QWidget();
-
-    QPalette palette = statementWidget->palette();
-    palette.setColor(QPalette::Background, Qt::white);
-    statementWidget->setPalette(palette);
-    statementWidget->setAutoFillBackground(true);
-
     statementImage = new ResizableImage("");
 
-    QHBoxLayout *statementHLayout = new QHBoxLayout();
-    statementHLayout->addStretch(1);
-    statementHLayout->addWidget(statementImage);
-    statementHLayout->addStretch(1);
-
-    QVBoxLayout *statementVLayout = new QVBoxLayout();
-    statementVLayout->addLayout(statementHLayout);
-    statementVLayout->addStretch(1);
-
-    statementWidget->setLayout(statementVLayout);
-    statementScrollArea->setWidget(statementWidget);
+    statementScrollArea->setWidget(statementImage);
     splitter->addWidget(statementScrollArea);
 
 
@@ -218,7 +201,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
 
     QWidget *proofsWidget = new QWidget();
 
-    palette = proofsWidget->palette();
+    QPalette palette = proofsWidget->palette();
     palette.setColor(QPalette::Background, Qt::white);
     proofsWidget->setPalette(palette);
     proofsWidget->setAutoFillBackground(true);

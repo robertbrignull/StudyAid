@@ -6,7 +6,6 @@
 #include <QPixmap>
 #include <QSize>
 
-class QResizeEvent;
 class QPaintEvent;
 
 class ResizableImage : public QWidget
@@ -20,7 +19,6 @@ public:
 
     QSize sizeHint() const;
 
-    void resizeEvent(QResizeEvent *event);
     void paintEvent(QPaintEvent *);
 
 
@@ -28,6 +26,8 @@ public:
     std::string filename;
     QPixmap image, scaledImage;
     bool imageLoaded;
+
+    int border;
 
 public slots:
     void setImage(std::string filename);

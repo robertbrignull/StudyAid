@@ -74,6 +74,8 @@ void initialiseConnection(const char *database)
     server = extractValue(config, "server");
     user = extractValue(config, "user");
     password = extractValue(config, "password");
+
+    conn.connect(databaseName.c_str(), server.c_str(), user.c_str(), password.c_str(), 0);
 }
 
 void initialiseBackup()
@@ -113,8 +115,8 @@ void clearTestDatabase()
 
 mysqlpp::Connection *getConn()
 {
-    if (!conn.connected()) {
-        conn.connect(databaseName.c_str(), server.c_str(), user.c_str(), password.c_str(), 0);
+    if (!conn.ping()) {
+        std::cout << "ping failed" << std::endl;
     }
 
     return &conn;

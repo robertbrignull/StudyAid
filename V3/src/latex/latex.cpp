@@ -10,7 +10,7 @@
 
 #include "database/methods.h"
 #include "model.h"
-#include "latex/latexRenderThread.h"
+#include "latex/latexRenderer.h"
 
 #include "latex/latex.h"
 
@@ -27,11 +27,14 @@ inline std::string toString(int value)
 
 
 
-void initialiseLatex(const char *database, ModelSignaller *modelSignaller)
+void initialiseLatex(const char *database)
 {
     imageDir = std::string(getpwuid(getuid())->pw_dir) + "/.StudyAidV3/" + database + "/";
+}
 
-    LatexRenderThread::initialise(modelSignaller, imageDir);
+std::string getImageDir()
+{
+    return imageDir;
 }
 
 std::string getFactImageFilename(Fact fact)
@@ -44,43 +47,33 @@ std::string getProofImageFilename(Proof proof)
     return imageDir + "/proof/" + toString(proof.id) + ".png";
 }
 
-void renderFact(Fact fact)
-{
-    LatexRenderThread::getLatexRenderThread()->queueFact(fact);
-}
+// void recursivelyRenderFact(Fact fact)
+// {
+//     if (fact.type == "Section") {
+//         std::vector<Fact> facts = Database::findChildFacts(fact.id);
+//         for (size_t i = 0; i < facts.size(); i++) {
+//             recursivelyRenderFact(facts[i]);
+//         }
+//     }
+//     else {
+//         renderFact(fact);
 
-void renderProof(Proof proof)
-{
-    LatexRenderThread::getLatexRenderThread()->queueProof(proof);
-}
-
-void recursivelyRenderFact(Fact fact)
-{
-    if (fact.type == "Section") {
-        std::vector<Fact> facts = Database::findChildFacts(fact.id);
-        for (size_t i = 0; i < facts.size(); i++) {
-            recursivelyRenderFact(facts[i]);
-        }
-    }
-    else {
-        renderFact(fact);
-
-        std::vector<Proof> proofs = Database::findProofsForFact(fact.id);
-        for (size_t i = 0; i < proofs.size(); i++) {
-            renderProof(proofs[i]);
-        }
-    }
-}
+//         std::vector<Proof> proofs = Database::findProofsForFact(fact.id);
+//         for (size_t i = 0; i < proofs.size(); i++) {
+//             renderProof(proofs[i]);
+//         }
+//     }
+// }
 
 void renderAll()
 {
-    // First delete any rendered images
-    if (system((std::string("rm -f ") + imageDir + "/fact/* " + imageDir + "/proof/*").c_str())) {
-        std::cout << "Could not delete rendered images" << std::endl;
-    }
+    // // First delete any rendered images
+    // if (system((std::string("rm -f ") + imageDir + "/fact/* " + imageDir + "/proof/*").c_str())) {
+    //     std::cout << "Could not delete rendered images" << std::endl;
+    // }
 
-    std::vector<Course> courses = Database::findAllCourses();
-    for (size_t i = 0; i < courses.size(); i++) {
-        recursivelyRenderFact(Database::findFact(courses[i].root_fact));
-    }
+    // std::vector<Course> courses = Database::findAllCourses();
+    // for (size_t i = 0; i < courses.size(); i++) {
+    //     recursivelyRenderFact(Database::findFact(courses[i].root_fact));
+    // }
 }

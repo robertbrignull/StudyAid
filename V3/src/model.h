@@ -1,12 +1,20 @@
 #pragma once
 
 #include <QObject>
+#include <QThread>
 
 #include "database/structures.h"
+
+class LatexRenderer;
+class RenderQueue;
 
 class ModelSignaller : public QObject
 {
     Q_OBJECT
+
+public:
+    ModelSignaller(QObject *parent = 0);
+    ~ModelSignaller();
 
 signals:
     void courseAdded(Course course);
@@ -26,6 +34,9 @@ signals:
     void proofRendered(Proof proof, bool success);
     void proofDeleted(int id);
 
+    void requestRenderFact(Fact fact);
+    void requestRenderProof(Proof proof);
+
 public slots:
     Course addCourse(std::string name);
     void editCourse(Course course);
@@ -43,6 +54,11 @@ public slots:
     void editProofOrdering(Proof proof);
     void renderProof(Proof proof);
     void deleteProof(int id);
+
+private:
+    LatexRenderer *renderer;
+    RenderQueue *renderQueue;
+    QThread renderThread;
 };
 
 class Model : public QObject

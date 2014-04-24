@@ -43,11 +43,7 @@ ProofViewWidget::ProofViewWidget(Proof proof, Model *model, ResizableStackedWidg
 
     bodyImage = new ResizableImage(getProofImageFilename(proof));
 
-    QHBoxLayout *bodyLayout = new QHBoxLayout();
-    bodyLayout->addStretch(1);
-    bodyLayout->addWidget(bodyImage);
-    bodyLayout->addStretch(1);
-    outerLayout->addLayout(bodyLayout);
+    outerLayout->addWidget(bodyImage);
 
 
 

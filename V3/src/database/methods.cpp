@@ -66,13 +66,13 @@ int Database::addCourse(std::string name)
     mysqlpp::Query query(conn, true);
     mysqlpp::SimpleResult result;
 
-    query << "INSERT INTO fact (fact_parent, fact_name, fact_type, fact_statement, fact_ordering) VALUES (NULL, '', 'Section', '', 0)";
+    query = mysqlpp::Query(getConn(), true, "INSERT INTO fact (fact_parent, fact_name, fact_type, fact_statement, fact_ordering) VALUES (NULL, '', 'Section', '', 0)");
     result = query.execute();
 
     int root_fact_id = result.insert_id();
 
     query.reset();
-    query << "SELECT MAX(course_ordering) AS ordering FROM course";
+    query = mysqlpp::Query(getConn(), true, "SELECT MAX(course_ordering) AS ordering FROM course");
     mysqlpp::StoreQueryResult storeResult = query.store();
 
     int ordering = 0;
@@ -81,7 +81,7 @@ int Database::addCourse(std::string name)
     }
 
     query.reset();
-    query << "INSERT INTO course (course_name, course_ordering, course_root_fact) VALUES (%0q, %1q, %2q)";
+    query = mysqlpp::Query(getConn(), true, "INSERT INTO course (course_name, course_ordering, course_root_fact) VALUES (%0q, %1q, %2q)");
     query.parse();
     result = query.execute(name, ordering, root_fact_id);
 
@@ -137,12 +137,12 @@ void Database::editCourseOrdering(Course course)
     mysqlpp::Connection *conn = getConn();
     mysqlpp::Query query(conn, true);
 
-    query << "UPDATE course SET course_ordering = course_ordering + 1 WHERE course_ordering >= %0q";
+    query = mysqlpp::Query(getConn(), true, "UPDATE course SET course_ordering = course_ordering + 1 WHERE course_ordering >= %0q");
     query.parse();
     query.execute(course.ordering);
 
     query.reset();
-    query << "UPDATE course SET course_ordering = %0q WHERE course_id = %1q";
+    query = mysqlpp::Query(getConn(), true, "UPDATE course SET course_ordering = %0q WHERE course_id = %1q");
     query.parse();
     query.execute(course.ordering, course.id);
 }
@@ -152,17 +152,17 @@ void Database::deleteCourse(int id)
     mysqlpp::Connection *conn = getConn();
     mysqlpp::Query query(conn, true);
 
-    query << "SELECT course_root_fact FROM course WHERE course_id = %0q";
+    query = mysqlpp::Query(getConn(), true, "SELECT course_root_fact FROM course WHERE course_id = %0q");
     query.parse();
     mysqlpp::StoreQueryResult storeResult = query.store(id);
 
     query.reset();
-    query << "DELETE FROM course WHERE course_id = %0q";
+    query = mysqlpp::Query(getConn(), true, "DELETE FROM course WHERE course_id = %0q");
     query.parse();
     query.execute(id);
 
     query.reset();
-    query << "DELETE FROM fact WHERE fact_id = %0q";
+    query = mysqlpp::Query(getConn(), true, "DELETE FROM fact WHERE fact_id = %0q");
     query.parse();
     query.execute(storeResult[0]["course_root_fact"]);
 }
@@ -180,7 +180,7 @@ int Database::addFact(int parent, std::string name, std::string type)
     mysqlpp::Connection *conn = getConn();
     mysqlpp::Query query(conn, true);
 
-    query << "SELECT MAX(fact_ordering) AS ordering FROM fact WHERE fact_parent = %0q";
+    query = mysqlpp::Query(getConn(), true, "SELECT MAX(fact_ordering) AS ordering FROM fact WHERE fact_parent = %0q");
     query.parse();
     mysqlpp::StoreQueryResult storeResult = query.store(parent);
 
@@ -190,7 +190,7 @@ int Database::addFact(int parent, std::string name, std::string type)
     }
 
     query.reset();
-    query << "INSERT INTO fact (fact_parent, fact_name, fact_type, fact_statement, fact_ordering) VALUES (%0q, %1q, %2q, '', %3q)";
+    query = mysqlpp::Query(getConn(), true, "INSERT INTO fact (fact_parent, fact_name, fact_type, fact_statement, fact_ordering) VALUES (%0q, %1q, %2q, '', %3q)");
     query.parse();
 
     return query.execute(parent, name, type, ordering).insert_id();
@@ -263,12 +263,12 @@ void Database::editFactOrdering(Fact fact)
     mysqlpp::Connection *conn = getConn();
     mysqlpp::Query query(conn, true);
 
-    query << "UPDATE fact SET fact_ordering = fact_ordering + 1 WHERE fact_parent = %0q AND fact_ordering >= %1q";
+    query = mysqlpp::Query(getConn(), true, "UPDATE fact SET fact_ordering = fact_ordering + 1 WHERE fact_parent = %0q AND fact_ordering >= %1q");
     query.parse();
     query.execute(fact.parent, fact.ordering);
 
     query.reset();
-    query << "UPDATE fact SET fact_parent = %0q, fact_ordering = %1q WHERE fact_id = %2q";
+    query = mysqlpp::Query(getConn(), true, "UPDATE fact SET fact_parent = %0q, fact_ordering = %1q WHERE fact_id = %2q");
     query.parse();
     query.execute(fact.parent, fact.ordering, fact.id);
 }
@@ -340,7 +340,7 @@ int Database::addProof(int fact, std::string name)
     mysqlpp::Connection *conn = getConn();
     mysqlpp::Query query(conn, true);
 
-    query << "SELECT MAX(proof_ordering) AS ordering FROM proof WHERE proof_fact = %0q";
+    query = mysqlpp::Query(getConn(), true, "SELECT MAX(proof_ordering) AS ordering FROM proof WHERE proof_fact = %0q");
     query.parse();
     mysqlpp::StoreQueryResult storeResult = query.store(fact);
 
@@ -350,7 +350,7 @@ int Database::addProof(int fact, std::string name)
     }
 
     query.reset();
-    query << "INSERT INTO proof (proof_fact, proof_name, proof_body, proof_ordering) VALUES (%0q, %1q, '', %2q)";
+    query = mysqlpp::Query(getConn(), true, "INSERT INTO proof (proof_fact, proof_name, proof_body, proof_ordering) VALUES (%0q, %1q, '', %2q)");
     query.parse();
 
     return query.execute(fact, name, ordering).insert_id();
@@ -405,12 +405,12 @@ void Database::editProofOrdering(Proof proof)
     mysqlpp::Connection *conn = getConn();
     mysqlpp::Query query(conn, true);
 
-    query << "UPDATE proof SET proof_ordering = proof_ordering + 1 WHERE proof_fact = %0q AND proof_ordering >= %1q";
+    query = mysqlpp::Query(getConn(), true, "UPDATE proof SET proof_ordering = proof_ordering + 1 WHERE proof_fact = %0q AND proof_ordering >= %1q");
     query.parse();
     query.execute(proof.fact, proof.ordering);
 
     query.reset();
-    query << "UPDATE proof SET proof_ordering = %0q WHERE proof_id = %1q";
+    query = mysqlpp::Query(getConn(), true, "UPDATE proof SET proof_ordering = %0q WHERE proof_id = %1q");
     query.parse();
     query.execute(proof.ordering, proof.id);
 }

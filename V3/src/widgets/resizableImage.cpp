@@ -1,6 +1,5 @@
 #include <iostream>
 
-#include <QResizeEvent>
 #include <QPainter>
 
 #include "widgets/resizableImage.h"
@@ -14,33 +13,26 @@ ResizableImage::ResizableImage(std::string filename, QWidget *parent)
 
     imageLoaded = (image.width() != 0);
 
-    setWidth(image.size().width());
-
-    setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
-}
-
-void ResizableImage::setWidth(int width)
-{
     if (imageLoaded) {
-        if (width > 1000) { width = 1000; }
-
-        scaledImage = image.scaledToWidth(width, Qt::SmoothTransformation);
+        scaledImage = image.scaledToWidth(image.width());
     }
+
+    border = 11;
+
+    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
 }
 
 QSize ResizableImage::sizeHint() const
 {
     if (imageLoaded) {
-        return scaledImage.size();
+        QSize size = scaledImage.size();
+        size.setWidth(size.width() + border*2);
+        size.setHeight(size.height() + border*2);
+        return size;
     }
     else {
         return QSize(0, 0);
     }
-}
-
-void ResizableImage::resizeEvent(QResizeEvent *event)
-{
-    setWidth(event->size().width());
 }
 
 void ResizableImage::paintEvent(QPaintEvent *)
@@ -48,7 +40,16 @@ void ResizableImage::paintEvent(QPaintEvent *)
     if (imageLoaded) {
         QPainter painter(this);
 
-        painter.drawPixmap(0, 0, scaledImage);
+        if (scaledImage.width() != std::min(width() - border*2, 1000)) {
+            scaledImage = image.scaledToWidth(std::min(width() - border*2, 1000), Qt::SmoothTransformation);
+            updateGeometry();
+        }
+
+        painter.setBrush(QBrush(Qt::white));
+        painter.setPen(QPen(Qt::white));
+        painter.drawRect(rect());
+
+        painter.drawPixmap((width() - scaledImage.width()) / 2, border, scaledImage);
     }
 }
 
@@ -64,7 +65,9 @@ void ResizableImage::reloadImage()
 
     imageLoaded = (image.width() != 0);
 
-    setWidth(1000);
+    if (imageLoaded) {
+        scaledImage = image.scaledToWidth(std::min(width(), 1000), Qt::SmoothTransformation);
+    }
 
     updateGeometry();
     repaint();

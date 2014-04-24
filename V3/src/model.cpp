@@ -1,6 +1,8 @@
 #include <iostream>
 
 #include "database/methods.h"
+#include "latex/latexRenderer.h"
+#include "latex/renderQueue.h"
 
 #include "model.h"
 
@@ -11,6 +13,39 @@
 //      ##    ##   ##  ### ##  #### ######## ##      ##      ##     ##  ##
 //  ##   ##   ##   ##   ## ##   ### ##    ## ##      ##      ##     ##   ##
 //   #####  ######  #####  ##    ## ##    ## ####### ####### ###### ##   ##
+
+ModelSignaller::ModelSignaller(QObject *parent)
+    : QObject(parent)
+{
+    renderer = new LatexRenderer();
+    renderer->moveToThread(&renderThread);
+
+    renderQueue = new RenderQueue();
+    renderQueue->moveToThread(&renderThread);
+
+    renderThread.start();
+
+    connect(this, SIGNAL(requestRenderFact(Fact)), renderQueue, SLOT(queueFact(Fact)), Qt::QueuedConnection);
+    connect(this, SIGNAL(requestRenderProof(Proof)), renderQueue, SLOT(queueProof(Proof)), Qt::QueuedConnection);
+
+    connect(renderQueue, SIGNAL(supplyFact(Fact)), renderer, SLOT(renderFact(Fact)), Qt::QueuedConnection);
+    connect(renderQueue, SIGNAL(supplyProof(Proof)), renderer, SLOT(renderProof(Proof)), Qt::QueuedConnection);
+
+    connect(renderer, SIGNAL(factRendered(Fact, bool)), renderQueue, SLOT(requestText()), Qt::QueuedConnection);
+    connect(renderer, SIGNAL(proofRendered(Proof, bool)), renderQueue, SLOT(requestText()), Qt::QueuedConnection);
+
+    connect(renderer, SIGNAL(factRendered(Fact, bool)), this, SIGNAL(factRendered(Fact, bool)), Qt::QueuedConnection);
+    connect(renderer, SIGNAL(proofRendered(Proof, bool)), this, SIGNAL(proofRendered(Proof, bool)), Qt::QueuedConnection);
+}
+
+ModelSignaller::~ModelSignaller()
+{
+    renderThread.quit();
+    renderThread.wait(1000);
+
+    delete renderQueue;
+    delete renderer;
+}
 
 Course ModelSignaller::addCourse(std::string name)
 {
@@ -62,7 +97,7 @@ void ModelSignaller::editFactOrdering(Fact fact)
 
 void ModelSignaller::renderFact(Fact fact)
 {
-    emit factRendered(fact, true);
+    emit requestRenderFact(fact);
 }
 
 void ModelSignaller::deleteFact(int id)
@@ -94,7 +129,7 @@ void ModelSignaller::editProofOrdering(Proof proof)
 
 void ModelSignaller::renderProof(Proof proof)
 {
-    emit proofRendered(proof, true);
+    emit requestRenderProof(proof);
 }
 
 void ModelSignaller::deleteProof(int id)

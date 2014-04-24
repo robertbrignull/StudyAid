@@ -38,7 +38,8 @@ class StudyAidController : public QWidget
     Q_OBJECT
 
 public:
-    StudyAidController(ModelSignaller *modelSignaller);
+    StudyAidController();
+    ~StudyAidController();
 
 
 

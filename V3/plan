@@ -1,8 +1,8 @@
 ======= todo list ======
 
-- try to reduce lag while rendering latex
-  - render less often
-  - render in another thread
+- Put a "new window" button on every page
+
+- Move section edit/delete/add buttons onto the fact list
 
 - Display rendered fact on proof page for reference
 

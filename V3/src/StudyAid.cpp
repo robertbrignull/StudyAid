@@ -53,9 +53,14 @@ StudyAid::~StudyAid()
     delete model;
 }
 
-StudyAidController::StudyAidController(ModelSignaller *modelSignaller)
+StudyAidController::StudyAidController()
 {
-    this->modelSignaller = modelSignaller;
+    modelSignaller = new ModelSignaller();
+}
+
+StudyAidController::~StudyAidController()
+{
+    delete modelSignaller;
 }
 
 void StudyAidController::openNewWindow()
@@ -86,11 +91,9 @@ int main(int argc, char **argv)
     qRegisterMetaType<Proof>();
     qRegisterMetaType<Course>();
 
-    ModelSignaller modelSignaller;
-
     initialiseConnection(database);
     initialiseBackup();
-    initialiseLatex(database, &modelSignaller);
+    initialiseLatex(database);
 
     if (argc >= 3 && strncmp(argv[2], "render-all", 12) == 0) {
         renderAll();
@@ -103,7 +106,7 @@ int main(int argc, char **argv)
         return 0;
     }
     else {
-        StudyAidController controller(&modelSignaller);
+        StudyAidController controller;
         controller.openNewWindow();
 
         return app.exec();
