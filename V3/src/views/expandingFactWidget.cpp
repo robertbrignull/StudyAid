@@ -97,6 +97,7 @@ ExpandingFactWidget::ExpandingFactWidget(Fact fact, Model *model, ResizableStack
     connect(factListView, SIGNAL(moveCompleted()), this, SLOT(deactivateMoveMode()));
 
     connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
+    connect(model, SIGNAL(factRendered(Fact, bool)), this, SLOT(factRenderedSlot(Fact, bool)));
 }
 
 void ExpandingFactWidget::setExpanded(bool expanded)
