@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
 #include <pwd.h>
 
 #include <iostream>
@@ -35,13 +37,7 @@ bool writeToFile(std::string text, std::string filename)
 
 void deleteFile(std::string filename)
 {
-    FILE *file = fopen(filename.c_str(), "r");
-
-    if (file != NULL) {
-        fclose(file);
-
-        remove(filename.c_str());
-    }
+    remove(filename.c_str());
 }
 
 
@@ -58,9 +54,11 @@ void LatexRenderer::renderProof(Proof proof)
     emit proofRendered(proof, (result == 0));
 }
 
+// Should return 0 on success, non 0 on error
 int LatexRenderer::renderText(std::string text, std::string path, std::string filename)
 {
-    int retVal = 0;
+    int status = 0;
+    pid_t child_pid;
 
     std::string latex =
         std::string("\\documentclass[a4paper]{article}\n") +
@@ -79,32 +77,75 @@ int LatexRenderer::renderText(std::string text, std::string path, std::string fi
         "\\end{preview}\n" +
         "\\end{document}";
 
-    if (system((std::string("mkdir -p ") + path).c_str())) {
-        retVal = 2;
-        goto cleanup;
-    }
+
 
     if (!writeToFile(latex, path + filename + ".latex")) {
-        retVal = 2;
-        goto cleanup;
+        return 1;
     }
 
-    if (system((std::string("cd ") + path + "; pdflatex -shell-escape -halt-on-error -output-directory . " + filename + ".latex > /dev/null").c_str())) {
-        retVal = 1;
-        goto cleanup;
+    
+
+    ///////////////////////////////////
+    // Fork the pdflatex process
+
+    if ((child_pid = fork()) < 0)
+    {
+        perror("fork failure");
     }
 
-    if (system((std::string("pdftoppm -png -singlefile -r 250 ") + path + filename + ".pdf " + path + filename + " > /dev/null").c_str())) {
-        retVal = 2;
-        goto cleanup;
+    if (child_pid == 0) { // child process
+        mkdir(path.c_str(), 0777);
+
+        if (chdir(path.c_str()) == -1) {
+            std::cerr << "    chdir failed" << std::endl;
+            _exit(1);
+        }
+
+        execl("/usr/bin/pdflatex", "/usr/bin/pdflatex", "-shell-escape", "-halt-on-error", "-interaction=batchmode", "-output-directory", ".", (filename + ".latex").c_str(), NULL);
+        std::cerr << "    Child process exec failed" << std::endl;
+        _exit(1);
     }
+    else {
+        // parent process
+        wait(&status);
 
-    cleanup:
-    // deleteFile(path + filename + ".latex");
-    deleteFile(path + filename + ".aux");
-    deleteFile(path + filename + ".log");
-    deleteFile(path + filename + ".pdf");
+        if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
+            deleteFile(path + filename + ".pyg");
+            deleteFile(path + filename + ".aux");
+            deleteFile(path + filename + ".log");
+            deleteFile(path + filename + ".pdf");
 
-    // Should return 0 on success, 1 on latex render error, 2 for some other error
-    return retVal;
+            return 1;
+        }
+
+        ///////////////////////////////////
+        // Fork the pdftoppm process
+
+        if ((child_pid = fork()) < 0)
+        {
+            perror("fork failure");
+        }
+
+        if (child_pid == 0) { // child process
+            execl("/usr/bin/pdftoppm", "/usr/bin/pdftoppm", "-png", "-singlefile", "-r", "250", (path + filename + ".pdf").c_str(), (path + filename).c_str(), NULL);
+            std::cerr << "    Child process exec failed" << std::endl;
+            _exit(1);
+        }
+        else {
+            // parent process
+            wait(&status);
+
+            deleteFile(path + filename + ".pyg");
+            deleteFile(path + filename + ".aux");
+            deleteFile(path + filename + ".log");
+            deleteFile(path + filename + ".pdf");
+
+            if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
+                return 1;
+            }
+            else {
+                return 0;
+            }
+        }
+    }
 }
