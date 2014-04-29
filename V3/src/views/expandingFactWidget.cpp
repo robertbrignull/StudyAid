@@ -265,6 +265,7 @@ void ExpandingFactWidget::factEditedSlot(Fact fact)
         this->fact = fact;
 
         nameLabel->setText(QString::fromStdString(fact.name));
+        headColor = QColor(QString::fromStdString(std::string("#") + Database::findFactType(fact.type).colour));
 
         adjustSize();
     }

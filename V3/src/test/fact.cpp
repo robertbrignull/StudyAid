@@ -129,6 +129,9 @@ void FactTest::test_addFact()
     // Check that the name is shown correctly on the course page
     auto it = coursePage->factListView->currentFactList->idChildMap.begin();
     QVERIFY(((ExpandingFactWidget*) it->second.second)->fact.name == factName);
+
+    // Check that the colour is correct on the course page
+    QVERIFY(((ExpandingFactWidget*) it->second.second)->headColor == QColor(QString::fromStdString(std::string("#") + Database::findFactType(factType).colour)));
 }
 
 void FactTest::test_addFact_canHaveProof()
@@ -283,6 +286,9 @@ void FactTest::test_editFact()
     // Check that the name is shown correctly on the course page
     auto it = coursePage->factListView->currentFactList->idChildMap.begin();
     QVERIFY(((ExpandingFactWidget*) it->second.second)->fact.name == factName);
+
+    // Check that the colour is correct on the course page
+    QVERIFY(((ExpandingFactWidget*) it->second.second)->headColor == QColor(QString::fromStdString(std::string("#") + Database::findFactType(factType).colour)));
 }
 
 void FactTest::test_editFact_canHaveProof()

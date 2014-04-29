@@ -58,6 +58,7 @@ ProofViewWidget::ProofViewWidget(Proof proof, Model *model, ResizableStackedWidg
     connect(moveBelowButton, SIGNAL(clicked()), this, SLOT(moveBelowButtonClickedSlot()));
 
     connect(model, SIGNAL(proofEdited(Proof)), this, SLOT(proofEditedSlot(Proof)));
+    connect(model, SIGNAL(proofRendered(Proof, bool)), this, SLOT(proofRenderedSlot(Proof, bool)));
 }
 
 void ProofViewWidget::viewProofButtonClicked()
