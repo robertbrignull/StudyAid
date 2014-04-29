@@ -1,5 +1,6 @@
 #pragma once
 
+class FactList;
 class SectionPickerWidget;
 
 class TestUtil
@@ -23,5 +24,6 @@ public:
     static void editSection(StudyAid *window, const char *newSectionName, const char *oldSectionName);
     static void deleteSection(StudyAid *window, const char *sectionName);
     static void selectSection(StudyAid *window, const char *sectionName);
+    static FactList *findFactList(StudyAid *window, const char *name, FactList *searchRoot);
     static SectionPickerWidget *findSectionPicker(StudyAid *window, const char *name, SectionPickerWidget *searchRoot);
 };

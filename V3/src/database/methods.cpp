@@ -122,6 +122,22 @@ std::vector<Course> Database::findAllCourses()
     return courses;
 }
 
+Course Database::findCourseByRootFact(int id)
+{
+    mysqlpp::Connection *conn = getConn();
+
+    mysqlpp::Query query(conn, true, "SELECT * FROM course WHERE course_root_fact = %0q");
+    query.parse();
+
+    mysqlpp::StoreQueryResult result = query.store(id);
+
+    if (result.num_rows() != 1) {
+        throw new NotFoundException();
+    }
+
+    return loadCourse(result[0]);
+}
+
 void Database::editCourse(Course course)
 {
     mysqlpp::Connection *conn = getConn();

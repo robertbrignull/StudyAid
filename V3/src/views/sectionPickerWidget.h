@@ -8,13 +8,8 @@
 #include <QWidget>
 
 class Model;
-class ResizableStackedWidget;
 class QPaintEvent;
 class QVBoxLayout;
-class FactForm;
-class SectionForm;
-class Dialog;
-class ImageButton;
 class ClickableQLabel;
 
 class SectionPickerWidget : public QWidget
@@ -22,29 +17,17 @@ class SectionPickerWidget : public QWidget
     Q_OBJECT
 
 public:
-    SectionPickerWidget(Fact fact, Model *model, ResizableStackedWidget *pageStack, FactForm *factAddForm, Dialog *factAddDialog, SectionForm *sectionEditForm, Dialog *sectionEditDialog, QWidget *parent = 0);
+    SectionPickerWidget(Fact fact, Model *model, QWidget *parent = 0);
 
     void paintEvent(QPaintEvent *);
 
 
 
     Model *model;
-    ResizableStackedWidget *pageStack;
 
     Fact fact;
 
     QVBoxLayout *layout;
-
-    ImageButton *deleteSectionButton;
-    Dialog *sectionDeleteDialog;
-
-    ImageButton *editSectionButton;
-    SectionForm *sectionEditForm;
-    Dialog *sectionEditDialog;
-
-    ImageButton *addFactButton;
-    FactForm *factAddForm;
-    Dialog *factAddDialog;
 
     // The name of this section
     ClickableQLabel *sectionLabel;
@@ -57,12 +40,6 @@ signals:
 
 public slots:
     void sectionSelectedSlot(int id);
-
-    void factAddButtonClicked();
-
-    void sectionEditButtonClicked();
-
-    void sectionDeleteDialogAccepted();
 
     void factAddedSlot(Fact fact);
     void factEditedSlot(Fact fact);

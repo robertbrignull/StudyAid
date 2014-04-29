@@ -11,6 +11,9 @@ class Model;
 class ResizableStackedWidget;
 class FactList;
 class QHBoxLayout;
+class FactForm;
+class SectionForm;
+class Dialog;
 
 class FactListView : public QWidget
 {
@@ -23,9 +26,18 @@ public:
 
 
     Course course;
+    Model *model;
+    ResizableStackedWidget *pageStack;
+
     std::map<int, FactList*> idFactListMap;
     QHBoxLayout *layout;
     FactList *currentFactList;
+
+    FactForm *factAddForm;
+    Dialog *factAddDialog;
+
+    SectionForm *sectionEditForm;
+    Dialog *sectionEditDialog;
 
 signals:
     void moveButtonClicked(Fact fact);
@@ -33,4 +45,8 @@ signals:
 
 public slots:
     void selectSection(int id);
+
+    void factAddFormCompleted();
+
+    void sectionEditFormCompleted();
 };

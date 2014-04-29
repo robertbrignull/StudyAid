@@ -43,12 +43,6 @@ public:
     ImageButton *deleteCourseButton;
     Dialog *courseDeleteDialog;
 
-    FactForm *factAddForm;
-    Dialog *factAddDialog;
-
-    SectionForm *sectionEditForm;
-    Dialog *sectionEditDialog;
-
     // Both labels that hold the name of the current course
     QLabel *courseLabel;
 
@@ -68,10 +62,6 @@ public slots:
     void courseEditDialogCompleted();
 
     void courseDeleteDialogAccepted();
-
-    void factAddFormCompleted();
-
-    void sectionEditFormCompleted();
 
     void sectionSelected(int id);
 

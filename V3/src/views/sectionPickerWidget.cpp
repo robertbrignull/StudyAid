@@ -8,26 +8,14 @@
 #include "model.h"
 #include "database/methods.h"
 #include "widgets/clickableQLabel.h"
-#include "widgets/resizableStackedWidget.h"
-#include "widgets/imageButton.h"
-#include "widgets/dialog.h"
-#include "forms/factForm.h"
-#include "forms/sectionForm.h"
 
 #include "views/sectionPickerWidget.h"
 
-SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStackedWidget *pageStack, FactForm *factAddForm, Dialog *factAddDialog, SectionForm *sectionEditForm, Dialog *sectionEditDialog, QWidget *parent)
+SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, QWidget *parent)
     : QWidget(parent)
 {
     this->fact = fact;
     this->model = model;
-    this->pageStack = pageStack;
-
-    this->factAddForm = factAddForm;
-    this->factAddDialog = factAddDialog;
-
-    this->sectionEditForm = sectionEditForm;
-    this->sectionEditDialog = sectionEditDialog;
 
 
 
@@ -36,28 +24,12 @@ SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStack
 
 
 
-    QHBoxLayout *sectionLayout = new QHBoxLayout();
     sectionLabel = new ClickableQLabel((fact.parent != -1) ? QString::fromStdString(fact.name) : "All");
 
     sectionLabel->setWordWrap(true);
     sectionLabel->setScaledContents(true);
 
-    sectionLayout->addWidget(sectionLabel);
-
-    if (fact.parent != -1) {
-        deleteSectionButton = new ImageButton(QPixmap(":/images/trash_black.png"), QSize(16, 16));
-        sectionLayout->addWidget(deleteSectionButton);
-
-        sectionDeleteDialog = new Dialog(this, nullptr, "Are you sure you want to delete this section?", "Delete", "Cancel");
-
-        editSectionButton = new ImageButton(QPixmap(":/images/pencil_black.png"), QSize(16, 16));
-        sectionLayout->addWidget(editSectionButton);
-    }
-
-    addFactButton = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(16, 16));
-    sectionLayout->addWidget(addFactButton);
-
-    layout->addLayout(sectionLayout);
+    layout->addWidget(sectionLabel);
 
 
 
@@ -73,17 +45,6 @@ SectionPickerWidget::SectionPickerWidget(Fact fact, Model *model, ResizableStack
     connect(sectionLabel, &ClickableQLabel::clicked, [=](){
         emit sectionSelected(fact.id);
     });
-
-    connect(addFactButton, SIGNAL(clicked()), this, SLOT(factAddButtonClicked()));
-
-    if (fact.parent != -1) {
-        connect(deleteSectionButton, SIGNAL(clicked()), sectionDeleteDialog, SLOT(show()));
-
-        connect(sectionDeleteDialog, SIGNAL(accepted()), this, SLOT(sectionDeleteDialogAccepted()));
-        connect(sectionDeleteDialog, SIGNAL(rejected()), sectionDeleteDialog, SLOT(close()));
-
-        connect(editSectionButton, SIGNAL(clicked()), this, SLOT(sectionEditButtonClicked()));
-    }
 
     connect(model, SIGNAL(factAdded(Fact)), this, SLOT(factAddedSlot(Fact)));
     connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
@@ -109,33 +70,10 @@ void SectionPickerWidget::sectionSelectedSlot(int id)
     emit sectionSelected(id);
 }
 
-void SectionPickerWidget::factAddButtonClicked()
-{
-    Fact newFact = Fact();
-    newFact.parent = fact.id;
-
-    factAddForm->setData(newFact);
-
-    factAddDialog->show();
-}
-
-void SectionPickerWidget::sectionEditButtonClicked()
-{
-    sectionEditDialog->show();
-    sectionEditForm->setData(fact);
-}
-
-void SectionPickerWidget::sectionDeleteDialogAccepted()
-{
-    sectionDeleteDialog->close();
-
-    model->deleteFact(fact.id);
-}
-
 void SectionPickerWidget::factAddedSlot(Fact fact)
 {
     if (fact.type == "Section" && fact.parent == this->fact.id) {
-        insertSectionPickerWidget(new SectionPickerWidget(fact, model, pageStack, factAddForm, factAddDialog, sectionEditForm, sectionEditDialog));
+        insertSectionPickerWidget(new SectionPickerWidget(fact, model));
     }
 }
 
@@ -159,7 +97,7 @@ void SectionPickerWidget::factOrderingEditedSlot(Fact fact)
             }
         }
 
-        insertSectionPickerWidget(new SectionPickerWidget(fact, model, pageStack, factAddForm, factAddDialog, sectionEditForm, sectionEditDialog));
+        insertSectionPickerWidget(new SectionPickerWidget(fact, model));
     }
 }
 

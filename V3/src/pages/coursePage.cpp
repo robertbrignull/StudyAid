@@ -39,12 +39,6 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
 
     courseDeleteDialog = new Dialog(this, nullptr, "Are you sure you want to delete this course?", "Delete", "Cancel");
 
-    factAddForm = new FactForm();
-    factAddDialog = new Dialog(this, factAddForm, "Add a new fact...", "Add", "Cancel");
-
-    sectionEditForm = new SectionForm();
-    sectionEditDialog = new Dialog(this, sectionEditForm, "Edit the section...", "Edit", "Cancel");
-
 
 
     QVBoxLayout *outerLayout = new QVBoxLayout(this);
@@ -198,12 +192,6 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
     connect(courseDeleteDialog, SIGNAL(accepted()), this, SLOT(courseDeleteDialogAccepted()));
     connect(courseDeleteDialog, SIGNAL(rejected()), courseDeleteDialog, SLOT(close()));
 
-    connect(factAddDialog, SIGNAL(accepted()), this, SLOT(factAddFormCompleted()));
-    connect(factAddDialog, SIGNAL(rejected()), factAddDialog, SLOT(close()));
-
-    connect(sectionEditDialog, SIGNAL(accepted()), this, SLOT(sectionEditFormCompleted()));
-    connect(sectionEditDialog, SIGNAL(rejected()), sectionEditDialog, SLOT(close()));
-
     connect(newWindowButton, SIGNAL(clicked()), this, SLOT(newWindowButtonClicked()));
 
     connect(model, SIGNAL(courseSelectedChanged(Course)), this, SLOT(courseSelectedChangedSlot(Course)));
@@ -241,29 +229,6 @@ void CoursePage::courseDeleteDialogAccepted()
     model->deleteCourse(model->getCourseSelected().id);
 }
 
-void CoursePage::factAddFormCompleted()
-{
-    Fact data = factAddForm->getData();
-
-    Fact newFact = model->addFact(data.parent, data.name, data.type);
-
-    factAddDialog->close();
-
-    if (newFact.type != "Section") {
-        model->setFactSelected(newFact);
-        pageStack->setCurrentIndex(2);
-    }
-}
-
-void CoursePage::sectionEditFormCompleted()
-{
-    Fact section = sectionEditForm->getData();
-
-    model->editFact(section);
-
-    sectionEditDialog->close();
-}
-
 void CoursePage::sectionSelected(int)
 {
     courseScrollArea->ensureVisible(0, 0);
@@ -283,7 +248,7 @@ void CoursePage::courseSelectedChangedSlot(Course course)
     while (pickerScrollLayout->count() > 0) {
         delete pickerScrollLayout->takeAt(0)->widget();
     }
-    sectionPicker = new SectionPickerWidget(Database::findFact(course.root_fact), model, pageStack, factAddForm, factAddDialog, sectionEditForm, sectionEditDialog);
+    sectionPicker = new SectionPickerWidget(Database::findFact(course.root_fact), model);
     pickerScrollLayout->addWidget(sectionPicker);
     pickerScrollLayout->addStretch(1);
     pickerScrollArea->ensureVisible(0, 0);

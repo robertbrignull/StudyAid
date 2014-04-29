@@ -7,44 +7,63 @@
 
 #include "model.h"
 #include "database/methods.h"
+#include "forms/factForm.h"
+#include "forms/sectionForm.h"
 #include "widgets/resizableStackedWidget.h"
 #include "widgets/imageButton.h"
+#include "widgets/dialog.h"
 #include "views/expandingFactWidget.h"
 #include "views/factListView.h"
 
 #include "views/factList.h"
 
-FactList::FactList(Fact fact, Model *model, ResizableStackedWidget *pageStack, FactListView *factListView, QWidget *parent)
+FactList::FactList(Fact fact, Model *model, ResizableStackedWidget *pageStack, FactListView *factListView, FactForm *factAddForm, Dialog *factAddDialog, SectionForm *sectionEditForm, Dialog *sectionEditDialog, QWidget *parent)
     : QWidget(parent)
 {
     this->fact = fact;
     this->model = model;
     this->pageStack = pageStack;
     this->factListView = factListView;
+    this->factAddForm = factAddForm;
+    this->factAddDialog = factAddDialog;
+    this->sectionEditForm = sectionEditForm;
+    this->sectionEditDialog = sectionEditDialog;
 
 
 
     layout = new QVBoxLayout(this);
     layout->setContentsMargins(6, 0, 0, 11);
 
-    
+
 
     // If this is not the root fact, then add a label
     // showing the name of the section
     if (fact.parent != -1) {
         sectionNameLabel = new QLabel(QString::fromStdString(fact.name));
+        sectionNameLabel->setWordWrap(true);
+        sectionNameLabel->setScaledContents(true);
 
         moveButton = new ImageButton(QPixmap(":/images/move_black.png"), QSize(24, 24));
         moveAboveButton = new ImageButton(QPixmap(":/images/arrow_up_black.png"), QSize(24, 24));
         moveBelowButton = new ImageButton(QPixmap(":/images/arrow_down_black.png"), QSize(24, 24));
 
+        deleteSectionButton = new ImageButton(QPixmap(":/images/trash_black.png"), QSize(24, 24));
+
+        sectionDeleteDialog = new Dialog(this, nullptr, "Are you sure you want to delete this section?", "Delete", "Cancel");
+
+        editSectionButton = new ImageButton(QPixmap(":/images/pencil_black.png"), QSize(24, 24));
+
+        addFactButton = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(24, 24));
+
         QHBoxLayout *headLayout = new QHBoxLayout();
 
         headLayout->addWidget(sectionNameLabel);
-        headLayout->addStretch(1);
+        headLayout->addWidget(deleteSectionButton);
+        headLayout->addWidget(editSectionButton);
         headLayout->addWidget(moveBelowButton);
         headLayout->addWidget(moveAboveButton);
         headLayout->addWidget(moveButton);
+        headLayout->addWidget(addFactButton);
 
         layout->addLayout(headLayout);
 
@@ -52,7 +71,19 @@ FactList::FactList(Fact fact, Model *model, ResizableStackedWidget *pageStack, F
     }
     else {
         sectionNameLabel = nullptr;
-        moveButton = moveAboveButton = moveBelowButton = nullptr;
+        moveButton = moveAboveButton = moveBelowButton = deleteSectionButton = editSectionButton = addFactButton = nullptr;
+        sectionDeleteDialog = nullptr;
+
+        sectionNameLabel = new QLabel(QString::fromStdString(Database::findCourseByRootFact(fact.id).name));
+        sectionNameLabel->setWordWrap(true);
+        sectionNameLabel->setScaledContents(true);
+
+        addFactButton = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(24, 24));
+
+        QHBoxLayout *headLayout = new QHBoxLayout();
+        headLayout->addWidget(sectionNameLabel);
+        headLayout->addWidget(addFactButton);
+        layout->addLayout(headLayout);
     }
 
     // Populate the list of children but don't add to the layout
@@ -66,7 +97,7 @@ FactList::FactList(Fact fact, Model *model, ResizableStackedWidget *pageStack, F
 
     for (size_t i = 0; i < facts.size(); ++i) {
         if (facts[i].type == "Section") {
-            FactList *factList = new FactList(facts[i], model, pageStack, factListView);
+            FactList *factList = new FactList(facts[i], model, pageStack, factListView, factAddForm, factAddDialog, sectionEditForm, sectionEditDialog);
             idChildSectionMap.insert(std::pair<int, FactList*>(facts[i].id, factList));
         }
         else {
@@ -89,14 +120,27 @@ FactList::FactList(Fact fact, Model *model, ResizableStackedWidget *pageStack, F
         connect(this, SIGNAL(moveButtonClicked(Fact)), factListView, SIGNAL(moveButtonClicked(Fact)));
         connect(this, SIGNAL(moveCompleted()), factListView, SIGNAL(moveCompleted()));
 
-        connect(factListView, SIGNAL(moveButtonClicked(Fact)), this, SLOT(activateMoveMode(Fact)));
-        connect(factListView, SIGNAL(moveCompleted()), this, SLOT(deactivateMoveMode()));
+        connect(deleteSectionButton, SIGNAL(clicked()), sectionDeleteDialog, SLOT(show()));
+
+        connect(sectionDeleteDialog, SIGNAL(accepted()), this, SLOT(sectionDeleteDialogAccepted()));
+        connect(sectionDeleteDialog, SIGNAL(rejected()), sectionDeleteDialog, SLOT(close()));
+
+        connect(editSectionButton, SIGNAL(clicked()), this, SLOT(sectionEditButtonClicked()));
     }
+
+    connect(factListView, SIGNAL(moveButtonClicked(Fact)), this, SLOT(activateMoveMode(Fact)));
+    connect(factListView, SIGNAL(moveCompleted()), this, SLOT(deactivateMoveMode()));
+
+    connect(addFactButton, SIGNAL(clicked()), this, SLOT(factAddButtonClicked()));
 
     connect(model, SIGNAL(factAdded(Fact)), this, SLOT(factAddedSlot(Fact)));
     connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
     connect(model, SIGNAL(factOrderingEdited(Fact)), this, SLOT(factOrderingEditedSlot(Fact)));
     connect(model, SIGNAL(factDeleted(int)), this, SLOT(factDeletedSlot(int)));
+
+    if (fact.parent == -1) {
+        connect(model, SIGNAL(courseEdited(Course)), this, SLOT(courseEditedSlot(Course)));
+    }
 }
 
 FactList::~FactList()
@@ -231,23 +275,30 @@ void FactList::activateMoveMode(Fact fact)
 
     inMoveMode = true;
 
-    if (fact.id == this->fact.id) {
-        moveButton->show();
-        moveAboveButton->hide();
-        moveBelowButton->hide();
-    }
-    else {
-        moveButton->hide();
+    addFactButton->hide();
 
-        if (!isAncestor) {
-            moveFact = fact;
+    if (this->fact.parent != -1) {
+        deleteSectionButton->hide();
+        editSectionButton->hide();
 
-            moveAboveButton->show();
-            moveBelowButton->show();
-        }
-        else {
+        if (fact.id == this->fact.id) {
+            moveButton->show();
             moveAboveButton->hide();
             moveBelowButton->hide();
+        }
+        else {
+            moveButton->hide();
+
+            if (!isAncestor) {
+                moveFact = fact;
+
+                moveAboveButton->show();
+                moveBelowButton->show();
+            }
+            else {
+                moveAboveButton->hide();
+                moveBelowButton->hide();
+            }
         }
     }
 }
@@ -256,16 +307,53 @@ void FactList::deactivateMoveMode()
 {
     inMoveMode = false;
 
-    moveButton->show();
-    moveAboveButton->hide();
-    moveBelowButton->hide();
+    addFactButton->show();
+
+    if (this->fact.parent != -1) {
+        deleteSectionButton->show();
+        editSectionButton->show();
+
+        moveButton->show();
+        moveAboveButton->hide();
+        moveBelowButton->hide();
+    }
+}
+
+void FactList::factAddButtonClicked()
+{
+    Fact newFact = Fact();
+    newFact.parent = fact.id;
+
+    factAddForm->setData(newFact);
+
+    factAddDialog->show();
+}
+
+void FactList::sectionEditButtonClicked()
+{
+    sectionEditDialog->show();
+    sectionEditForm->setData(fact);
+}
+
+void FactList::sectionDeleteDialogAccepted()
+{
+    sectionDeleteDialog->close();
+
+    model->deleteFact(fact.id);
+}
+
+void FactList::courseEditedSlot(Course course)
+{
+    if (course.root_fact == fact.id) {
+        sectionNameLabel->setText(QString::fromStdString(course.name));
+    }
 }
 
 void FactList::factAddedSlot(Fact fact)
 {
     if (fact.parent == this->fact.id) {
         if (fact.type == "Section") {
-            FactList *factWidget = new FactList(fact, model, pageStack, factListView);
+            FactList *factWidget = new FactList(fact, model, pageStack, factListView, factAddForm, factAddDialog, sectionEditForm, sectionEditDialog);
             idChildSectionMap.insert(std::pair<int, FactList*>(fact.id, factWidget));
             factListView->idFactListMap.insert(std::pair<int, FactList*>(fact.id, factWidget));
 

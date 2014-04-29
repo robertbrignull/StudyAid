@@ -73,7 +73,7 @@ void SectionTest::test_addSection_toRoot()
 
     // Check that the fact list has updated
     FactList *factList = coursePage->factListView->currentFactList;
-    QVERIFY(factList->layout->count() == 1);
+    QVERIFY(factList->layout->count() == 2);
     QVERIFY(factList->idChildMap.size() == 1);
     QVERIFY(factList->idChildSectionMap.size() == 1);
     QVERIFY(factList->idChildFactMap.size() == 0);
@@ -118,7 +118,7 @@ void SectionTest::test_addSection_toSection()
 
     // Check that the fact list is correct
     auto factList = coursePage->factListView->currentFactList;
-    QVERIFY(factList->layout->count() == 1);
+    QVERIFY(factList->layout->count() == 2);
     QVERIFY(factList->idChildMap.size() == 1);
     QVERIFY(factList->idChildSectionMap.size() == 1);
     QVERIFY(factList->idChildFactMap.size() == 0);
@@ -170,19 +170,19 @@ void SectionTest::test_selectSection()
 
     // Check that the fact list now has two elements, one of which is a section
     auto factList = coursePage->factListView->currentFactList;
-    QVERIFY(factList->layout->count() == 2);
+    QVERIFY(factList->layout->count() == 3);
     QVERIFY(factList->idChildMap.size() == 2);
     QVERIFY(factList->idChildSectionMap.size() == 1);
     QVERIFY(factList->idChildFactMap.size() == 1);
 
     // Check that the first element is not a section
-    QVERIFY(factList->layout->itemAt(0)->widget() == factList->idChildFactMap.begin()->second);
+    QVERIFY(factList->layout->itemAt(1)->widget() == factList->idChildFactMap.begin()->second);
 
     // Check that the first element is a fact of the correct name
     QVERIFY(factList->idChildFactMap.begin()->second->nameLabel->text() == level0FactName);
 
     // Check that the second is a section
-    QVERIFY(factList->layout->itemAt(1)->widget() == factList->idChildSectionMap.begin()->second);
+    QVERIFY(factList->layout->itemAt(2)->widget() == factList->idChildSectionMap.begin()->second);
 
     // Check that the section has the correct name
     factList = factList->idChildSectionMap.begin()->second;
@@ -211,31 +211,31 @@ void SectionTest::test_editSection_form()
     TestUtil::addFact(window, sectionName, "Section");
 
     // Open the dialog
-    QTest::mouseClick(coursePage->sectionPicker->idSectionPickerMap.begin()->second->editSectionButton, Qt::LeftButton);
+    QTest::mouseClick(coursePage->factListView->currentFactList->idChildSectionMap.begin()->second->editSectionButton, Qt::LeftButton);
 
     // Check that the dialog is showing
-    QVERIFY(coursePage->sectionEditDialog->isHidden() == false);
+    QVERIFY(coursePage->factListView->sectionEditDialog->isHidden() == false);
 
     // Check that the accept button is enabled
-    QVERIFY(coursePage->sectionEditDialog->confirmButton->isEnabled() == true);
+    QVERIFY(coursePage->factListView->sectionEditDialog->confirmButton->isEnabled() == true);
 
     // Change the name to be empty
-    coursePage->sectionEditForm->nameInput->setText("");
+    coursePage->factListView->sectionEditForm->nameInput->setText("");
 
     // Check that the accept button is disabled
-    QVERIFY(coursePage->sectionEditDialog->confirmButton->isEnabled() == false);
+    QVERIFY(coursePage->factListView->sectionEditDialog->confirmButton->isEnabled() == false);
 
     // Change the name to be non-empty
-    coursePage->sectionEditForm->nameInput->setText(sectionName);
+    coursePage->factListView->sectionEditForm->nameInput->setText(sectionName);
 
     // Check that the accept button is disabled
-    QVERIFY(coursePage->sectionEditDialog->confirmButton->isEnabled() == true);
+    QVERIFY(coursePage->factListView->sectionEditDialog->confirmButton->isEnabled() == true);
 
     // Close the dialog
-    QTest::mouseClick(coursePage->sectionEditDialog->cancelButton, Qt::LeftButton);
+    QTest::mouseClick(coursePage->factListView->sectionEditDialog->cancelButton, Qt::LeftButton);
 
     // Check that the dialog closed
-    QVERIFY(coursePage->sectionEditDialog->isHidden() == true);
+    QVERIFY(coursePage->factListView->sectionEditDialog->isHidden() == true);
 }
 
 void SectionTest::test_editSection()
@@ -265,7 +265,7 @@ void SectionTest::test_editSection()
 
     // Check that the fact list has updated
     auto factList = coursePage->factListView->currentFactList;
-    QVERIFY(factList->layout->count() == 1);
+    QVERIFY(factList->layout->count() == 2);
     QVERIFY(factList->idChildMap.size() == 1);
     QVERIFY(factList->idChildSectionMap.size() == 1);
     QVERIFY(factList->idChildFactMap.size() == 0);
@@ -366,15 +366,15 @@ void SectionTest::test_editSectionOrdering_moveAbove()
 
     // Move the second section above the first
     auto currentFactListLayout = coursePage->factListView->currentFactList->layout;
-    QTest::mouseClick(((FactList*) currentFactListLayout->itemAt(1)->widget())->moveButton, Qt::LeftButton);
-    QTest::mouseClick(((FactList*) currentFactListLayout->itemAt(0)->widget())->moveAboveButton, Qt::LeftButton);
+    QTest::mouseClick(((FactList*) currentFactListLayout->itemAt(2)->widget())->moveButton, Qt::LeftButton);
+    QTest::mouseClick(((FactList*) currentFactListLayout->itemAt(1)->widget())->moveAboveButton, Qt::LeftButton);
 
     // Check that the sections are now in the correct order
-    QVERIFY(((FactList*) currentFactListLayout->itemAt(0)->widget())->fact.name == sectionName2);
-    QVERIFY(((FactList*) currentFactListLayout->itemAt(1)->widget())->fact.name == sectionName1);
+    QVERIFY(((FactList*) currentFactListLayout->itemAt(1)->widget())->fact.name == sectionName2);
+    QVERIFY(((FactList*) currentFactListLayout->itemAt(2)->widget())->fact.name == sectionName1);
 
     // Check that the orderings are valid
-    QVERIFY(((FactList*) currentFactListLayout->itemAt(0)->widget())->fact.ordering < ((FactList*) currentFactListLayout->itemAt(1)->widget())->fact.ordering);
+    QVERIFY(((FactList*) currentFactListLayout->itemAt(1)->widget())->fact.ordering < ((FactList*) currentFactListLayout->itemAt(2)->widget())->fact.ordering);
 
     // Check that the section picker updated
     QVERIFY(coursePage->sectionPicker->idSectionPickerMap.size() == 2);
@@ -397,15 +397,15 @@ void SectionTest::test_editSectionOrdering_moveBelow()
 
     // Move the first section below the second
     auto currentFactListLayout = coursePage->factListView->currentFactList->layout;
-    QTest::mouseClick(((FactList*) currentFactListLayout->itemAt(0)->widget())->moveButton, Qt::LeftButton);
-    QTest::mouseClick(((FactList*) currentFactListLayout->itemAt(1)->widget())->moveBelowButton, Qt::LeftButton);
+    QTest::mouseClick(((FactList*) currentFactListLayout->itemAt(1)->widget())->moveButton, Qt::LeftButton);
+    QTest::mouseClick(((FactList*) currentFactListLayout->itemAt(2)->widget())->moveBelowButton, Qt::LeftButton);
 
     // Check that the sections are now in the correct order
-    QVERIFY(((FactList*) currentFactListLayout->itemAt(0)->widget())->fact.name == sectionName2);
-    QVERIFY(((FactList*) currentFactListLayout->itemAt(1)->widget())->fact.name == sectionName1);
+    QVERIFY(((FactList*) currentFactListLayout->itemAt(1)->widget())->fact.name == sectionName2);
+    QVERIFY(((FactList*) currentFactListLayout->itemAt(2)->widget())->fact.name == sectionName1);
 
     // Check that the orderings are valid
-    QVERIFY(((FactList*) currentFactListLayout->itemAt(0)->widget())->fact.ordering < ((FactList*) currentFactListLayout->itemAt(1)->widget())->fact.ordering);
+    QVERIFY(((FactList*) currentFactListLayout->itemAt(1)->widget())->fact.ordering < ((FactList*) currentFactListLayout->itemAt(2)->widget())->fact.ordering);
 
     // Check that the section picker updated
     QVERIFY(coursePage->sectionPicker->idSectionPickerMap.size() == 2);
@@ -430,17 +430,17 @@ void SectionTest::test_editSectionOrdering_moveBetween()
 
     // Move the first section below the second
     auto currentFactListLayout = coursePage->factListView->currentFactList->layout;
-    QTest::mouseClick(((FactList*) currentFactListLayout->itemAt(0)->widget())->moveButton, Qt::LeftButton);
-    QTest::mouseClick(((FactList*) currentFactListLayout->itemAt(1)->widget())->moveBelowButton, Qt::LeftButton);
+    QTest::mouseClick(((FactList*) currentFactListLayout->itemAt(1)->widget())->moveButton, Qt::LeftButton);
+    QTest::mouseClick(((FactList*) currentFactListLayout->itemAt(2)->widget())->moveBelowButton, Qt::LeftButton);
 
     // Check that the sections are now in the correct order
-    QVERIFY(((FactList*) currentFactListLayout->itemAt(0)->widget())->fact.name == sectionName2);
-    QVERIFY(((FactList*) currentFactListLayout->itemAt(1)->widget())->fact.name == sectionName1);
-    QVERIFY(((FactList*) currentFactListLayout->itemAt(2)->widget())->fact.name == sectionName3);
+    QVERIFY(((FactList*) currentFactListLayout->itemAt(1)->widget())->fact.name == sectionName2);
+    QVERIFY(((FactList*) currentFactListLayout->itemAt(2)->widget())->fact.name == sectionName1);
+    QVERIFY(((FactList*) currentFactListLayout->itemAt(3)->widget())->fact.name == sectionName3);
 
     // Check that the orderings are valid
-    QVERIFY(((FactList*) currentFactListLayout->itemAt(0)->widget())->fact.ordering < ((FactList*) currentFactListLayout->itemAt(1)->widget())->fact.ordering);
     QVERIFY(((FactList*) currentFactListLayout->itemAt(1)->widget())->fact.ordering < ((FactList*) currentFactListLayout->itemAt(2)->widget())->fact.ordering);
+    QVERIFY(((FactList*) currentFactListLayout->itemAt(2)->widget())->fact.ordering < ((FactList*) currentFactListLayout->itemAt(3)->widget())->fact.ordering);
 
     // Check that the section picker updated
     QVERIFY(coursePage->sectionPicker->idSectionPickerMap.size() == 3);
@@ -468,11 +468,11 @@ void SectionTest::test_editSectionOrdering_factIntoSection()
 
     // Move the outer fact inside the section
     auto factList = coursePage->factListView->currentFactList;
-    QTest::mouseClick(((ExpandingFactWidget*) factList->layout->itemAt(0)->widget())->moveButton, Qt::LeftButton);
+    QTest::mouseClick(((ExpandingFactWidget*) factList->layout->itemAt(1)->widget())->moveButton, Qt::LeftButton);
     QTest::mouseClick(factList->idChildSectionMap.begin()->second->idChildFactMap.begin()->second->moveAboveButton, Qt::LeftButton);
 
     // Check that the fact has moved
-    QVERIFY(factList->layout->count() == 1);
+    QVERIFY(factList->layout->count() == 2);
     QVERIFY(factList->idChildMap.size() == 1);
     QVERIFY(factList->idChildSectionMap.size() == 1);
     QVERIFY(factList->idChildFactMap.size() == 0);
@@ -506,11 +506,11 @@ void SectionTest::test_editSectionOrdering_sectionIntoSection()
 
     // Move one section inside the other section
     auto factList = coursePage->factListView->currentFactList;
-    QTest::mouseClick(((FactList*) factList->layout->itemAt(0)->widget())->moveButton, Qt::LeftButton);
-    QTest::mouseClick(((FactList*) factList->layout->itemAt(1)->widget())->idChildFactMap.begin()->second->moveAboveButton, Qt::LeftButton);
+    QTest::mouseClick(((FactList*) factList->layout->itemAt(1)->widget())->moveButton, Qt::LeftButton);
+    QTest::mouseClick(((FactList*) factList->layout->itemAt(2)->widget())->idChildFactMap.begin()->second->moveAboveButton, Qt::LeftButton);
 
     // Check that the fact has moved
-    QVERIFY(factList->layout->count() == 1);
+    QVERIFY(factList->layout->count() == 2);
     QVERIFY(factList->idChildMap.size() == 1);
     QVERIFY(factList->idChildSectionMap.size() == 1);
     QVERIFY(factList->idChildFactMap.size() == 0);
@@ -545,7 +545,7 @@ void SectionTest::test_editSectionOrdering_factOutOfSection()
 
     // Move the outer fact inside the section
     auto factList = coursePage->factListView->currentFactList;
-    QTest::mouseClick(((ExpandingFactWidget*) factList->layout->itemAt(0)->widget())->moveButton, Qt::LeftButton);
+    QTest::mouseClick(factList->idChildFactMap.begin()->second->moveButton, Qt::LeftButton);
     QTest::mouseClick(factList->idChildSectionMap.begin()->second->idChildFactMap.begin()->second->moveAboveButton, Qt::LeftButton);
 
     // Move the fact back out again
@@ -553,7 +553,7 @@ void SectionTest::test_editSectionOrdering_factOutOfSection()
     QTest::mouseClick(factList->idChildSectionMap.begin()->second->moveAboveButton, Qt::LeftButton);
 
     // Check that the fact has moved
-    QVERIFY(factList->layout->count() == 2);
+    QVERIFY(factList->layout->count() == 3);
     QVERIFY(factList->idChildMap.size() == 2);
     QVERIFY(factList->idChildSectionMap.size() == 1);
     QVERIFY(factList->idChildFactMap.size() == 1);
@@ -566,9 +566,9 @@ void SectionTest::test_editSectionOrdering_factOutOfSection()
 
     // Check that the facts are in the correct order
     factList = coursePage->factListView->currentFactList;
-    QVERIFY(factList->layout->itemAt(0)->widget() == (QWidget*) factList->idChildFactMap.begin()->second);
+    QVERIFY(factList->layout->itemAt(1)->widget() == (QWidget*) factList->idChildFactMap.begin()->second);
     QVERIFY(factList->idChildFactMap.begin()->second->fact.name == level0FactName);
-    QVERIFY(factList->layout->itemAt(1)->widget() == (QWidget*) factList->idChildSectionMap.begin()->second);
+    QVERIFY(factList->layout->itemAt(2)->widget() == (QWidget*) factList->idChildSectionMap.begin()->second);
 
     factList = factList->idChildSectionMap.begin()->second;
     QVERIFY(factList->layout->itemAt(1)->widget() == (QWidget*) factList->idChildFactMap.begin()->second);
@@ -593,20 +593,20 @@ void SectionTest::test_editSectionOrdering_sectionOutOfSection()
 
     // Move one section inside the other section
     auto factList = coursePage->factListView->currentFactList;
-    QTest::mouseClick(((FactList*) factList->layout->itemAt(0)->widget())->moveButton, Qt::LeftButton);
-    QTest::mouseClick(((FactList*) factList->layout->itemAt(1)->widget())->idChildFactMap.begin()->second->moveAboveButton, Qt::LeftButton);
+    QTest::mouseClick(((FactList*) factList->layout->itemAt(1)->widget())->moveButton, Qt::LeftButton);
+    QTest::mouseClick(((FactList*) factList->layout->itemAt(2)->widget())->idChildFactMap.begin()->second->moveAboveButton, Qt::LeftButton);
 
     // Move the section back out again
     QTest::mouseClick(((FactList*) factList->idChildSectionMap.begin()->second->layout->itemAt(1)->widget())->moveButton, Qt::LeftButton);
     QTest::mouseClick(factList->idChildSectionMap.begin()->second->moveAboveButton, Qt::LeftButton);
 
     // Check that the fact has moved
-    QVERIFY(factList->layout->count() == 2);
+    QVERIFY(factList->layout->count() == 3);
     QVERIFY(factList->idChildMap.size() == 2);
     QVERIFY(factList->idChildSectionMap.size() == 2);
     QVERIFY(factList->idChildFactMap.size() == 0);
 
-    factList = (FactList*) factList->layout->itemAt(1)->widget();
+    factList = (FactList*) factList->layout->itemAt(2)->widget();
     QVERIFY(factList->layout->count() == 2);
     QVERIFY(factList->idChildMap.size() == 1);
     QVERIFY(factList->idChildSectionMap.size() == 0);
@@ -614,10 +614,10 @@ void SectionTest::test_editSectionOrdering_sectionOutOfSection()
 
     // Check that the facts are in the correct order
     factList = coursePage->factListView->currentFactList;
-    QVERIFY(((FactList*) factList->layout->itemAt(0)->widget())->sectionNameLabel->text() == sectionName0);
-    QVERIFY(((FactList*) factList->layout->itemAt(1)->widget())->sectionNameLabel->text() == sectionName1);
+    QVERIFY(((FactList*) factList->layout->itemAt(1)->widget())->sectionNameLabel->text() == sectionName0);
+    QVERIFY(((FactList*) factList->layout->itemAt(2)->widget())->sectionNameLabel->text() == sectionName1);
 
-    factList = (FactList*) factList->layout->itemAt(1)->widget();
+    factList = (FactList*) factList->layout->itemAt(2)->widget();
     QVERIFY(factList->layout->itemAt(1)->widget() == (QWidget*) factList->idChildFactMap.begin()->second);
     QVERIFY(factList->idChildFactMap.begin()->second->fact.name == factName);
 }
@@ -638,7 +638,7 @@ void SectionTest::test_deleteSection_empty()
 
     // Check that the course page shows no facts
     auto factList = coursePage->factListView->currentFactList;
-    QVERIFY(factList->layout->count() == 0);
+    QVERIFY(factList->layout->count() == 1);
     QVERIFY(factList->idChildMap.size() == 0);
     QVERIFY(factList->idChildSectionMap.size() == 0);
     QVERIFY(factList->idChildFactMap.size() == 0);
@@ -669,7 +669,7 @@ void SectionTest::test_deleteSection_notEmpty()
 
     // Check that the course page shows one fact
     auto factList = coursePage->factListView->currentFactList;
-    QVERIFY(factList->layout->count() == 1);
+    QVERIFY(factList->layout->count() == 2);
     QVERIFY(factList->idChildMap.size() == 1);
     QVERIFY(factList->idChildSectionMap.size() == 0);
     QVERIFY(factList->idChildFactMap.size() == 1);

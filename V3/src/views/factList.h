@@ -14,13 +14,16 @@ class QVBoxLayout;
 class QLabel;
 class ExpandingFactWidget;
 class ImageButton;
+class Dialog;
+class FactForm;
+class SectionForm;
 
 class FactList : public QWidget
 {
     Q_OBJECT
 
 public:
-    FactList(Fact fact, Model *model, ResizableStackedWidget *pageStack, FactListView *factListView, QWidget *parent = 0);
+    FactList(Fact fact, Model *model, ResizableStackedWidget *pageStack, FactListView *factListView, FactForm *factAddForm, Dialog *factAddDialog, SectionForm *sectionEditForm, Dialog *sectionEditDialog, QWidget *parent = 0);
     ~FactList();
 
     void paintEvent(QPaintEvent *);
@@ -61,6 +64,17 @@ public:
 
     QLabel *sectionNameLabel;
 
+    ImageButton *deleteSectionButton;
+    Dialog *sectionDeleteDialog;
+
+    ImageButton *editSectionButton;
+    SectionForm *sectionEditForm;
+    Dialog *sectionEditDialog;
+
+    ImageButton *addFactButton;
+    FactForm *factAddForm;
+    Dialog *factAddDialog;
+
     Fact moveFact;
     ImageButton *moveButton, *moveAboveButton, *moveBelowButton;
     bool inMoveMode;
@@ -76,6 +90,14 @@ public slots:
 
     void activateMoveMode(Fact fact);
     void deactivateMoveMode();
+
+    void factAddButtonClicked();
+
+    void sectionEditButtonClicked();
+
+    void sectionDeleteDialogAccepted();
+
+    void courseEditedSlot(Course course);
 
     void factAddedSlot(Fact fact);
     void factEditedSlot(Fact fact);

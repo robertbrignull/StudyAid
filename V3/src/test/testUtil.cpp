@@ -83,14 +83,14 @@ void TestUtil::addFact(StudyAid *window, const char *name, const char *type)
 {
     CoursePage *coursePage = window->coursePage;
 
-    QTest::mouseClick(coursePage->sectionPicker->addFactButton, Qt::LeftButton);
+    QTest::mouseClick(coursePage->factListView->currentFactList->addFactButton, Qt::LeftButton);
 
-    coursePage->sectionPicker->factAddForm->nameInput->setText(name);
+    coursePage->factListView->factAddForm->nameInput->setText(name);
 
-    auto typeInput = coursePage->sectionPicker->factAddForm->typeInput;
+    auto typeInput = coursePage->factListView->factAddForm->typeInput;
     typeInput->setCurrentIndex(typeInput->findText(type));
 
-    QTest::mouseClick(coursePage->sectionPicker->factAddDialog->confirmButton, Qt::LeftButton);
+    QTest::mouseClick(coursePage->factListView->factAddDialog->confirmButton, Qt::LeftButton);
 }
 
 void TestUtil::editCurrentFact(StudyAid *window, const char *name, const char *type)
@@ -183,47 +183,47 @@ void TestUtil::deleteCurrentProof(StudyAid *window)
 
 void TestUtil::addFactToSection(StudyAid *window, const char *factName, const char *factType, const char *sectionName)
 {
-    SectionPickerWidget *sectionPicker = findSectionPicker(window, sectionName, window->coursePage->sectionPicker);
+    FactList *factList = findFactList(window, sectionName, window->coursePage->factListView->currentFactList);
 
-    if (sectionPicker == nullptr) {
+    if (factList == nullptr) {
         return;
     }
 
-    QTest::mouseClick(sectionPicker->addFactButton, Qt::LeftButton);
+    QTest::mouseClick(factList->addFactButton, Qt::LeftButton);
 
-    sectionPicker->factAddForm->nameInput->setText(factName);
+    factList->factAddForm->nameInput->setText(factName);
 
-    auto typeInput = sectionPicker->factAddForm->typeInput;
+    auto typeInput = factList->factAddForm->typeInput;
     typeInput->setCurrentIndex(typeInput->findText(factType));
 
-    QTest::mouseClick(sectionPicker->factAddDialog->confirmButton, Qt::LeftButton);
+    QTest::mouseClick(factList->factAddDialog->confirmButton, Qt::LeftButton);
 }
 
 void TestUtil::editSection(StudyAid *window, const char *newSectionName, const char *oldSectionName)
 {
-    SectionPickerWidget *sectionPicker = findSectionPicker(window, oldSectionName, window->coursePage->sectionPicker);
+    FactList *factList = findFactList(window, oldSectionName, window->coursePage->factListView->currentFactList);
 
-    if (sectionPicker == nullptr) {
+    if (factList == nullptr) {
         return;
     }
 
-    QTest::mouseClick(sectionPicker->editSectionButton, Qt::LeftButton);
+    QTest::mouseClick(factList->editSectionButton, Qt::LeftButton);
 
-    sectionPicker->sectionEditForm->nameInput->setText(newSectionName);
+    factList->sectionEditForm->nameInput->setText(newSectionName);
 
-    QTest::mouseClick(sectionPicker->sectionEditDialog->confirmButton, Qt::LeftButton);
+    QTest::mouseClick(factList->sectionEditDialog->confirmButton, Qt::LeftButton);
 }
 
 void TestUtil::deleteSection(StudyAid *window, const char *sectionName)
 {
-    SectionPickerWidget *sectionPicker = findSectionPicker(window, sectionName, window->coursePage->sectionPicker);
+    FactList *factList = findFactList(window, sectionName, window->coursePage->factListView->currentFactList);
 
-    if (sectionPicker == nullptr) {
+    if (factList == nullptr) {
         return;
     }
 
-    QTest::mouseClick(sectionPicker->deleteSectionButton, Qt::LeftButton);
-    QTest::mouseClick(sectionPicker->sectionDeleteDialog->confirmButton, Qt::LeftButton);
+    QTest::mouseClick(factList->deleteSectionButton, Qt::LeftButton);
+    QTest::mouseClick(factList->sectionDeleteDialog->confirmButton, Qt::LeftButton);
 }
 
 void TestUtil::selectSection(StudyAid *window, const char *sectionName)
@@ -235,6 +235,22 @@ void TestUtil::selectSection(StudyAid *window, const char *sectionName)
     }
 
     QTest::mouseClick(sectionPicker->sectionLabel, Qt::LeftButton);
+}
+
+FactList *TestUtil::findFactList(StudyAid *window, const char *name, FactList *searchRoot)
+{
+    if (searchRoot->sectionNameLabel->text() == name) {
+        return searchRoot;
+    }
+
+    for (auto it = searchRoot->idChildSectionMap.begin(); it != searchRoot->idChildSectionMap.end(); it++) {
+        auto picker = findFactList(window, name, it->second);
+        if (picker != nullptr) {
+            return picker;
+        }
+    }
+
+    return nullptr;
 }
 
 SectionPickerWidget *TestUtil::findSectionPicker(StudyAid *window, const char *name, SectionPickerWidget *searchRoot)

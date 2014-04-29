@@ -61,31 +61,31 @@ void FactTest::test_addFact_form()
     TestUtil::addCourse(window, courseName);
 
     // Open the dialog
-    QTest::mouseClick(coursePage->sectionPicker->addFactButton, Qt::LeftButton);
+    QTest::mouseClick(coursePage->factListView->currentFactList->addFactButton, Qt::LeftButton);
 
     // Check that the dialog is showing
-    QVERIFY(coursePage->factAddDialog->isHidden() == false);
+    QVERIFY(coursePage->factListView->factAddDialog->isHidden() == false);
 
     // Check that the accept button is disabled
-    QVERIFY(coursePage->factAddDialog->confirmButton->isEnabled() == false);
+    QVERIFY(coursePage->factListView->factAddDialog->confirmButton->isEnabled() == false);
 
     // Change the name to be non-empty
-    coursePage->factAddForm->nameInput->setText(courseName);
+    coursePage->factListView->factAddForm->nameInput->setText(courseName);
 
     // Check that the accept button is enabled
-    QVERIFY(coursePage->factAddDialog->confirmButton->isEnabled() == true);
+    QVERIFY(coursePage->factListView->factAddDialog->confirmButton->isEnabled() == true);
 
     // Change the name to be empty
-    coursePage->factAddForm->nameInput->setText("");
+    coursePage->factListView->factAddForm->nameInput->setText("");
 
     // Check that the accept button is disabled
-    QVERIFY(coursePage->factAddDialog->confirmButton->isEnabled() == false);
+    QVERIFY(coursePage->factListView->factAddDialog->confirmButton->isEnabled() == false);
 
     // Close the dialog
-    QTest::mouseClick(coursePage->factAddDialog->cancelButton, Qt::LeftButton);
+    QTest::mouseClick(coursePage->factListView->factAddDialog->cancelButton, Qt::LeftButton);
 
     // Check that the dialog closed
-    QVERIFY(coursePage->factAddDialog->isHidden() == true);
+    QVERIFY(coursePage->factListView->factAddDialog->isHidden() == true);
 }
 
 void FactTest::test_addFact()
@@ -121,7 +121,7 @@ void FactTest::test_addFact()
 
     // Check that the course page shows one fact
     auto currentFactList = coursePage->factListView->currentFactList;
-    QVERIFY(currentFactList->layout->count() == 1);
+    QVERIFY(currentFactList->layout->count() == 2);
     QVERIFY(currentFactList->idChildMap.size() == 1);
     QVERIFY(currentFactList->idChildSectionMap.size() == 0);
     QVERIFY(currentFactList->idChildFactMap.size() == 1);
@@ -202,7 +202,7 @@ void FactTest::test_addFact_multiple()
 
     // Check that the course page shows one fact
     auto currentFactList = coursePage->factListView->currentFactList;
-    QVERIFY(currentFactList->layout->count() == 2);
+    QVERIFY(currentFactList->layout->count() == 3);
     QVERIFY(currentFactList->idChildMap.size() == 2);
     QVERIFY(currentFactList->idChildSectionMap.size() == 0);
     QVERIFY(currentFactList->idChildFactMap.size() == 2);
@@ -494,15 +494,15 @@ void FactTest::test_editFactOrdering_moveAbove()
 
     // Move the second proof above the first
     auto currentFactListLayout = coursePage->factListView->currentFactList->layout;
-    QTest::mouseClick(((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->moveButton, Qt::LeftButton);
-    QTest::mouseClick(((ExpandingFactWidget*) currentFactListLayout->itemAt(0)->widget())->moveAboveButton, Qt::LeftButton);
+    QTest::mouseClick(((ExpandingFactWidget*) currentFactListLayout->itemAt(2)->widget())->moveButton, Qt::LeftButton);
+    QTest::mouseClick(((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->moveAboveButton, Qt::LeftButton);
 
     // Check that the proofs are now in the correct order
-    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(0)->widget())->fact.name == factName2);
-    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->fact.name == factName1);
+    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->fact.name == factName2);
+    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(2)->widget())->fact.name == factName1);
 
     // Check that the orderings are valid
-    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(0)->widget())->fact.ordering < ((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->fact.ordering);
+    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->fact.ordering < ((ExpandingFactWidget*) currentFactListLayout->itemAt(2)->widget())->fact.ordering);
 }
 
 void FactTest::test_editFactOrdering_moveBelow()
@@ -522,15 +522,15 @@ void FactTest::test_editFactOrdering_moveBelow()
 
     // Move the first proof below the second
     auto currentFactListLayout = coursePage->factListView->currentFactList->layout;
-    QTest::mouseClick(((ExpandingFactWidget*) currentFactListLayout->itemAt(0)->widget())->moveButton, Qt::LeftButton);
-    QTest::mouseClick(((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->moveBelowButton, Qt::LeftButton);
+    QTest::mouseClick(((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->moveButton, Qt::LeftButton);
+    QTest::mouseClick(((ExpandingFactWidget*) currentFactListLayout->itemAt(2)->widget())->moveBelowButton, Qt::LeftButton);
 
     // Check that the proofs are now in the correct order
-    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(0)->widget())->fact.name == factName2);
-    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->fact.name == factName1);
+    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->fact.name == factName2);
+    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(2)->widget())->fact.name == factName1);
 
     // Check that the orderings are valid
-    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(0)->widget())->fact.ordering < ((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->fact.ordering);
+    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->fact.ordering < ((ExpandingFactWidget*) currentFactListLayout->itemAt(2)->widget())->fact.ordering);
 }
 
 void FactTest::test_editFactOrdering_moveBetween()
@@ -553,17 +553,17 @@ void FactTest::test_editFactOrdering_moveBetween()
 
     // Move the first proof below the second
     auto currentFactListLayout = coursePage->factListView->currentFactList->layout;
-    QTest::mouseClick(((ExpandingFactWidget*) currentFactListLayout->itemAt(0)->widget())->moveButton, Qt::LeftButton);
-    QTest::mouseClick(((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->moveBelowButton, Qt::LeftButton);
+    QTest::mouseClick(((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->moveButton, Qt::LeftButton);
+    QTest::mouseClick(((ExpandingFactWidget*) currentFactListLayout->itemAt(2)->widget())->moveBelowButton, Qt::LeftButton);
 
     // Check that the proofs are now in the correct order
-    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(0)->widget())->fact.name == factName2);
-    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->fact.name == factName1);
-    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(2)->widget())->fact.name == factName3);
+    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->fact.name == factName2);
+    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(2)->widget())->fact.name == factName1);
+    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(3)->widget())->fact.name == factName3);
 
     // Check that the orderings are valid
-    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(0)->widget())->fact.ordering < ((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->fact.ordering);
     QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(1)->widget())->fact.ordering < ((ExpandingFactWidget*) currentFactListLayout->itemAt(2)->widget())->fact.ordering);
+    QVERIFY(((ExpandingFactWidget*) currentFactListLayout->itemAt(2)->widget())->fact.ordering < ((ExpandingFactWidget*) currentFactListLayout->itemAt(3)->widget())->fact.ordering);
 }
 
 void FactTest::test_deleteFact_all()
@@ -583,7 +583,7 @@ void FactTest::test_deleteFact_all()
 
     // Check that no facts are shown
     auto currentFactList = coursePage->factListView->currentFactList;
-    QVERIFY(currentFactList->layout->count() == 0);
+    QVERIFY(currentFactList->layout->count() == 1);
     QVERIFY(currentFactList->idChildMap.size() == 0);
     QVERIFY(currentFactList->idChildSectionMap.size() == 0);
     QVERIFY(currentFactList->idChildFactMap.size() == 0);
@@ -609,7 +609,7 @@ void FactTest::test_deleteFact_one()
 
     // Check that the course page shows one fact
     auto currentFactList = coursePage->factListView->currentFactList;
-    QVERIFY(currentFactList->layout->count() == 1);
+    QVERIFY(currentFactList->layout->count() == 2);
     QVERIFY(currentFactList->idChildMap.size() == 1);
     QVERIFY(currentFactList->idChildSectionMap.size() == 0);
     QVERIFY(currentFactList->idChildFactMap.size() == 1);

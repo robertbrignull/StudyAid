@@ -10,6 +10,7 @@ namespace Database
     int addCourse(std::string name);
     Course findCourse(int id);
     std::vector<Course> findAllCourses();
+    Course findCourseByRootFact(int id);
     void editCourse(Course course);
     void editCourseOrdering(Course course);
     void deleteCourse(int id);
