@@ -2,8 +2,6 @@
 
 - Fix tests for rendering of statements/bodies
 
-- Put a "new window" button on every page
-
 - Move section edit/delete/add buttons onto the fact list
 
 - Display rendered fact on proof page for reference

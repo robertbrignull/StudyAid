@@ -25,6 +25,7 @@ class ImageButton;
 class BreadCrumbs;
 class QTimer;
 class LatexHighlighter;
+class QPushButton;
 
 class FactPage : public QWidget
 {
@@ -37,6 +38,8 @@ public:
 
     Model *model;
     ResizableStackedWidget *pageStack;
+
+    QPushButton *newWindowButton;
 
     BreadCrumbs *breadCrumbs;
 
@@ -78,6 +81,8 @@ public:
     std::map<int, ProofViewWidget*> idProofViewWidgetMap;
 
 signals:
+    void requestNewWindow(int pageIndex, Course course, Fact fact, Proof proof);
+
     void moveButtonClicked(Proof proof);
     void moveCompleted();
 
@@ -91,6 +96,8 @@ public slots:
     void factDeleteDialogAccepted();
 
     void proofAddDialogCompleted();
+
+    void newWindowButtonClicked();
 
     void factSelectedChangedSlot(Fact fact);
     void factEditedSlot(Fact fact);

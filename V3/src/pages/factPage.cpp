@@ -101,6 +101,11 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     trafficLightVLayout->addSpacing(16);
     trafficLightVLayout->addWidget(trafficLight);
 
+    newWindowButton = new ImageButton(QPixmap(":/images/open_window_black.png"), QSize(32, 32));
+    QVBoxLayout *newWindowVLayout = new QVBoxLayout();
+    newWindowVLayout->addSpacing(16);
+    newWindowVLayout->addWidget(newWindowButton);
+
     addProofButton = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(32, 32));
     QVBoxLayout *addProofVLayout = new QVBoxLayout();
     addProofVLayout->addSpacing(16);
@@ -117,6 +122,8 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     deleteFactVLayout->addWidget(deleteFactButton);
 
     topLayout->addWidget(factLabel);
+    topLayout->addLayout(newWindowVLayout);
+    topLayout->addSpacing(10);
     topLayout->addLayout(trafficLightVLayout);
     topLayout->addSpacing(10);
     topLayout->addLayout(addProofVLayout);
@@ -240,6 +247,8 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     connect(factDeleteDialog, SIGNAL(accepted()), this, SLOT(factDeleteDialogAccepted()));
     connect(factDeleteDialog, SIGNAL(rejected()), factDeleteDialog, SLOT(close()));
 
+    connect(newWindowButton, SIGNAL(clicked()), this, SLOT(newWindowButtonClicked()));
+
     connect(model, SIGNAL(factSelectedChanged(Fact)), this, SLOT(factSelectedChangedSlot(Fact)));
     connect(model, SIGNAL(factEdited(Fact)), this, SLOT(factEditedSlot(Fact)));
     connect(model, SIGNAL(factRendered(Fact, bool)), this, SLOT(factRenderedSlot(Fact, bool)));
@@ -306,6 +315,11 @@ void FactPage::proofAddDialogCompleted()
 
     proofAddDialog->close();
     pageStack->setCurrentIndex(3);
+}
+
+void FactPage::newWindowButtonClicked()
+{
+    emit requestNewWindow(pageStack->currentIndex(), model->getCourseSelected(), model->getFactSelected(), model->getProofSelected());
 }
 
 void FactPage::factSelectedChangedSlot(Fact fact)

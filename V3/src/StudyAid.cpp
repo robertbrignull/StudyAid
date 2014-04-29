@@ -9,7 +9,6 @@
 
 #include "model.h"
 #include "database/setup.h"
-#include "database/structures.h"
 #include "latex/latex.h"
 #include "pages/rootPage.h"
 #include "pages/coursePage.h"
@@ -45,7 +44,10 @@ StudyAid::StudyAid(ModelSignaller *modelSignaller, QWidget *parent)
 
 
 
-    connect(rootPage, SIGNAL(requestNewWindow()), this, SIGNAL(requestNewWindow()));
+    connect(rootPage, SIGNAL(requestNewWindow(int, Course, Fact, Proof)), this, SIGNAL(requestNewWindow(int, Course, Fact, Proof)));
+    connect(coursePage, SIGNAL(requestNewWindow(int, Course, Fact, Proof)), this, SIGNAL(requestNewWindow(int, Course, Fact, Proof)));
+    connect(factPage, SIGNAL(requestNewWindow(int, Course, Fact, Proof)), this, SIGNAL(requestNewWindow(int, Course, Fact, Proof)));
+    connect(proofPage, SIGNAL(requestNewWindow(int, Course, Fact, Proof)), this, SIGNAL(requestNewWindow(int, Course, Fact, Proof)));
 }
 
 StudyAid::~StudyAid()
@@ -63,14 +65,19 @@ StudyAidController::~StudyAidController()
     delete modelSignaller;
 }
 
-void StudyAidController::openNewWindow()
+void StudyAidController::openNewWindow(int pageIndex, Course course, Fact fact, Proof proof)
 {
     StudyAid *window = new StudyAid(modelSignaller);
+
+    if (pageIndex >= 1) { window->model->setCourseSelected(course); }
+    if (pageIndex >= 2) { window->model->setFactSelected(fact); }
+    if (pageIndex >= 3) { window->model->setProofSelected(proof); }
+    window->stack->setCurrentIndex(pageIndex);
 
     window->setWindowTitle("StudyAid");
     window->show();
 
-    connect(window, SIGNAL(requestNewWindow()), this, SLOT(openNewWindow()));
+    connect(window, SIGNAL(requestNewWindow(int, Course, Fact, Proof)), this, SLOT(openNewWindow(int, Course, Fact, Proof)));
 }
 
 int main(int argc, char **argv)
@@ -107,7 +114,7 @@ int main(int argc, char **argv)
     }
     else {
         StudyAidController controller;
-        controller.openNewWindow();
+        controller.openNewWindow(0, Course(), Fact(), Proof());
 
         return app.exec();
     }

@@ -2,6 +2,8 @@
 
 #include <QWidget>
 
+#include "database/structures.h"
+
 class ModelSignaller;
 class Model;
 class ResizableStackedWidget;
@@ -30,7 +32,7 @@ public:
     Model *model;
 
 signals:
-    void requestNewWindow();
+    void requestNewWindow(int pageIndex, Course course, Fact fact, Proof proof);
 };
 
 class StudyAidController : public QWidget
@@ -46,5 +48,5 @@ public:
     ModelSignaller *modelSignaller;
 
 public slots:
-    void openNewWindow();
+    void openNewWindow(int pageIndex, Course course, Fact fact, Proof proof);
 };

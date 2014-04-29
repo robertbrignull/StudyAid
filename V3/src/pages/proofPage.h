@@ -18,6 +18,7 @@ class ImageButton;
 class BreadCrumbs;
 class QTimer;
 class LatexHighlighter;
+class QPushButton;
 
 class ProofPage : public QWidget
 {
@@ -30,6 +31,8 @@ public:
 
     Model *model;
     ResizableStackedWidget *pageStack;
+
+    QPushButton *newWindowButton;
 
     BreadCrumbs *breadCrumbs;
 
@@ -59,6 +62,9 @@ public:
     // Shows whether the body rendered without errors
     TrafficLight *trafficLight;
 
+signals:
+    void requestNewWindow(int pageIndex, Course course, Fact fact, Proof proof);
+
 public slots:
     void proofEditButtonClicked();
     void proofEditDialogCompleted();
@@ -67,6 +73,8 @@ public slots:
     void saveBody();
 
     void proofDeleteDialogAccepted();
+
+    void newWindowButtonClicked();
 
     void proofSelectedChangedSlot(Proof proof);
     void proofEditedSlot(Proof proof);

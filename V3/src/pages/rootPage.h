@@ -40,13 +40,15 @@ public:
     std::map<int, CourseTitleWidget*> idCourseMap;
 
 signals:
-    void requestNewWindow();
+    void requestNewWindow(int pageIndex, Course course, Fact fact, Proof proof);
 
     void moveButtonClicked(Course course);
     void moveCompleted();
 
 public slots:
     void courseAddDialogCompleted();
+
+    void newWindowButtonClicked();
 
     void courseAddedSlot(Course course);
     void courseOrderingEditedSlot(Course course);

@@ -94,6 +94,11 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
     courseFont.setPointSize(24);
     courseLabel->setFont(courseFont);
 
+    newWindowButton = new ImageButton(QPixmap(":/images/open_window_black.png"), QSize(32, 32));
+    QVBoxLayout *newWindowVLayout = new QVBoxLayout();
+    newWindowVLayout->addSpacing(16);
+    newWindowVLayout->addWidget(newWindowButton);
+
     editCourseButton = new ImageButton(QPixmap(":/images/pencil_black.png"), QSize(32, 32));
     QVBoxLayout *editCourseVLayout = new QVBoxLayout();
     editCourseVLayout->addSpacing(16);
@@ -105,6 +110,8 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
     deleteCourseVLayout->addWidget(deleteCourseButton);
 
     topLayout->addWidget(courseLabel);
+    topLayout->addLayout(newWindowVLayout);
+    topLayout->addSpacing(10);
     topLayout->addLayout(editCourseVLayout);
     topLayout->addSpacing(10);
     topLayout->addLayout(deleteCourseVLayout);
@@ -197,6 +204,8 @@ CoursePage::CoursePage(ResizableStackedWidget *pageStack, Model *model, QWidget 
     connect(sectionEditDialog, SIGNAL(accepted()), this, SLOT(sectionEditFormCompleted()));
     connect(sectionEditDialog, SIGNAL(rejected()), sectionEditDialog, SLOT(close()));
 
+    connect(newWindowButton, SIGNAL(clicked()), this, SLOT(newWindowButtonClicked()));
+
     connect(model, SIGNAL(courseSelectedChanged(Course)), this, SLOT(courseSelectedChangedSlot(Course)));
     connect(model, SIGNAL(courseEdited(Course)), this, SLOT(courseEditedSlot(Course)));
     connect(model, SIGNAL(courseDeleted(int)), this, SLOT(courseDeletedSlot(int)));
@@ -258,6 +267,11 @@ void CoursePage::sectionEditFormCompleted()
 void CoursePage::sectionSelected(int)
 {
     courseScrollArea->ensureVisible(0, 0);
+}
+
+void CoursePage::newWindowButtonClicked()
+{
+    emit requestNewWindow(pageStack->currentIndex(), model->getCourseSelected(), model->getFactSelected(), model->getProofSelected());
 }
 
 void CoursePage::courseSelectedChangedSlot(Course course)

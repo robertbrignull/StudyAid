@@ -18,6 +18,7 @@ class SectionPickerWidget;
 class FactListView;
 class ImageButton;
 class QScrollArea;
+class QPushButton;
 
 class CoursePage : public QWidget
 {
@@ -30,6 +31,8 @@ public:
 
     Model *model;
     ResizableStackedWidget *pageStack;
+
+    QPushButton *newWindowButton;
 
     BreadCrumbs *breadCrumbs;
 
@@ -57,6 +60,9 @@ public:
     SectionPickerWidget *sectionPicker;
     FactListView *factListView;
 
+signals:
+    void requestNewWindow(int pageIndex, Course course, Fact fact, Proof proof);
+
 public slots:
     void courseEditButtonClicked();
     void courseEditDialogCompleted();
@@ -68,6 +74,8 @@ public slots:
     void sectionEditFormCompleted();
 
     void sectionSelected(int id);
+
+    void newWindowButtonClicked();
 
     void courseSelectedChangedSlot(Course course);
     void courseEditedSlot(Course course);

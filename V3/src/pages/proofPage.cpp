@@ -96,6 +96,11 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
     trafficLightVLayout->addSpacing(16);
     trafficLightVLayout->addWidget(trafficLight);
 
+    newWindowButton = new ImageButton(QPixmap(":/images/open_window_black.png"), QSize(32, 32));
+    QVBoxLayout *newWindowVLayout = new QVBoxLayout();
+    newWindowVLayout->addSpacing(16);
+    newWindowVLayout->addWidget(newWindowButton);
+
     editProofButton = new ImageButton(QPixmap(":/images/pencil_black.png"), QSize(32, 32));
     QVBoxLayout *editProofVLayout = new QVBoxLayout();
     editProofVLayout->addSpacing(16);
@@ -107,6 +112,8 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
     deleteProofVLayout->addWidget(deleteProofButton);
 
     topLayout->addWidget(proofLabel);
+    topLayout->addLayout(newWindowVLayout);
+    topLayout->addSpacing(10);
     topLayout->addLayout(trafficLightVLayout);
     topLayout->addSpacing(10);
     topLayout->addLayout(editProofVLayout);
@@ -204,6 +211,8 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
     connect(proofDeleteDialog, SIGNAL(accepted()), this, SLOT(proofDeleteDialogAccepted()));
     connect(proofDeleteDialog, SIGNAL(rejected()), proofDeleteDialog, SLOT(close()));
 
+    connect(newWindowButton, SIGNAL(clicked()), this, SLOT(newWindowButtonClicked()));
+
     connect(model, SIGNAL(proofSelectedChanged(Proof)), this, SLOT(proofSelectedChangedSlot(Proof)));
     connect(model, SIGNAL(proofEdited(Proof)), this, SLOT(proofEditedSlot(Proof)));
     connect(model, SIGNAL(proofRendered(Proof, bool)), this, SLOT(proofRenderedSlot(Proof, bool)));
@@ -258,6 +267,11 @@ void ProofPage::proofDeleteDialogAccepted()
     proofDeleteDialog->close();
     
     model->deleteProof(model->getProofSelected().id);
+}
+
+void ProofPage::newWindowButtonClicked()
+{
+    emit requestNewWindow(pageStack->currentIndex(), model->getCourseSelected(), model->getFactSelected(), model->getProofSelected());
 }
 
 void ProofPage::proofSelectedChangedSlot(Proof proof)
