@@ -612,8 +612,8 @@ void ProofTest::test_viewProof_bodyEmpty()
 
     // Check that the body text edit and image are visible
     auto sizes = proofPage->splitter->sizes();
-    QVERIFY(sizes.at(0) != 0);
     QVERIFY(sizes.at(1) != 0);
+    QVERIFY(sizes.at(2) != 0);
 }
 
 void ProofTest::test_viewProof_bodyNotEmpty()
@@ -646,6 +646,6 @@ void ProofTest::test_viewProof_bodyNotEmpty()
 
     // Check that the body text edit is not visible but the image is
     auto sizes = proofPage->splitter->sizes();
-    QVERIFY(sizes.at(0) == 0);
-    QVERIFY(sizes.at(1) != 0);
+    QVERIFY(sizes.at(1) == 0);
+    QVERIFY(sizes.at(2) != 0);
 }

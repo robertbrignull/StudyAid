@@ -39,9 +39,9 @@ public:
     double currentHeight;
     ImageButton *viewButton;
 
+    std::string imageFilename;
     QPixmap image, scaledImage;
-    int imageWidth, imageHeight;
-    bool imageNeedsScaling;
+    bool imageNeedsLoading, imageNeedsScaling;
 
     QWidget *headWidget;
     int headWidgetHeight;
