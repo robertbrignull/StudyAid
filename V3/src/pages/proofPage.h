@@ -59,6 +59,9 @@ public:
     // The rendered body
     ResizableImage *bodyImage;
 
+    // The rendered statement
+    ResizableImage *statementImage;
+
     // Shows whether the body rendered without errors
     TrafficLight *trafficLight;
 
@@ -75,6 +78,9 @@ public slots:
     void proofDeleteDialogAccepted();
 
     void newWindowButtonClicked();
+
+    void factSelectedChangedSlot(Fact fact);
+    void factRenderedSlot(Fact fact, bool success);
 
     void proofSelectedChangedSlot(Proof proof);
     void proofEditedSlot(Proof proof);

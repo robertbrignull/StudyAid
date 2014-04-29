@@ -149,7 +149,21 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
 
 
 
-    // The first area is a large text editing widget, this is
+    // The first area contains the rendered statement.
+
+    QScrollArea *statementScrollArea = new QScrollArea();
+    statementScrollArea->setWidgetResizable(true);
+    statementScrollArea->setFrameShape(QFrame::NoFrame);
+
+    statementImage = new ResizableImage("");
+
+    statementScrollArea->setWidget(statementImage);
+    splitter->addWidget(statementScrollArea);
+
+
+
+
+    // The second area is a large text editing widget, this is
     // used to edit the proof's body.
     // The QTextEdit does its own scrolling.
 
@@ -173,7 +187,7 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
 
 
 
-    // The second area contains the rendered body.
+    // The third area contains the rendered body.
 
     QScrollArea *bodyScrollArea = new QScrollArea();
     bodyScrollArea->setWidgetResizable(true);
@@ -212,6 +226,9 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
     connect(proofDeleteDialog, SIGNAL(rejected()), proofDeleteDialog, SLOT(close()));
 
     connect(newWindowButton, SIGNAL(clicked()), this, SLOT(newWindowButtonClicked()));
+
+    connect(model, SIGNAL(factSelectedChanged(Fact)), this, SLOT(factSelectedChangedSlot(Fact)));
+    connect(model, SIGNAL(factRendered(Fact, bool)), this, SLOT(factRenderedSlot(Fact, bool)));
 
     connect(model, SIGNAL(proofSelectedChanged(Proof)), this, SLOT(proofSelectedChangedSlot(Proof)));
     connect(model, SIGNAL(proofEdited(Proof)), this, SLOT(proofEditedSlot(Proof)));
@@ -274,15 +291,27 @@ void ProofPage::newWindowButtonClicked()
     emit requestNewWindow(pageStack->currentIndex(), model->getCourseSelected(), model->getFactSelected(), model->getProofSelected());
 }
 
+void ProofPage::factSelectedChangedSlot(Fact fact)
+{
+    statementImage->setImage(getFactImageFilename(fact));
+}
+
+void ProofPage::factRenderedSlot(Fact fact, bool success)
+{
+    if (fact.id == model->getProofSelected().fact && success) {
+        statementImage->setImage(getFactImageFilename(fact));
+    }
+}
+
 void ProofPage::proofSelectedChangedSlot(Proof proof)
 {
     reloadProofDetails(proof);
 
     if (proof.body == "") {
-        splitter->setSizes({ 1, 1, 0 });
+        splitter->setSizes({ 0, 1, 1, 0 });
     }
     else {
-        splitter->setSizes({ 0, 1, 0 });
+        splitter->setSizes({ 0, 0, 1, 0 });
     }
 }
 
