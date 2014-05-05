@@ -69,6 +69,7 @@ int LatexRenderer::renderText(std::string text, std::string path, std::string fi
         "\\usepackage{amsmath}\n" +
         "\\usepackage{amssymb}\n" +
         "\\usepackage{minted}\n" +
+        "\\usepackage{tikz}\n" +
         "\\begin{document}\n" +
         "\\begin{preview}\n" +
         "\n" +
