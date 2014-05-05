@@ -40,7 +40,6 @@ FactList::FactList(Fact fact, Model *model, ResizableStackedWidget *pageStack, F
     // showing the name of the section
     if (fact.parent != -1) {
         sectionNameLabel = new QLabel(QString::fromStdString(fact.name));
-        sectionNameLabel->setWordWrap(true);
         sectionNameLabel->setScaledContents(true);
 
         moveButton = new ImageButton(QPixmap(":/images/move_black.png"), QSize(24, 24));
@@ -75,7 +74,6 @@ FactList::FactList(Fact fact, Model *model, ResizableStackedWidget *pageStack, F
         sectionDeleteDialog = nullptr;
 
         sectionNameLabel = new QLabel(QString::fromStdString(Database::findCourseByRootFact(fact.id).name));
-        sectionNameLabel->setWordWrap(true);
         sectionNameLabel->setScaledContents(true);
 
         addFactButton = new ImageButton(QPixmap(":/images/plus_black.png"), QSize(24, 24));
