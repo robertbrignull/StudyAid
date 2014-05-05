@@ -298,7 +298,7 @@ void ProofPage::factSelectedChangedSlot(Fact fact)
 
 void ProofPage::factRenderedSlot(Fact fact, bool success)
 {
-    if (fact.id == model->getProofSelected().fact && success) {
+    if (fact.id == model->getFactSelected().id && success) {
         statementImage->setImage(getFactImageFilename(fact));
     }
 }
@@ -323,9 +323,8 @@ void ProofPage::proofEditedSlot(Proof proof)
 void ProofPage::proofRenderedSlot(Proof proof, bool success)
 {
     if (proof.id == model->getProofSelected().id) {
-        bodyImage->setImage(getProofImageFilename(proof));
-        
         if (success) {
+            bodyImage->setImage(getProofImageFilename(proof));
             trafficLight->setState(TrafficLight::GREEN);
         }
         else {

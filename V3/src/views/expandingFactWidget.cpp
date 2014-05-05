@@ -164,9 +164,10 @@ void ExpandingFactWidget::paintEvent(QPaintEvent *)
         imageNeedsScaling = true;
     }
 
-    if (image.width() != 0 && expanded) {
+    if (image.width() != 0 && currentHeight > 0.0) {
         if (imageNeedsScaling) {
             scaledImage = image.scaledToWidth(std::min(width() - border*2, 1000), Qt::SmoothTransformation);
+            setFixedHeight(headWidgetHeight + (scaledImage.height() + border*2) * currentHeight);
             imageNeedsScaling = false;
         }
 
@@ -270,8 +271,9 @@ void ExpandingFactWidget::factEditedSlot(Fact fact)
 
         nameLabel->setText(QString::fromStdString(fact.name));
         headColor = QColor(QString::fromStdString(std::string("#") + Database::findFactType(fact.type).colour));
+        headWidgetHeight = headWidget->heightForWidth(size().width());
 
-        adjustSize();
+        setFixedHeight(headWidgetHeight + (scaledImage.height() + border*2) * currentHeight);
     }
 }
 

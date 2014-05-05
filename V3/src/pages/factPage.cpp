@@ -344,9 +344,8 @@ void FactPage::factEditedSlot(Fact fact)
 void FactPage::factRenderedSlot(Fact fact, bool success)
 {
     if (fact.id == model->getFactSelected().id) {
-        statementImage->setImage(getFactImageFilename(fact));
-        
         if (success) {
+            statementImage->setImage(getFactImageFilename(fact));
             trafficLight->setState(TrafficLight::GREEN);
         }
         else {
