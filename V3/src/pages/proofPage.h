@@ -11,7 +11,7 @@ class FormDialog;
 class Dialog;
 class QLabel;
 class Splitter;
-class QTextEdit;
+class TextEdit;
 class ResizableImage;
 class TrafficLight;
 class ImageButton;
@@ -50,7 +50,7 @@ public:
     Splitter *splitter;
 
     // Contains the current proof's body
-    QTextEdit *bodyTextEdit;
+    TextEdit *bodyTextEdit;
     LatexHighlighter *bodyHighlighter;
 
     // For the timer that saves and renders the body

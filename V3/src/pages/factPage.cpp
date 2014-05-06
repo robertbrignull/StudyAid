@@ -22,6 +22,7 @@
 #include "widgets/resizableImage.h"
 #include "widgets/trafficLight.h"
 #include "widgets/dialog.h"
+#include "widgets/textEdit.h"
 #include "views/breadCrumbs.h"
 #include "views/proofViewWidget.h"
 #include "views/latexHighlighter.h"
@@ -165,7 +166,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     // used to edit the fact's statement.
     // The QTextEdit does its own scrolling.
 
-    statementTextEdit = new QTextEdit();
+    statementTextEdit = new TextEdit();
 
     QFont font = statementTextEdit->font();
     font.setFamily("Courier");
@@ -180,7 +181,7 @@ FactPage::FactPage(ResizableStackedWidget *pageStack, Model *model, QWidget *par
     statementSaveTimer->setSingleShot(true);
     statementSaveTimer->setInterval(200);
 
-    connect(statementTextEdit, SIGNAL(textChanged()), this, SLOT(statementChanged()));
+    connect(statementTextEdit, SIGNAL(keyPress()), this, SLOT(statementChanged()));
     connect(statementSaveTimer, SIGNAL(timeout()), this, SLOT(saveStatement()));
 
 
@@ -332,6 +333,8 @@ void FactPage::factSelectedChangedSlot(Fact fact)
     else {
         splitter->setSizes({ 0, 1, 0 });
     }
+
+    saveStatement();
 }
 
 void FactPage::factEditedSlot(Fact fact)

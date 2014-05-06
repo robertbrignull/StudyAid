@@ -15,7 +15,7 @@ class Dialog;
 class ClickableQLabel;
 class QLabel;
 class Splitter;
-class QTextEdit;
+class TextEdit;
 class QVBoxLayout;
 class ResizableImage;
 class TrafficLight;
@@ -61,7 +61,7 @@ public:
     Splitter *splitter;
 
     // Contains the current fact's statement
-    QTextEdit *statementTextEdit;
+    TextEdit *statementTextEdit;
     LatexHighlighter *statementHighlighter;
 
     // For the timer that saves and renders the statement

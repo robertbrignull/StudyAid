@@ -25,6 +25,7 @@
 #include "widgets/imageButton.h"
 #include "widgets/clickableQLabel.h"
 #include "widgets/dialog.h"
+#include "widgets/textEdit.h"
 #include "views/breadCrumbs.h"
 #include "views/courseTitleWidget.h"
 #include "views/factListView.h"

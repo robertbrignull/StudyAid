@@ -21,6 +21,7 @@
 #include "widgets/resizableImage.h"
 #include "widgets/trafficLight.h"
 #include "widgets/dialog.h"
+#include "widgets/textEdit.h"
 #include "views/dependenciesWidget.h"
 #include "views/breadCrumbs.h"
 #include "views/latexHighlighter.h"
@@ -167,7 +168,7 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
     // used to edit the proof's body.
     // The QTextEdit does its own scrolling.
 
-    bodyTextEdit = new QTextEdit();
+    bodyTextEdit = new TextEdit();
 
     QFont font = bodyTextEdit->font();
     font.setFamily("Courier");
@@ -182,7 +183,7 @@ ProofPage::ProofPage(ResizableStackedWidget *pageStack, Model *model, QWidget *p
     bodySaveTimer->setSingleShot(true);
     bodySaveTimer->setInterval(200);
 
-    connect(bodyTextEdit, SIGNAL(textChanged()), this, SLOT(bodyChanged()));
+    connect(bodyTextEdit, SIGNAL(keyPress()), this, SLOT(bodyChanged()));
     connect(bodySaveTimer, SIGNAL(timeout()), this, SLOT(saveBody()));
 
 
