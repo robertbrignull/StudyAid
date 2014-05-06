@@ -1,7 +1,5 @@
 ======= todo list ======
 
-- Expanding fact widgets scale badly, get bunched up, don't expand the faclist if no subsections present
-
 - Fix tests for rendering of statements/bodies
 
 - Only render when text has changed

@@ -84,6 +84,8 @@ FactList::FactList(Fact fact, Model *model, ResizableStackedWidget *pageStack, F
         layout->addLayout(headLayout);
     }
 
+    layout->addStretch(1);
+
     // Populate the list of children but don't add to the layout
     isCurrentlyBuilt = false;
 
