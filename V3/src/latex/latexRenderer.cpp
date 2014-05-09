@@ -70,6 +70,13 @@ int LatexRenderer::renderText(std::string text, std::string path, std::string fi
         "\\usepackage{amssymb}\n" +
         "\\usepackage{minted}\n" +
         "\\usepackage{tikz}\n" +
+
+        "\\newcommand{\\ulcornertwo}{\\mathrel{\\ulcorner\\hspace{-1mm}\\ulcorner\\hspace{-1.25mm}}}\n" +
+        "\\newcommand{\\urcornertwo}{\\mathrel{\\hspace{-1.25mm}\\urcorner\\hspace{-1mm}\\urcorner}}\n" +
+        "\\newcommand{\\lackettwo}{\\mathrel{[\\hspace{-0.5mm}[\\hspace{-0.75mm}}}\n" +
+        "\\newcommand{\\rackettwo}{\\mathrel{\\hspace{-0.75mm}]\\hspace{-0.5mm}]}}\n" +
+        "\\newcommand{\\lambdatwo}{\\mathrel{\\lambda\\hspace{-1.5mm}\\lambda\\hspace{-0.75mm}}}\n" +
+
         "\\begin{document}\n" +
         "\\begin{preview}\n" +
         "\n" +

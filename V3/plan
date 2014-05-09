@@ -1,5 +1,7 @@
 ======= todo list ======
 
+- EditFactDialog and AddProofDialog open with cancel button selected
+
 - Fix tests for rendering of statements/bodies
 
 - Only render when text has changed
